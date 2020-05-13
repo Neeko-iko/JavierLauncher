@@ -9,29 +9,30 @@ thank
 
 # FAQ
 
-Do I have to enter the RAM value each time I launch a server?
---- 
+> Do I have to enter the RAM value each time I launch a server?
+ 
 No, that's only to update the JSON incase you want to decrease or increase the RAM for the server.
  
  
- 
-Javier crashes upon launch!
----
-  Did you rename the JSON Javier pulls from?  Did you clear the JSON to be empty?  Does Javier have any server folders to see?
+> Javier crashes upon launch!
+
+Did you rename the JSON Javier pulls from?  Did you clear the JSON to be empty?  Does Javier have any server folders to see?
 
   
   
   
-I wanna make my own theme!
----
-  Glad to hear it! you can make as many themes as you want in the JSON just use the following format
+> I wanna make my own theme!
+
+Glad to hear it! you can make as many themes as you want in the JSON just use the following format
   
   "Name of theme":["text color in hex", "background color in hex"]
-  example: "Light": ["#161719","#FFFFFF"]
+  
+  example: 
+  ` "Light": ["#161719","#FFFFFF"]`
   
   
   
   
-Javier doesn't change themes when I click the buttons!
----
+> Javier doesn't change themes when I click the buttons!
+
   Javier has to be restarted for the theme change to take affect. 
