@@ -1,8 +1,4 @@
-# MCServerLaunchRestart
-Python file
-
-
 # Javier
-Javier is the name of the program now thanks to a friend of mine naming it for me
+Javier nogui is a lightweight Minecraft Server launcher
 
-please be nice to Javier, Javier does so much for so little
+Please be nice to Javier, Javier does so much for so little
