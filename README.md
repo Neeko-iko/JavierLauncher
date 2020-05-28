@@ -1,8 +1,4 @@
-# MCServerLaunchRestart
-Python file
-
-
 # Javier
-Javier is the name of the program now thanks to a friend of mine naming it for me
+Javier (no GUI) is a lightweight Minecraft Server launcher that will autorestart if the server crashes
 
-please be nice to Javier, Javier does so much for so little
+Please be nice to Javier, Javier does so much for so little
