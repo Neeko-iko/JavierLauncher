@@ -6,14 +6,14 @@ import json
 ## The launch function
 toggle = True
 
+
+
 def safeTog(safeStr):
     safe = safeStr.get()[10:]
-    print(safe)
     if safe == "OFF":
         safeStr.set("Safemode: ON")
     else:
         safeStr.set("Safemode: OFF")
-    print(safeStr.get())
     return safeStr
 
 
@@ -42,24 +42,59 @@ def conformWindow(gui):
         gui.maxsize(250, 363)
         gui.minsize(250, 363)
 
-def confirmUpdate(server, RAM, selectStr):
+def confirmUpdate(server, RAM, selectStr, customs):
+
+    def dataupdate():
+        data['servers'][server] = ['', '']
+        jsonfile = open("./Javier.json", 'w')
+        json.dump(data, jsonfile, indent = 4)
+        jsonfile.close()
+
+
+
+        #awful check to see if the key is wrong, or if the index is incorrect.
+    try:
+        data['servers'][server][2]
+    except KeyError:
+        dataupdate()
+    except IndexError:
+        pass
+
+
+
     selectStr.set(f"Start: {server}")
     try:
-        RAM.delete(0)
-        RAM.insert(0,data['servers'][server])
+        if data['servers'][server][0] != '':
+            RAM.delete(0, "end")
+            RAM.insert(0,data['servers'][server][0])
+        else:
+            print("No Ram found insert it using the box if you may.")
     except KeyError:
         print("No Ram found insert it using the box if you may.")
+    try:
+        if data['servers'][server][1] != '':
+            customs.delete(0, "end")
+            customs.insert(0, data['servers'][server][1])
+    except KeyError:
+        pass
 
 
 
 
-def javierLaunch(selectStr, RAM, gui, safeStr):
+def javierLaunch(selectStr, RAM, gui, safeStr, customs):
+    # Reformat the JSON to properly work with seerver stuff ig idk this is a quick fix
+
     if selectStr.get() == "Start: None":
         print("please select a server")
         return
     else:
         server = selectStr.get()
         server = server[7:]
+
+    try:
+        data['servers'][server][1]
+    except:
+        data['servers'][server][1] = ''
     ## Code to grab the RAM value from everything available
     print(server)
     maxRAM = RAM.get()
@@ -68,17 +103,30 @@ def javierLaunch(selectStr, RAM, gui, safeStr):
             print("RAM value wasn't entered properly reverting to JSON...")
         try:
 
-            maxRAM = data['servers'][server]
+            maxRAM = data['servers'][server][0]
+            print(data['servers'][server][0])
         except KeyError:
             maxRAM = 'p'
             while not maxRAM.isdigit():
                 maxRAM = input("Ram was not entered, or not found in the JSON, please enter a ram amount to save to the JSON file.")
-                data['servers'][server] = int(maxRAM)
+                data['servers'][server][0] = int(maxRAM)
     else:
-        data['servers'][server] = int(maxRAM)
+        data['servers'][server][0] = int(maxRAM)
+
+    ## code to try and grab launch options from the JSON
+
+    customs = customs.get()
+    if customs == '':
+        try:
+            customs = data['servers'][server][1]
+        except:
+            pass
+    else:
+        data['servers'][server][1] = customs
     jsonfile = open("./Javier.json", 'w')
     json.dump(data, jsonfile, indent = 4)
     jsonfile.close()
+
     ## Code to find the right JAR file to launch
     file = []
     safe = safeStr.get()[10:]
@@ -100,14 +148,13 @@ def javierLaunch(selectStr, RAM, gui, safeStr):
                         file.remove(item)
     if safe != "ON":
         file = file[0]
-    del safe, check
+    #del safe, check
     ## Actual launch code.
-    customs = 'nogui'  ### Make sure to seperate customs with a space.
     back = os.getcwd()
     gui.destroy()
     while True:
         os.chdir(f"./{server}")
-        os.system(f"java -Xmx{maxRAM}G -Xms256M -jar {file} {customs}")
+        os.system(f"java -Xmx{maxRAM}G -Xms256M {customs} -jar {file} nogui")
 
         os.chdir(back)
         print("\n\nit seems as though the server has crashed or was stopped forcibly.\n\n\n\nrestarting the server in 10 seconds...")
@@ -168,7 +215,15 @@ def runGUI():
 
     safeStr = tkinter.StringVar(value='Safemode: OFF')
     safeButton = tkinter.Button(settingsFrame, command = lambda: safeTog(safeStr), bd=2, height = 1, width = 12, textvariable = safeStr, bg = background, fg = foreground)
-    safeButton.place(x=0, y=340)
+    safeButton.place(x=-1, y=297)
+
+
+    customsFrame = tkinter.Frame(settingsFrame, bg=background)
+    customsl = tkinter.Label(customsFrame, text = " ADVANCED: Launch Flags ", bg=background, fg=foreground)
+    customs = tkinter.Entry(customsFrame, width=41, bg = background, fg = foreground, bd=2)
+    customsl.pack()
+    customs.pack()
+    customsFrame.place(x=0, y=323)
 
 
     gui.minsize(250, 363)
@@ -176,7 +231,7 @@ def runGUI():
     gui.maxsize(250, 363)
 
     for i in range(0, len(servers)):
-        launchButton = tkinter.Button(buttonFrame, text=servers[i], width = 32, height=1, command = lambda i=i : confirmUpdate(servers[i], RAM, selectStr), bg=background, fg=foreground, bd=2)
+        launchButton = tkinter.Button(buttonFrame, text=servers[i], width = 32, height=1, command = lambda i=i : confirmUpdate(servers[i], RAM, selectStr, customs), bg=background, fg=foreground, bd=2)
         launchButton.pack()
 
     RAM = tkinter.Entry(ramFrame, bd =2,width = 3, bg=background, fg=foreground)
@@ -196,7 +251,7 @@ def runGUI():
 
 
     selectStr = tkinter.StringVar(value="Start: None")
-    confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = lambda :  javierLaunch(selectStr, RAM, gui, safeStr), bd=1, bg=background, fg=foreground)
+    confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = lambda :  javierLaunch(selectStr, RAM, gui, safeStr, customs), bd=1, bg=background, fg=foreground)
     confirmBut.place(x=127, y=4)
 
     ### settings and stuff
@@ -227,7 +282,7 @@ def runGUI():
     themeLabel = tkinter.Label(ThemeMenu, width= 13, text = "Themes", bg = background, fg =foreground)
     themeLabel.pack(side='top')
 
-    ThemeMenu.place(x=155, y=265)
+    ThemeMenu.place(x=155, y=223)
 
 
 
