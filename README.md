@@ -36,3 +36,7 @@ Glad to hear it! you can make as many themes as you want in the JSON just use th
 > Javier doesn't change themes when I click the buttons!
 
   Javier has to be restarted for the theme change to take affect. 
+
+> What is Javier's Safemode button?
+
+ Javier's Safemode is meant for modded servers.  when ON it will actively avoid any modded JAR files and only run the base minecraft jar file.  useful for testing if mods are breaking the world, or if the world file is simply corrupted (at least that's what i've been told.)   - using this on a vanilla server will net no changes.  it will run like normal.
