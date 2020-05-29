@@ -6,21 +6,31 @@ import json
 ## The launch function
 toggle = True
 
+def safeTog(safeStr):
+    safe = safeStr.get()[10:]
+    print(safe)
+    if safe == "OFF":
+        safeStr.set("Safemode: ON")
+    else:
+        safeStr.set("Safemode: OFF")
+    print(safeStr.get())
+    return safeStr
 
-def ThemeChange(theme):
+
+def ThemeChange(theme, gui):
+    global data
     data["curTheme"] = theme
-    print(data["curTheme"])
     jsonfile = open("./Javier.json", 'w')
     json.dump(data, jsonfile, indent = 4)
     jsonfile.close()
+    print("These changes will apply next time Javier is launched.")
 
 def aboutWindow():
     import webbrowser
-    webbrowser.open_new("https://github.com/Neeko-iko/JavierLauncher#javier")
+    webbrowser.open_new("https://github.com/Neeko-iko/JavierLauncher#FAQ")
     del webbrowser
-def conformWindow():
+def conformWindow(gui):
     global toggle
-    global gui
     if toggle:
         toggle = False
         gui.title("Javier - Minecraft Server Launcher              |        Settings")
@@ -32,8 +42,7 @@ def conformWindow():
         gui.maxsize(250, 363)
         gui.minsize(250, 363)
 
-def confirmUpdate(server):
-    global RAM
+def confirmUpdate(server, RAM, selectStr):
     selectStr.set(f"Start: {server}")
     try:
         RAM.delete(0)
@@ -44,8 +53,7 @@ def confirmUpdate(server):
 
 
 
-def javierLaunch():
-    #print(data)
+def javierLaunch(selectStr, RAM, gui, safeStr):
     if selectStr.get() == "Start: None":
         print("please select a server")
         return
@@ -72,22 +80,27 @@ def javierLaunch():
     json.dump(data, jsonfile, indent = 4)
     jsonfile.close()
     ## Code to find the right JAR file to launch
-    file = None
-    if file == None:
-        files = []
-        for item in os.listdir(f"./{server}"):
-            if item[-4:] == '.jar':
-                files.append(item)
-        if len(files) > 1:
-            for item in files:
-                print(item)
-                manafestcheck = zipfile.ZipFile(f"./{server}/{item}",'r')
-                test = manafestcheck.open('META-INF/MANIFEST.MF','r')
-                garbagecheck = test.readlines()
-                for line in garbagecheck:
-                    if 'net.minecraft.server.MinecraftServer' in str(line):
-                        files.remove(item)
-        file = files[0]
+    file = []
+    safe = safeStr.get()[10:]
+    for item in os.listdir(f"./{server}"):
+        if item[-4:] == '.jar':
+            file.append(item)
+    if len(file) > 1:
+        for item in file:
+            print(item)
+            check = zipfile.ZipFile(f"./{server}/{item}",'r')
+            check = check.open('META-INF/MANIFEST.MF','r')
+            check = check.readlines()
+            for line in check:
+                if 'net.minecraft.server.MinecraftServer' in str(line):
+                    if safe == "ON":
+                        file = item
+                        break
+                    else:
+                        file.remove(item)
+    if safe != "ON":
+        file = file[0]
+    del safe, check
     ## Actual launch code.
     customs = 'nogui'  ### Make sure to seperate customs with a space.
     back = os.getcwd()
@@ -101,112 +114,129 @@ def javierLaunch():
         for i in range (10, 0, -1):
             print(str(i) + " seconds remaning\n\n\n")
             time.sleep(1)
-## Searching for the JSON file to pull RAM values from
-try:
-    jsonfile = open("./Javier.json")
-    data = json.load(jsonfile)
-    jsonfile.close()
-except FileNotFoundError:
-    jsonfile = open("./Javier.json", "w")
-    jsonfile.write("""{"servers":{},"themes":{"Dark": ["#FFFFFF", "#36393F"],"HC": ["#FFFFFF", "#161719"],"Light": ["#161719", "#FFFFFF"]},"curTheme":"Dark"}""")
-    jsonfile.close()
-    jsonfile = open("./Javier.json")
-    data = json.load(jsonfile)
-    jsonfile.close()
-## Finding every subfolder in the folder its in. 
-servers = os.listdir('.')
-for item in servers:
-    if os.path.isfile(item):
-        servers.remove(item)
-servers.remove(os.path.basename(__file__))
+def getdata():
+    ## Searching for the JSON file to pull RAM values from
+    try:
+        jsonfile = open("./Javier.json")
+        data = json.load(jsonfile)
+        jsonfile.close()
+    except FileNotFoundError:
+        jsonfile = open("./Javier.json", "w")
+        jsonfile.write("""{"servers":{},"themes":{"Dark": ["#FFFFFF", "#36393F"],"HC": ["#FFFFFF", "#161719"],"Light": ["#161719", "#FFFFFF"]},"curTheme":"Dark"}""")
+        jsonfile.close()
+        jsonfile = open("./Javier.json")
+        data = json.load(jsonfile)
+        jsonfile.close()
+    return data
+def getServers():
+    ## Finding every subfolder in the folder its in. 
+    servers = os.listdir('.')
+    for item in servers:
+        if os.path.isfile(item):
+            servers.remove(item)
+    servers.remove(os.path.basename(__file__))
+    return servers
 ## GUI code
-gui = tkinter.Tk()
-gui.title("Javier - MCSL")
+def runGUI():
+
+    gui = tkinter.Tk()
+    gui.title("Javier - MCSL")
+
+    background = data["themes"][data["curTheme"]][1]
+    foreground = data["themes"][data["curTheme"]][0]
 
 
-JavierFrame = tkinter.Frame(gui, height =360, width = 250, bg = '#40444B')
-JavierFrame.grid(row=0, column = 0)
+    JavierFrame = tkinter.Frame(gui, height =360, width = 250, bg = '#40444B')
+    JavierFrame.grid(row=0, column = 0)
 
-#(gui, height = 364, width = 250, bg = '#40444B')
-settingsFrame = tkinter.Frame(gui, bg = '#40444B')
-settingsFrame.grid(row=0, column = 1, ipadx=48, ipady=170)
+    #(gui, height = 364, width = 250, bg = '#40444B')
+    settingsFrame = tkinter.Frame(gui,height =363, width = 250, bg = '#40444B')
+    settingsFrame.grid(row=0, column = 1)
 
-ramFrame = tkinter.Frame(JavierFrame, height = 60, width = 250, bg = '#40444B')
-ramFrame.pack()
+    ramFrame = tkinter.Frame(JavierFrame, height = 60, width = 250, bg = '#40444B')
+    ramFrame.pack()
 
-buttonContainer = tkinter.Frame(JavierFrame, bg= '#40444B',height = 60, width = 255)
-buttonCanvas = tkinter.Canvas(buttonContainer, bg= '#40444B', height = 300, width = 229)
-scroll = tkinter.Scrollbar(buttonContainer, orient='vertical', command = buttonCanvas.yview, bg= '#40444B')
-buttonFrame = tkinter.Frame(buttonCanvas, bg= '#40444B')
+    buttonContainer = tkinter.Frame(JavierFrame, bg= '#40444B',height = 60, width = 255)
+    buttonCanvas = tkinter.Canvas(buttonContainer, bg= '#40444B', height = 300, width = 229)
+    scroll = tkinter.Scrollbar(buttonContainer, orient='vertical', command = buttonCanvas.yview, bg= '#40444B')
+    buttonFrame = tkinter.Frame(buttonCanvas, bg= '#40444B')
 
-buttonFrame.bind("<Configure>",lambda e: buttonCanvas.configure(scrollregion=buttonCanvas.bbox("all")))
-buttonCanvas.create_window((0,0), window=buttonFrame, anchor = 'nw')
+    buttonFrame.bind("<Configure>",lambda e: buttonCanvas.configure(scrollregion=buttonCanvas.bbox("all")))
+    buttonCanvas.create_window((0,0), window=buttonFrame, anchor = 'nw')
 
-buttonCanvas.configure(yscrollcommand=scroll.set)
+    buttonCanvas.configure(yscrollcommand=scroll.set)
 
-
-
-
-gui.minsize(250, 363)
-gui.configure(bg = 'white')
-gui.maxsize(250, 363)
-
-for i in range(0, len(servers)):
-    launchButton = tkinter.Button(buttonFrame, text=servers[i], width = 32, height=1, command = lambda i=i : confirmUpdate(servers[i]), bg=data["themes"][data["curTheme"]][1], fg=data["themes"][data["curTheme"]][0], bd=2, )
-    launchButton.pack()
-
-background = data["themes"][data["curTheme"]][1]
-foreground = data["themes"][data["curTheme"]][0]
+    safeStr = tkinter.StringVar(value='Safemode: OFF')
+    safeButton = tkinter.Button(settingsFrame, command = lambda: safeTog(safeStr), bd=2, height = 1, width = 12, textvariable = safeStr, bg = background, fg = foreground)
+    safeButton.place(x=0, y=340)
 
 
-RAM = tkinter.Entry(ramFrame, bd =2,width = 3, bg=background, fg=foreground)
-RAM.place(x=4, y=4)
-label = tkinter.Label(ramFrame, text="< < < Enter RAM", height = 0, bg='#40444B', fg= "#FFFFFF")
-label.place(x=27, y=4)
+    gui.minsize(250, 363)
+    gui.configure(bg = 'white')
+    gui.maxsize(250, 363)
 
-SettingsButton = tkinter.Button(ramFrame, bd = 1, width = 10, bg=background, fg= "#9999FF", text="Settings", command= conformWindow)
-SettingsButton.place(x=46, y=34)
+    for i in range(0, len(servers)):
+        launchButton = tkinter.Button(buttonFrame, text=servers[i], width = 32, height=1, command = lambda i=i : confirmUpdate(servers[i], RAM, selectStr), bg=background, fg=foreground, bd=2)
+        launchButton.pack()
 
-aboutButton = tkinter.Button(ramFrame, bd=1, width = 4, bg=background, fg = "#FF9999", text = 'FAQ', command = aboutWindow)
-aboutButton.place(x=4, y=34)
+    RAM = tkinter.Entry(ramFrame, bd =2,width = 3, bg=background, fg=foreground)
+    RAM.place(x=4, y=4)
+    label = tkinter.Label(ramFrame, text="< < < Enter RAM", height = 0, bg='#40444B', fg= "#FFFFFF")
+    label.place(x=27, y=4)
 
-buttonContainer.pack()
-buttonCanvas.pack(side = 'left', fill = 'both')
-scroll.pack(side = 'right',fill = 'y')
+    SettingsButton = tkinter.Button(ramFrame, bd = 1, width = 10, bg=background, fg= "#9999FF", text="Settings", command= lambda : conformWindow(gui))
+    SettingsButton.place(x=46, y=34)
 
+    aboutButton = tkinter.Button(ramFrame, bd=1, width = 4, bg=background, fg = "#FF9999", text = 'FAQ', command = aboutWindow)
+    aboutButton.place(x=4, y=34)
 
-selectStr = tkinter.StringVar(value="Start: None")
-confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = javierLaunch, bd=1, bg=data["themes"][data["curTheme"]][1], fg= data["themes"][data["curTheme"]][0])
-confirmBut.place(x=127, y=4)
-
-### settings lmao
-
-settingsFrame = tkinter.Frame(gui, bg = '#40444B')
-
-## padding ipadx=48, ipady=170
-settingsFrame.grid(row=0, column = 1, ipadx=78, ipady= 132)
-
-themeButtonContainer = tkinter.Frame(settingsFrame, bg= '#40444B',height = 75, width = 75)
-themeButtonCanvas = tkinter.Canvas(themeButtonContainer, bg= '#40444B', height = 75, width = 75)
-themeScroll = tkinter.Scrollbar(themeButtonContainer, orient='vertical', command = themeButtonCanvas.yview, bg= '#40444B')
-themeButtonFrame = tkinter.Frame(themeButtonCanvas, bg= '#40444B')
+    buttonContainer.pack()
+    buttonCanvas.pack(side = 'left', fill = 'both')
+    scroll.pack(side = 'right',fill = 'y')
 
 
-themeButtonFrame.bind("<Configure>",lambda e: themeButtonCanvas.configure(scrollregion=themeButtonCanvas.bbox("all")))
-themeButtonCanvas.create_window((0,0), window=themeButtonFrame, anchor = 'nw')
+    selectStr = tkinter.StringVar(value="Start: None")
+    confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = lambda :  javierLaunch(selectStr, RAM, gui, safeStr), bd=1, bg=background, fg=foreground)
+    confirmBut.place(x=127, y=4)
 
-themeButtonCanvas.configure(yscrollcommand=themeScroll.set)
-
-themeButtonContainer.grid(row=1, column = 0)
-themeButtonCanvas.pack(side = 'left', fill = 'both')
-themeScroll.pack(side = 'right',fill = 'y')
-
-for theme in data["themes"]:
-    themeButton = tkinter.Button(themeButtonFrame, text= (list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])])   , width = 10, height=1, command = lambda theme=theme : ThemeChange((list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])])), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2, )
-    themeButton.pack()
+    ### settings and stuff
 
 
-themeLabel = tkinter.Label(settingsFrame, width= 13, text = "Themes", bg = background, fg =foreground)
-themeLabel.grid(row=0, column = 0)
+    ThemeMenu = tkinter.Frame(settingsFrame, bg= '#30443B')
+    themeButtonContainer = tkinter.Frame(ThemeMenu, bg= '#40444B',height = 75, width = 75)
+    themeButtonCanvas = tkinter.Canvas(themeButtonContainer, bg= '#40444B', height = 75, width = 75)
+    themeScroll = tkinter.Scrollbar(themeButtonContainer, orient='vertical', command = themeButtonCanvas.yview, bg= '#40444B')
+    themeButtonFrame = tkinter.Frame(themeButtonCanvas, bg= '#40444B')
 
-gui.mainloop()
+
+    themeButtonFrame.bind("<Configure>",lambda e: themeButtonCanvas.configure(scrollregion=themeButtonCanvas.bbox("all")))
+    themeButtonCanvas.create_window((0,0), window=themeButtonFrame, anchor = 'nw')
+
+    themeButtonCanvas.configure(yscrollcommand=themeScroll.set)
+
+    themeButtonContainer.pack(side="bottom")
+
+    themeButtonCanvas.pack(side = 'left', fill = 'both')
+    themeScroll.pack(side = 'right',fill = 'y')
+
+    for theme in data["themes"]:
+        themeButton = tkinter.Button(themeButtonFrame, text= (list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])])   , width = 10, height=1, command = lambda theme=theme : ThemeChange((list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]), gui), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2, )
+        themeButton.pack()
+
+
+    themeLabel = tkinter.Label(ThemeMenu, width= 13, text = "Themes", bg = background, fg =foreground)
+    themeLabel.pack(side='top')
+
+    ThemeMenu.place(x=155, y=265)
+
+
+
+
+
+
+    gui.mainloop()
+
+
+data = getdata()
+servers = getServers()
+runGUI()
