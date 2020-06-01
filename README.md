@@ -43,4 +43,4 @@ Glad to hear it! you can make as many themes as you want in the JSON just use th
 
 > what's a launch flag?
 
-Launch flags are something that the .jar checks for to run different options, this can either increase, or decrease performance.
+Launch flags are something that the .jar checks for to run different options, this can increase or decrease performance on the server.  Find the flags that are right with your server to make it as efficient as possible!
