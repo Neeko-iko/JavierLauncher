@@ -41,6 +41,14 @@ Glad to hear it! you can make as many themes as you want in the JSON just use th
 
  Javier's Safemode is meant for modded servers.  when ON it will actively avoid any modded JAR files and only run the base minecraft jar file.  useful for testing if mods are breaking the world, or if the world file is simply corrupted (at least that's what i've been told.)   - using this on a vanilla server will net no changes.  it will run like normal.
 
+> Why is there a toggle for a "GUI"???
+
+that's for the MC server GUI, its defaulted to OFF as that saves CPU and probably some RAM, but it shows extra stats, so for those who would like to see those extra statistics, they now can  (defualted to off *per launch*)
+
 > what's a launch flag?
 
 Launch flags are something that the .jar checks for to run different options, this can increase or decrease performance on the server.  Find the flags that are right with your server to make it as efficient as possible!
+
+> What's the dot doing in my directories???
+
+that's just what the python file is seeing.  if you remove it Javier will no longer look for whatever folder *he* is in, only elsewhere.
