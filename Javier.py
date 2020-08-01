@@ -4,13 +4,18 @@ import os
 import zipfile
 import json
 from tkinter import filedialog
+from os import path
 toggle = True 
 
 
 
 def dump(dta):
-    with open(f'{os.path.dirname(__file__)}/Javier.json', 'w') as f:
-        json.dump(dta, f, indent=4)
+    if path.exists(f"{path.dirname(__file__)}/🐣 Javier Settings 🐣"):
+        with open(f'{path.dirname(__file__)}/🐣 Javier Settings 🐣/Javier.json', 'w') as f:
+            json.dump(dta, f, indent=4)
+    else:
+        with open(f'{path.dirname(__file__)}/Javier.json', 'w') as f:
+            json.dump(dta, f, indent=4)
 
 def addDir(gui):    ## code to create a new window that's basically a menu to add or delete directories.
 
@@ -84,9 +89,10 @@ def guiTog(guiStr):  # code to toggle the nogui flag on/off
 def ThemeChange(theme, gui):  # code to update the theme.  still requires a restart as idk how to make javier update in real time.
     global data
     data["curTheme"] = theme
-    jsonfile = open("./Javier.json", 'w')
-    json.dump(data, jsonfile, indent = 4)
-    jsonfile.close()
+    dump(data)
+    #jsonfile = open("./Javier.json", 'w')
+    #json.dump(data, jsonfile, indent = 4)
+    #jsonfile.close()
     print("These changes will apply next time Javier is launched.")
 
 def aboutWindow():  # this literally just opens the users browser to take them to the FAQ.
@@ -110,9 +116,10 @@ def conformWindow(gui):   # this deforms the window to show the settings page - 
         gui.minsize(250, 363)
 def dataupdate(server):  # when adding launch flags Javier would complain about indexing, so i have it make a list for every server you click on.
     data['servers'][server] = ['', '']
-    jsonfile = open("./Javier.json", 'w')
-    json.dump(data, jsonfile, indent = 4)
-    jsonfile.close()
+    dump(data)
+    #jsonfile = open("./Javier.json", 'w')
+    #json.dump(data, jsonfile, indent = 4)
+    #jsonfile.close()
 
 def confirmUpdate(server, RAM, selectStr, customs, d):  # code to select a server, not launch it.
     global dire
@@ -198,9 +205,10 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
             pass
     else:
         data['servers'][server][1] = customs
-    jsonfile = open("./Javier.json", 'w')
-    json.dump(data, jsonfile, indent = 4)
-    jsonfile.close()
+    dump(data)
+    #jsonfile = open("./Javier.json", 'w')
+    #json.dump(data, jsonfile, indent = 4)
+    #jsonfile.close()
 
     ## Code to find the right JAR file to launch
     file = []
@@ -246,12 +254,19 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
 def getdata():
     ## Searching for the JSON file to pull RAM values from
     try:
-        with open(f'{os.path.dirname(__file__)}/Javier.json', 'r') as f:
-            data = json.loads(f.read())
+        if path.exists(f"{path.dirname(__file__)}/🐣 Javier Settings 🐣"):
+            with open(f'{path.dirname(__file__)}/🐣 Javier Settings 🐣/Javier.json', 'r') as f:
+                data = json.loads(f.read())
+        else:
+            with open(f'{path.dirname(__file__)}/Javier.json', 'r') as f:
+                data = json.loads(f.read())
     except FileNotFoundError:
         data = {"dirs":["."],"servers":{},"themes":{"Dark": ["#FFFFFF", "#36393F"],"HC": ["#FFFFFF", "#161719"],"Light": ["#161719", "#FFFFFF"]},"curTheme":"Dark"}
         dump(data)
-        jsonfile = open("./Javier.json")
+        if path.exists(f"{path.dirname(__file__)}/🐣 Javier Settings 🐣"):
+            jsonfile = open(f"{path.dirname(__file__)}/🐣 Javier Settings 🐣/Javier.json")
+        else:
+            jsonfile = open(f"{path.dirname(__file__)}/Javier.json")
         data = json.load(jsonfile)
         jsonfile.close()
     return data
@@ -262,18 +277,23 @@ def getServers(dires):
     serv = []
     ## finds every folder in the directory given.  if "javier" is passed, it checks the folder javier is in.
     for dire in dires:
-        if not os.path.isdir(dire):
+        if not path.isdir(dire):
             data['dirs'].remove(dire)
             servers = [["ERROR - RESTART"]]
-            jsonfile = open("./Javier.json", 'w')
-            json.dump(data, jsonfile, indent = 4)
-            jsonfile.close()
+            #if os.path.exists(f"{os.path.dirname(__file__)}/🐣 Javier Settings 🐣"):
+            #    jsonfile = open(f"{os.path.dirname(__file__)}/🐣 Javier Settings 🐣/Javier.json", 'w')
+            #else:
+            #    jsonfile = open(f"{path.dirname(__file__)}/Javier.json", 'w')
+            #json.dump(data, jsonfile, indent = 4)
+            #jsonfile.close()
+            dump(data)
             return servers
 
         with os.scandir(dire) as lservers:
             for item in lservers:
-                if os.path.isdir(os.path.abspath(item)):
-                    serv.append(item.name)
+                if path.isdir(path.abspath(item)):
+                    if item.name != "🐣 Javier Settings 🐣":
+                        serv.append(item.name)
             servers.append(serv)
             serv = []
     return servers
@@ -284,6 +304,8 @@ def runGUI():
 
 
     gui = tkinter.Tk()
+    if path.exists(f"{path.dirname(__file__)}/🐣 Javier Settings 🐣"):
+        gui.iconbitmap(f"{path.dirname(__file__)}/🐣 Javier Settings 🐣/icons/Javier.ico")  # doesn't work, im a terrible programmer lmao   will prolly fix later
     gui.title("Javier - MCSL")
     gui.configure(bg = 'white')
     gui.minsize(250, 363)
