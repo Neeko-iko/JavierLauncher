@@ -5,7 +5,7 @@ import zipfile
 import json
 from tkinter import filedialog
 from os import path
-toggle = True 
+toggle = True
 
 
 
@@ -158,12 +158,9 @@ def confirmUpdate(server, RAM, selectStr, customs, d):  # code to select a serve
 
 def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
     dire = data['dirs'][dire]
-
     nogui = ''
-    if guiStr.get()[5:] == "ON":
-        nogui==""
-    else:
-        nogui=="nogui"
+    if guiStr.get()[5:] == "OFF":
+        nogui="nogui"
     
 
     if selectStr.get() == "Start: None":
@@ -237,7 +234,7 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
         return
     ## Actual launch code.
     back = os.getcwd()
-    gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC - because i don't wanna thread him yet.  i'll do that after 1.6 - it'll probably have to be a 2.0 update.
+    gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC - because i don't wanna thread him yet.  i'll do that after 1.7 - it'll probably have to be a 2.0 update.
     #del check, safe
 
     while True:
@@ -304,7 +301,7 @@ def runGUI():
 
 
     gui = tkinter.Tk()
-    if path.exists(f"{path.dirname(__file__)}/;Javier Settings;"):
+    if path.isfile(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico"):
         gui.iconbitmap(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico")  # doesn't work, im a terrible programmer lmao   will prolly fix later
     gui.title("Javier - MCSL")
     gui.configure(bg = 'white')
