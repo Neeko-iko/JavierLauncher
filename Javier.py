@@ -29,7 +29,7 @@ def addDir(gui):    ## code to create a new window that's basically a menu to ad
         
 
     def addNewDir(dirwindow, gui, dirStr):     # creates an empty dir for the user to update
-        directory = filedialog.askdirectory(master =dirwindow, initialdir=".", title= "Select a folder", mustexist=True)
+        directory = filedialog.askdirectory(master =dirwindow, initialdir=".", title= "Select a folder")
         data['dirs'].append(directory)
         dump(data)
         dirwindow.destroy()
@@ -236,6 +236,9 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
     back = os.getcwd()
     gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC - because i don't wanna thread him yet.  i'll do that after 1.7 - it'll probably have to be a 2.0 update.
     #del check, safe
+    print("Server Started!")
+    os.chdir(back)
+    pass
 
     while True:
         os.chdir(f"{dire}/{server}")
@@ -246,6 +249,7 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
         for i in range (10, 0, -1):
             print(str(i) + " seconds remaning\n\n\n")
             time.sleep(1)
+
 
 
 def getdata():
@@ -299,6 +303,14 @@ def getServers(dires):
 ## GUI code
 def runGUI():
 
+    def openExplorer(folder):
+        back = os.getcwd()
+        os.chdir(folder)
+        os.system("explorer .")
+        os.chdir(back)
+        del back
+
+
 
     gui = tkinter.Tk()
     if path.isfile(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico"):
@@ -325,22 +337,7 @@ def runGUI():
     ramFrame = tkinter.Frame(JavierFrame, height = 60, width = 250, bg = '#40444B')
     ramFrame.pack()
 
-    ## Buttons in settings and similar things.
-
-    safeStr = tkinter.StringVar(value='Safemode: OFF')
-    safeButton = tkinter.Button(settingsFrame, command = lambda: safeTog(safeStr), bd=2, height = 1, width = 12, textvariable = safeStr, bg = background, fg = foreground)
-    safeButton.place(x=-1, y=297)
-
-    guiStr = tkinter.StringVar(value='GUI: OFF')
-    guiTogButton = tkinter.Button(settingsFrame, command = lambda: guiTog(guiStr), bd=2, height = 1, width = 8, textvariable = guiStr, bg = background, fg = foreground)
-    guiTogButton.place(x=92, y=297)
-
-    customsFrame = tkinter.Frame(settingsFrame, bg=background)
-    customsl = tkinter.Label(customsFrame, text = " ADVANCED: Launch Flags ", bg=background, fg=foreground)
-    customs = tkinter.Entry(customsFrame, width=41, bg = background, fg = foreground, bd=2)
-    customsl.pack()
-    customs.pack()
-    customsFrame.place(x=0, y=323)
+    
 
 
     ## server list code
@@ -354,19 +351,25 @@ def runGUI():
     buttonCanvas.configure(yscrollcommand=scroll.set)
     
     count = 0
+    num= 0
     servers = getServers(data['dirs'])
     for d in servers:
         dlbl = tkinter.StringVar(value=data['dirs'][count])
         listdirL = tkinter.Label(buttonFrame, textvariable = dlbl, bg = foreground, fg=background, width= 33) # label is made to categorize by dir instead of just dumping everything out at once.
         if listdirL.cget('text') == '.':
-            dlbl.set("Javier")
-        listdirL.pack()
+            dlbl.set("Javier  |  " +  os.getcwd())
+        listdirL.grid(column = 0, row = num, columnspan= 2, sticky=tkinter.W+tkinter.E)
+        num+=1
         for i in range(0, len(servers[count])):
             launchButton = tkinter.Button(buttonFrame, text=servers[count][i], width = 32, height=1, command = lambda i=i, d=d, count=count : confirmUpdate(servers[count][i], RAM, selectStr, customs, count), bg=background, fg=foreground, bd=2)
-            launchButton.pack()
+            launchButton.grid(column = 1, row = num)
+            serverDirButton = tkinter.Button(buttonFrame, text = '>', width=1, height = 1, bg = background, fg = foreground, command = lambda i = data['dirs'][count], e = servers[count][i]: openExplorer(i + "/" + e))
+            serverDirButton.grid(column = 0, row = num)
+            
+            num+=1
         count += 1
-    newdirButton = tkinter.Button(buttonFrame, text="Add a Directory. . .", width = 32, height = 1, command= lambda : addDir(gui), bg=foreground, fg=background, bd=2)  # persistant button at the bottom to add a DIR.
-    newdirButton.pack()
+    newdirButton = tkinter.Button(buttonFrame, text="Add a Directory. . .", width = 33, height = 1, command= lambda : addDir(gui), bg=foreground, fg=background, bd=2)  # persistant button at the bottom to add a DIR.
+    newdirButton.grid(column = 0, row = num, columnspan= 2, sticky=tkinter.W+tkinter.E)
 
     buttonContainer.pack()
     buttonCanvas.pack(side = 'left', fill = 'both')
@@ -390,6 +393,59 @@ def runGUI():
     selectStr = tkinter.StringVar(value="Start: None")
     confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = lambda :  javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire), bd=1, bg=background, fg=foreground)
     confirmBut.place(x=127, y=4)
+
+
+
+
+
+    
+
+
+    ### Directory opener ig
+
+    dirMenu = tkinter.Frame(settingsFrame, bg = "Black")
+    dirButtonContainer = tkinter.Frame(dirMenu, bg = "Gray", height = 52, width = 134)
+    dirButtonCanvas = tkinter.Canvas(dirButtonContainer, bg = "Gray", height = 52, width = 134)
+    dirScroll = tkinter.Scrollbar(dirButtonContainer, orient="vertical", command = dirButtonCanvas.yview, bg= '#40444B')
+    dirButtonFrame = tkinter.Frame(dirButtonCanvas)
+
+    dirButtonFrame.bind("<Configure>",lambda e: dirButtonCanvas.configure(scrollregion=dirButtonCanvas.bbox("all")))
+    dirButtonCanvas.create_window((0,0), window = dirButtonFrame, anchor="nw")
+    dirButtonCanvas.configure(yscrollcommand = dirScroll.set)
+    dirButtonContainer.pack(side="bottom")
+    dirButtonCanvas.pack(side="left", fill="both")
+    dirScroll.pack(side="right", fill='y')
+
+    for direct in data["dirs"]:
+        if direct == '.':
+            direct = os.getcwd()
+        dirButton=tkinter.Button(dirButtonFrame, text=direct, bg=background, fg=foreground, width = 20, command = lambda : openExplorer(direct))
+        dirButton.pack()
+
+    dirLabel = tkinter.Label(dirMenu, width=20, text="Open a Directory", bg=background, fg=foreground)
+    dirLabel.pack(side="top")
+    dirMenu.place(x=0, y=222)
+
+
+    ## Buttons in settings and similar things.
+
+    safeStr = tkinter.StringVar(value='Safemode: OFF')
+    safeButton = tkinter.Button(settingsFrame, command = lambda: safeTog(safeStr), bd=2, height = 1, width = 12, textvariable = safeStr, bg = background, fg = foreground)
+    safeButton.place(x=-1, y=297)
+
+    guiStr = tkinter.StringVar(value='GUI: OFF')
+    guiTogButton = tkinter.Button(settingsFrame, command = lambda: guiTog(guiStr), bd=2, height = 1, width = 8, textvariable = guiStr, bg = background, fg = foreground)
+    guiTogButton.place(x=92, y=297)
+
+    customsFrame = tkinter.Frame(settingsFrame, bg=background)
+    customsl = tkinter.Label(customsFrame, text = " ADVANCED: Launch Flags ", bg=background, fg=foreground)
+    customs = tkinter.Entry(customsFrame, width=41, bg = background, fg = foreground, bd=2)
+    customsl.pack()
+    customs.pack()
+    customsFrame.place(x=0, y=323)
+
+    
+
 
     ### Themes
 
@@ -419,12 +475,16 @@ def runGUI():
     themeLabel = tkinter.Label(ThemeMenu, width= 13, text = "Themes", bg = background, fg =foreground)
     themeLabel.pack(side='top')
 
-    ThemeMenu.place(x=155, y=223)
+    ThemeMenu.place(x=155, y=222)
 
 
     gui.mainloop()
 
+
+
 ## actual script.
+
+
 print(os.path.isfile(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico"))
 dire = None
 data = getdata()
