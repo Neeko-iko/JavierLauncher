@@ -306,7 +306,13 @@ def runGUI():
     def openExplorer(folder):
         back = os.getcwd()
         os.chdir(folder)
-        os.system("explorer .")
+        if os.name == "nt":
+            os.system("explorer .")
+            
+            
+        else:
+            print("hey idk how to actually make it open a file explorer in linux, but Python recognized your operating system as linux based.\n if you have any idea what command to use, let me know.  Thanks!")
+            os.system()
         os.chdir(back)
         del back
 
@@ -485,7 +491,7 @@ def runGUI():
 ## actual script.
 
 
-print(os.path.isfile(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico"))
+#print(os.path.isfile(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico"))
 dire = None
 data = getdata()
 runGUI()
