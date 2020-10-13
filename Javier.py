@@ -311,8 +311,8 @@ def runGUI():
             
             
         else:
-            print("hey idk how to actually make it open a file explorer in linux, but Python recognized your operating system as linux based.\n if you have any idea what command to use, let me know.  Thanks!")
-            os.system()
+            print("If an error is or isn't thrown, let me know on Twitter.com @Neeko_iko.  \n\nI don't have a linux-based operating system.  (I know this won't work on macs atm.)")
+            os.system("xdg-open .")
         os.chdir(back)
         del back
 
