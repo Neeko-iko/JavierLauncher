@@ -52,3 +52,7 @@ Launch flags are something that the .jar checks for to run different options, th
 > What's the dot doing in my directories???
 
 that's just what the python file is seeing.  if you remove it Javier will no longer look for whatever folder *he* is in, only elsewhere.
+
+> What are the ">" buttons next to all my servers?
+
+They're open folder buttons, they allow you to open up the server folder for easy access to the folders.  It's especially useful if you use Javier as a shortcut.
