@@ -215,7 +215,7 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
             file.append(item)
     if len(file) > 1:
         for item in file:
-            print(item)
+            #print(item)
             check = zipfile.ZipFile(f"{dire}/{server}/{item}",'r')
             check = check.open('META-INF/MANIFEST.MF','r')
             check = check.readlines()
@@ -242,6 +242,16 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
 
     while True:
         os.chdir(f"{dire}/{server}")
+
+        #try:                         #This code is for educational purposes and if you uncomment it you're ignoring the EULA that minecraft requires you to sign and forcing a script to do it for you, it was made to show how easy it is to circumvent the EULA.
+        #    open('eula.txt', 'r')
+        #except FileNotFoundError:
+        #    print("Making EULA file.")
+        #    eula = open("eula.txt", 'w')
+        #    eula.write('eula = true')
+        #    eula.close()
+        #    del eula
+
         os.system(f"java -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
 
         os.chdir(back)
