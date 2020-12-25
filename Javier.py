@@ -181,14 +181,17 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
         if not maxRAM.isdigit():
             print("RAM value wasn't entered properly reverting to JSON...")
         try:
-
+            gui.withdraw()
             maxRAM = data['servers'][server][0]
+            
             print(data['servers'][server][0])
-        except KeyError:
-            maxRAM = 'p'
+            int(maxRAM) + 1
+        except (KeyError, ValueError):
+            print("!!!! IMPORTANT !!!\n\nRAM value was not entered, and not found in the JSON.\n")
+            maxRAM = ''
             while not maxRAM.isdigit():
-                maxRAM = input("Ram was not entered, or not found in the JSON, please enter a ram amount to save to the JSON file.")
-                data['servers'][server][0] = int(maxRAM)
+                maxRAM = input("Please enter a ram amount to save to the JSON file for future use:  ")
+            data['servers'][server][0] = int(maxRAM)
     else:
         data['servers'][server][0] = int(maxRAM)
 
@@ -239,8 +242,10 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
     print("Server Started!")
     os.chdir(back)
     pass
+    
 
     while True:
+        sTime = int(time.time())
         os.chdir(f"{dire}/{server}")
 
         #try:                         #This code is for educational purposes and if you uncomment it you're ignoring the EULA that minecraft requires you to sign and forcing a script to do it for you, it was made to show how easy it is to circumvent the EULA.
@@ -253,12 +258,20 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
         #    del eula
 
         os.system(f"java -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
+        
 
-        os.chdir(back)
-        print("\n\nit seems as though the server has crashed or was stopped forcibly.\n\n\n\nrestarting the server in 10 seconds...")
-        for i in range (10, 0, -1):
-            print(str(i) + " seconds remaning\n\n\n")
-            time.sleep(1)
+        if ( int(time.time()) - int(sTime) < 220):
+            print("\n\nThe server appears to have crashed on startup, or something else went wrong. \n\nAuto-Restart will not commence, please check if anything went wrong, and then try running the server again. \n\npress enter or click the X to close this CMD.")
+            input()
+            break
+
+        else:
+
+            os.chdir(back)
+            print("\n\nit seems as though the server has crashed or was stopped forcibly.\n\n\n\nrestarting the server in 10 seconds...")
+            for i in range (10, 0, -1):
+                print(str(i) + " seconds remaning\n\n\n")
+                time.sleep(1)
 
 
 
@@ -505,3 +518,4 @@ def runGUI():
 dire = None
 data = getdata()
 runGUI()
+
