@@ -22,10 +22,10 @@ if os.path.exists('javier.json'):           #Checks for a javier.json
     with open('javier.json') as f:          #Loads if one is found
         data = json.loads(f.read())
 else:
-    data = {'ram': 1, 'flags': '', 'path': '.', 'dir': False}          #Creates one with default values if one isn't found
+    data = {'ram': 1, 'flags': '', 'path': '.', 'dir': False, 'autorst': True, 'fastboot': False}          #Creates one with default values if one isn't found
     dump()
 while True:
-    choice = input("\nWhat would you like to do?\n1) Launch the Server\n2) Launch the Server in Safe Mode\n3) Change the amount of dedicated RAM\n4) Use custom filepath to server\n5) Add launch flags\n\n")
+    choice = input("\nWhat would you like to do?\n1) Launch the Server\n2) Launch the Server in Safe Mode\n3) Change the amount of dedicated RAM\n4) Use custom filepath to server jar\n5) Add launch flags\n6) Toggle auto-restart\n7) Enable fast-boot (skips this selection menu on future startups)\n\n")
     if choice == '1' or choice == '2':
         files = []
         if os.path.isdir(data['path']):
@@ -68,11 +68,28 @@ while True:
                 break
     elif choice == '5':
         data['flags'] = input(f'Your current launch flags are:\n{data["flags"]}\nPlease enter what you would like to overwrite them with\n')
+        dump()
+    elif choice == '6':
+        if data['autorst'] == True:
+            data['autorst'] = False
+            print("Auto-restart set to False")
+        else:
+            data['autorst'] = True
+            print("Auto-restart set to True")
+        dump()
+    elif choice == '7':
+        data['fastboot'] = True
+        dump()
+        print("Fastboot has been enabled. This selection menu will no longer appear at startup.\nTo change this, either change the 'Fastboot' option in 'javier.json' to 'false' or redownload a Javier.")
     else:
         print("\n\nInvalid input\n")
 del choice
 while True:
+    sTime = int(time.time())
     os.system(f"java -Xmx{data['ram']}G -Xms256M {data['flags']} -jar {files} nogui")
+    if data['autorst'] == False or (int(time.time()) - int(sTime) < 220):
+        input("\n\nThe server crashed within 220 seconds of booting!!\n\nAuto-restart will not commence, please check if anything went wrong, and then try running the server again. \n\npress enter or click the X to exit Javier.")
+        break
     print("\n\nit seems as though the server has crashed or was stopped forcibly.\n\n\n\nRestarting the server in 3 seconds...")
     for i in range (3, 0, -1):
         print(str(i) + " seconds remaning\n\n\n")
