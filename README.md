@@ -3,7 +3,8 @@ Javier is a minecraft server launcher that is intended for those who have multip
 
 If you only have 1 server, and need a quick and easy server launcher that applies to (hopefully) everything, then you should swap over to the old but still useful [Javier LITE](https://github.com/Neeko-iko/JavierLauncher/tree/LITE) which is maintained by [Jumpy](https://www.github.com/jumpyvonvagabond) in her free time.
 
-thank
+
+Thank you for your continued support.
 
 
 # Libraries/Modules Used
@@ -18,11 +19,8 @@ All of the libraries/modules used are open source and included with the python i
 
 
 # FAQ
-
-> Why isn't the GUI build an executable?
-
-Eventually Javier will have a proper C++ or other language re-write where it'll _hopefully_ be an EXE and the code for the front-end should be better.
-until then I'm (Neeko) unsure of how to really go about it since py2exe doesn't properly convert it.
+> is Javier available as a windows executable file?
+yes, its available [on the 1.9.0 release of Javier](https://github.com/Neeko-iko/JavierLauncher/releases/tag/1.9.0), which should be the last python release for a while.  I (Neeko) may do a few bugfixes if they ever come in. but don't expect many updates past 1.9.0.  Thank you for your continued support.
 
 > Do I have to enter the RAM value each time I launch a server?
  
