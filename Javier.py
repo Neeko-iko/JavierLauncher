@@ -35,30 +35,36 @@ def addDir(gui):    ## code to create a new window that's basically a menu to ad
         dirwindow.destroy()
         addDir(gui)
 
+
+    fg = data["themes"][data["curTheme"]][0]
+    bg = data["themes"][data["curTheme"]][1]
+
     
 
-    dirwindow = tkinter.Toplevel(gui, bg = "DARK GREY")   # this makes the new window
-    label = tkinter.Label(dirwindow, text="Add your directories below!", bg = "DARK GREY", fg="BLACK")  # creates the label saying "enter the dirs!"
+    dirwindow = tkinter.Toplevel(gui, bg = bg)   # this makes the new window
+    dirwindow.minsize(170, 170)
+    dirwindow.maxsize(170, 170)
+    label = tkinter.Label(dirwindow, text="Add your directories below!", bg =bg, fg=fg)  # creates the label saying "enter the dirs!"
     label.pack()  # this is required for the label to show up, if its not packed it may as well not exist lmao
 
-    buttonContainer = tkinter.Frame(dirwindow, bg= '#40444B',height = 160, width = 120)  ## frame for the scrolling container.
-    buttonCanvas = tkinter.Canvas(buttonContainer, bg= '#40444B', height = 150, width = 123) ## canvas that goes into the frame because frames can't have scrollbars because tkinter is awful.
-    scroll = tkinter.Scrollbar(buttonContainer, orient='vertical', command = buttonCanvas.yview, bg= '#40444B') #the scroll bar itself
-    buttonFrame = tkinter.Frame(buttonCanvas, bg= '#40444B')  # the frame that the buttons go in because iirc they're wonky on canvas..
+    buttonContainer = tkinter.Frame(dirwindow, bg= bg,height = 160, width = 150)  ## frame for the scrolling container.
+    buttonCanvas = tkinter.Canvas(buttonContainer, bg= bg, height = 150, width = 153) ## canvas that goes into the frame because frames can't have scrollbars because tkinter is awful.
+    scroll = tkinter.Scrollbar(buttonContainer, orient='vertical', command = buttonCanvas.yview, bg= bg) #the scroll bar itself
+    buttonFrame = tkinter.Frame(buttonCanvas, bg= bg)  # the frame that the buttons go in because iirc they're wonky on canvas..
     buttonFrame.bind("<Configure>",lambda e: buttonCanvas.configure(scrollregion=buttonCanvas.bbox("all"))) 
     buttonCanvas.create_window((0,0), window=buttonFrame, anchor = 'nw')
     buttonCanvas.configure(yscrollcommand=scroll.set)                    
 
     for i in range(0, len(data['dirs'])):  ## FOR loop makes buttons according to how many there are in 
-        direntry = tkinter.Entry(buttonFrame, width =14, bg="WHITE", fg="BLACK")  ## an entry is a small textbox, they're cleaner than just big text blocks imo.
+        direntry = tkinter.Entry(buttonFrame, width =19, bg=bg, fg=fg)  ## an entry is a small textbox, they're cleaner than just big text blocks imo.
         direntry.insert(0, data['dirs'][i])  ## this inserts the name of the DIR into the text box. allowing the user to edit it or something ig idk this entire thing barely works ngl.
         direntry.grid(row = i+1, column =0)  ## grid tells where to place it.  run it to understand it.
         delete = tkinter.Button(buttonFrame, width = 1, text= "X", bg = "RED", fg="WHITE", command = lambda i= direntry.get(): deleteDir(i, dirwindow, gui))  ## this is the X button that deletes the DIR from the list in the JSON
         delete.grid(row = i+1, column = 1) 
         place = i+2  ## im bad.
     
-    addnewButton = tkinter.Button(buttonFrame, width = 14, text = "ADD NEW DIR", bg = "GREEN", fg = "WHITE", command = lambda: addNewDir(dirwindow, gui, direntry.get()))  ## button to run code to add empty dir for user to edit.
-    addnewButton.grid(row = place, column = 0)
+    addnewButton = tkinter.Button(buttonFrame, width = 20, text = "ADD NEW DIR", bg = "GREEN", fg = "WHITE", command = lambda: addNewDir(dirwindow, gui, direntry.get()))  ## button to run code to add empty dir for user to edit.
+    addnewButton.grid(row = place, column = 0, columnspan= 2, sticky=tkinter.W+tkinter.E)
 
     buttonContainer.pack() # the scrolling frame is packed here isntead of earlier - it doesn't really matter where its packed as long as it is,
     buttonCanvas.pack(side = 'left', fill = 'both')
