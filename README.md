@@ -20,6 +20,7 @@ All of the libraries/modules used are open source and included with the python i
 
 # FAQ
 > is Javier available as a windows executable file?
+
 yes, its available [on the 1.9.0 release of Javier](https://github.com/Neeko-iko/JavierLauncher/releases/tag/1.9.0), which should be the last python release for a while.  I (Neeko) may do a few bugfixes if they ever come in. but don't expect many updates past 1.9.0.  Thank you for your continued support.
 
 > Do I have to enter the RAM value each time I launch a server?
