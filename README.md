@@ -6,8 +6,23 @@ If you only have 1 server, and need a quick and easy server launcher that applie
 thank
 
 
+# Libraries/Modules Used
+All of the libraries/modules used are open source and included with the python installer at [Pythons official website](https://python.org)
+
+ - tkinter for the GUI
+ - os for filepathing and almost literally everything else 
+ - json for the json (crazy i know)
+ - zipfile for accessing the jar files
+ - time for server restart
+
+
 
 # FAQ
+
+> Why isn't the GUI build an executable?
+
+Eventually Javier will have a proper C++ or other language re-write where it'll _hopefully_ be an EXE and the code for the front-end should be better.
+until then I'm (Neeko) unsure of how to really go about it since py2exe doesn't properly convert it.
 
 > Do I have to enter the RAM value each time I launch a server?
  
