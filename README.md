@@ -6,6 +6,9 @@ If you only have 1 server, and need a quick and easy server launcher that applie
 
 Thank you for your continued support.
 
+DISCLAIMER: Javier is not intended to work on MacOS, Macs are weird and making a gui for them is too much of a pain in my (Neeko) side, if Ubuntu or other Linux distros that have a GUI have an issue with Javier let me know.
+This doesn't mean it won't run on a Mac, it just won't look good, at all.
+
 
 # Libraries/Modules Used
 All of the libraries/modules used are open source and included with the python installer at [Pythons official website](https://python.org)
