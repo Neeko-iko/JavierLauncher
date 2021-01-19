@@ -6,6 +6,10 @@ import json
 from tkinter import filedialog
 from os import path
 toggle = True
+c = 0
+
+# i hate global variables as much as the next person but i actually cannot think of another way to do this im sorry :(
+
 
 
 
@@ -121,7 +125,7 @@ def conformWindow(gui):   # this deforms the window to show the settings page - 
         gui.maxsize(250, 363)
         gui.minsize(250, 363)
 def dataupdate(server):  # when adding launch flags Javier would complain about indexing, so i have it make a list for every server you click on.
-    data['servers'][server] = ['', '']
+    data['servers'][server] = ['', '','']
     dump(data)
     #jsonfile = open("./Javier.json", 'w')
     #json.dump(data, jsonfile, indent = 4)
@@ -129,6 +133,7 @@ def dataupdate(server):  # when adding launch flags Javier would complain about 
 
 def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to select a server, not launch it.
     global dire
+    global c
     dire = d
 
     java = javaOverride.get()
@@ -139,11 +144,14 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
 
     #awful check to see if the key is wrong, or if the index is incorrect.
     try:
-        data['servers'][server][2]
+        data['servers'][server][3]
     except KeyError:
         dataupdate(server)
     except IndexError:
         pass
+
+
+    
 
 
 
@@ -162,9 +170,17 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
             customs.insert(0, data['servers'][server][1]) # inserts the flags found in the JSON.
     except KeyError:
         pass
+
+    if c ==0:
+        jarButton.place(x=180, y=89)
+        jarOverride.place(x=-1, y=89)
+        c = True
+    jarOverride.delete(0, "end")
+    jarOverride.insert(0, data['servers'][server][2])
+
     return dire
 
-
+    
 
 
 
@@ -183,9 +199,16 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
         server = server[7:]
 
     try:
-        data['servers'][server][1]
-    except:
-        data['servers'][server][1] = ''
+        data['servers'][server][2]  # 2 is jar file, this is stored as of 1.10 because I (Neeko)
+    except:                     # have realized that Javier is not perfect, which while sad, means that the USER (the doofus reading this) 
+        data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
+
+    # old code don't look :(
+    #try:
+    #   data['servers'][server][1]  # 1 is custom launch flags, as those are saved per server.
+    #except:
+    #   data['servers'][server][1] = ''
+
     ## Code to grab the RAM value from everything available
     print(server)
     maxRAM = RAM.get()
@@ -205,7 +228,7 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
                 maxRAM = input("Please enter a ram amount to save to the JSON file for future use:  ")
             data['servers'][server][0] = int(maxRAM)
     else:
-        data['servers'][server][0] = int(maxRAM)
+        data['servers'][server][0] = int(maxRAM)  # if its not obvious by the code itself, 0 is ram
 
     ## code to try and grab launch options from the JSON
 
@@ -227,59 +250,67 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
             print("Mishap in Java Override, assuming Java Runtime is in PATH and continuing.")
     else:
         java = f'"{java}"'
-    dump(data)
+
+
+    
     #jsonfile = open("./Javier.json", 'w')
     #json.dump(data, jsonfile, indent = 4)
     #jsonfile.close()
 
     ## Code to find the right JAR file to launch
-    file = []
-    safe = safeStr.get()[10:]
-    for item in os.listdir(f"{dire}/{server}"):
-        if item[-4:] == '.jar':
-            file.append(item)
-    if len(file) > 1:
-        for item in file:
-            #print(item)
-            check = zipfile.ZipFile(f"{dire}/{server}/{item}",'r')
-            check = check.open('META-INF/MANIFEST.MF','r')
-            check = check.readlines()
-            for line in check:
-                if 'net.minecraft.server.MinecraftServer' in str(line):
-                    if safe == "ON":
-                        file = item
-                        break
-                    else:
-                        file.remove(item)
-    try:
-        if safe != "ON":
-            file = file[0]
-    except:
-        print("something went wrong. . .")
-        return
+    file = data['servers'][server][2]
+    if not path.isfile(f"{dire}/{server}/{file}"):
+        print("Jar in override doesn't exist, attempting to find jar...")
+        file = []
+        safe = safeStr.get()[10:]
+        for item in os.listdir(f"{dire}/{server}"):
+            if item[-4:] == '.jar':
+                file.append(item)
+        if len(file) > 1:
+            for item in file:
+                #print(item)
+                check = zipfile.ZipFile(f"{dire}/{server}/{item}",'r')
+                check = check.open('META-INF/MANIFEST.MF','r')
+                check = check.readlines()
+                for line in check:
+                    if 'net.minecraft.server.MinecraftServer' in str(line):
+                        if safe == "ON":
+                            file = item
+                            break
+                        else:
+                            file.remove(item)
+        try:
+            if safe != "ON":
+                file = file[0]
+                data['servers'][server][2] = file
+        except:
+            print("something went wrong. . .")
+            return
     ## Actual launch code.
+
+
+
     back = os.getcwd()
     gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC - because i don't wanna thread him yet.  i'll do that after 1.7 - it'll probably have to be a 2.0 update.
     #del check, safe
     print("Server Started!")
     os.chdir(back)
-    pass
     
+    dump(data)
 
     while True:
         sTime = int(time.time())
         os.chdir(f"{dire}/{server}")
-
-        #try:                         #This code is for educational purposes and if you uncomment it you're ignoring the EULA that minecraft requires you to sign and forcing a script to do it for you, it was made to show how easy it is to circumvent the EULA.
-        #    open('eula.txt', 'r')
-        #except FileNotFoundError:
-        #    print("Making EULA file.")
-        #    eula = open("eula.txt", 'w')
-        #    eula.write('eula = true')
-        #    eula.close()
-        #    del eula
-        print(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
-
+        try:
+            open('eula.txt', 'r')
+        except FileNotFoundError:
+            print("EULA Was not found")
+            input("pressing ENTER means you accept and understand the terms of the EULA\nThe license can be found at https://account.mojang.com/documents/minecraft_eula")
+            print("USER accepted the EULA, Starting server.")
+            eula = open("eula.txt", 'w')
+            eula.write('eula = true\n#This signature was automatically generated by Javier under USER permission.\n#find the EULA at https://account.mojang.com/documents/minecraft_eula')
+            eula.close()
+            del eula
         os.system(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
         
 
@@ -488,6 +519,14 @@ def runGUI():
         dump(data)
         javaOverride.delete(0, "end")
         javaOverride.insert(0, javapath.name)
+    
+    def browse4jar(jarOverride, selectStr):
+        serverStr = selectStr.get()[7:]
+        jarpath = filedialog.askopenfilename(master=gui, initialdir=f"{data['dirs'][dire]}/{serverStr}", title = "Select a server JAR", filetypes=[("Java Archive file",(".jar"))])
+        data['servers'][serverStr][2]=jarpath
+        dump(data)
+        jarOverride.delete(0, "end")
+        jarOverride.insert(jarpath)
 
 
     javaOverride = tkinter.Entry(settingsFrame, bd=2, width=30, bg=background, fg= foreground)
@@ -500,8 +539,14 @@ def runGUI():
     javaLabel = tkinter.Label(settingsFrame, text="ADVANCED: Java Override\n Only edit if your Java runtime is NOT in PATH", bd=2, width =35, height= 2, bg=background, fg=foreground)
     javaLabel.place(x=-1, y=0)
     
-
+    jarLabel = tkinter.Label(settingsFrame, text= "Jar File Override: \nOnly edit if the filename is wrong. \n Please Select a server!", bd= 2, width = 35, height = 3, bg=background, fg=foreground)
+    jarLabel.place(x=-1, y=56)
     
+    global jarOverride 
+    jarOverride = tkinter.Entry(settingsFrame, bd=2, width=30, bg=background, fg=foreground)  # these being global is due to how much of a PAIN they're going to be.
+
+    global jarButton 
+    jarButton = tkinter.Button(settingsFrame, command = lambda: browse4jar(jarOverride, selectStr),bd=2, width = 9, text = "Browse...", bg= background, fg = foreground)  # i do generally try to stay away from global variables as they make things a bit messy, but due to the nature of how i want to do these I don't see a much cleaner way
 
     
 
