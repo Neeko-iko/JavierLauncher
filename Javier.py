@@ -127,9 +127,15 @@ def dataupdate(server):  # when adding launch flags Javier would complain about 
     #json.dump(data, jsonfile, indent = 4)
     #jsonfile.close()
 
-def confirmUpdate(server, RAM, selectStr, customs, d):  # code to select a server, not launch it.
+def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to select a server, not launch it.
     global dire
     dire = d
+
+    java = javaOverride.get()
+    if len(java) < 8:
+        if java != "java":
+            java = "java"
+    data["java"] = java
 
     #awful check to see if the key is wrong, or if the index is incorrect.
     try:
@@ -162,7 +168,7 @@ def confirmUpdate(server, RAM, selectStr, customs, d):  # code to select a serve
 
 
 
-def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
+def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverride):
     dire = data['dirs'][dire]
     nogui = ''
     if guiStr.get()[5:] == "OFF":
@@ -211,6 +217,16 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
             pass
     else:
         data['servers'][server][1] = customs
+
+
+    java = javaOverride.get()
+    if len(java) < 8:
+        if java != "java":
+            java = "java"
+            data["java"] = "java"
+            print("Mishap in Java Override, assuming Java Runtime is in PATH and continuing.")
+    else:
+        java = f'"{java}"'
     dump(data)
     #jsonfile = open("./Javier.json", 'w')
     #json.dump(data, jsonfile, indent = 4)
@@ -262,8 +278,9 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire):
         #    eula.write('eula = true')
         #    eula.close()
         #    del eula
+        print(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
 
-        os.system(f"java -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
+        os.system(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
         
 
         if ( int(time.time()) - int(sTime) < 220):
@@ -291,7 +308,7 @@ def getdata():
             with open(f'{path.dirname(__file__)}/Javier.json', 'r') as f:
                 data = json.loads(f.read())
     except FileNotFoundError:
-        data = {"dirs":["."],"servers":{},"themes":{"Dark": ["#FFFFFF", "#36393F"],"HC": ["#FFFFFF", "#161719"],"Light": ["#161719", "#FFFFFF"]},"curTheme":"Dark"}
+        data = {"java":"java","dirs":["."],"servers":{},"themes":{"Dark": ["#FFFFFF", "#36393F"],"HC": ["#FFFFFF", "#161719"],"Light": ["#161719", "#FFFFFF"]},"curTheme":"Dark"}
         dump(data)
         if path.exists(f"{path.dirname(__file__)}/;Javier Settings;"):
             jsonfile = open(f"{path.dirname(__file__)}/;Javier Settings;/Javier.json")
@@ -348,8 +365,9 @@ def runGUI():
 
 
     gui = tkinter.Tk()
+
     if path.isfile(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico"):
-        gui.iconbitmap(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico")  # doesn't work, im a terrible programmer lmao   will prolly fix later
+        gui.iconbitmap(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico")
     gui.title("Javier - MCSL")
     gui.configure(bg = 'white')
     gui.minsize(250, 363)
@@ -396,7 +414,7 @@ def runGUI():
         listdirL.grid(column = 0, row = num, columnspan= 2, sticky=tkinter.W+tkinter.E)
         num+=1
         for i in range(0, len(servers[count])):
-            launchButton = tkinter.Button(buttonFrame, text=servers[count][i], width = 32, height=1, command = lambda i=i, d=d, count=count : confirmUpdate(servers[count][i], RAM, selectStr, customs, count), bg=background, fg=foreground, bd=2)
+            launchButton = tkinter.Button(buttonFrame, text=servers[count][i], width = 32, height=1, command = lambda i=i, d=d, count=count : confirmUpdate(servers[count][i], RAM, selectStr, customs, count, javaOverride), bg=background, fg=foreground, bd=2)
             launchButton.grid(column = 1, row = num)
             serverDirButton = tkinter.Button(buttonFrame, text = '>', width=1, height = 1, bg = background, fg = foreground, command = lambda i = data['dirs'][count], e = servers[count][i]: openExplorer(i + "/" + e))
             serverDirButton.grid(column = 0, row = num)
@@ -426,7 +444,7 @@ def runGUI():
 
 
     selectStr = tkinter.StringVar(value="Start: None")
-    confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = lambda :  javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire), bd=1, bg=background, fg=foreground)
+    confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = lambda :  javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverride), bd=1, bg=background, fg=foreground)
     confirmBut.place(x=127, y=4)
 
 
@@ -463,6 +481,29 @@ def runGUI():
 
 
     ## Buttons in settings and similar things.
+
+    def browse4Java(javaOverride):
+        javapath = filedialog.askopenfile(master = gui, initialdir=".", title= "Select a Java Runtime Executable", filetypes=[("Java Runtime Executable", ("java.exe"))])
+        data["java"]=javapath.name
+        dump(data)
+        javaOverride.delete(0, "end")
+        javaOverride.insert(0, javapath.name)
+
+
+    javaOverride = tkinter.Entry(settingsFrame, bd=2, width=30, bg=background, fg= foreground)
+    javaOverride.insert(0, data["java"])
+    javaOverride.place(x=0, y=35)
+
+    javaButton = tkinter.Button(settingsFrame, command = lambda: browse4Java(javaOverride), bd=2, height = 1, width = 9, text="Browse...", bg= background, fg=foreground)
+    javaButton.place(x=180, y=30)
+
+    javaLabel = tkinter.Label(settingsFrame, text="ADVANCED: Java Override\n Only edit if your Java runtime is NOT in PATH", bd=2, width =35, height= 2, bg=background, fg=foreground)
+    javaLabel.place(x=-1, y=0)
+    
+
+    
+
+    
 
     safeStr = tkinter.StringVar(value='Safemode: OFF')
     safeButton = tkinter.Button(settingsFrame, command = lambda: safeTog(safeStr), bd=2, height = 1, width = 12, textvariable = safeStr, bg = background, fg = foreground)
