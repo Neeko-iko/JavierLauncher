@@ -8,8 +8,6 @@ from os import path
 toggle = True
 c = 0
 
-# i hate global variables as much as the next person but i actually cannot think of another way to do this im sorry :(
-
 
 
 
@@ -75,7 +73,8 @@ def addDir(gui):    ## code to create a new window that's basically a menu to ad
     scroll.pack(side = 'right',fill = 'y')
 
 
-
+def themeMaker():
+    print("This isn't ready yet lmao :)))))))")
 
 
 def safeTog(safeStr):  # code to toggle the safemode on/off
@@ -127,9 +126,6 @@ def conformWindow(gui):   # this deforms the window to show the settings page - 
 def dataupdate(server):  # when adding launch flags Javier would complain about indexing, so i have it make a list for every server you click on.
     data['servers'][server] = ['', '','']
     dump(data)
-    #jsonfile = open("./Javier.json", 'w')
-    #json.dump(data, jsonfile, indent = 4)
-    #jsonfile.close()
 
 def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to select a server, not launch it.
     global dire
@@ -172,8 +168,12 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
         pass
 
     if c ==0:
-        jarButton.place(x=180, y=89)
-        jarOverride.place(x=-1, y=89)
+        jarOverride.place(x=0, y=258)
+        jarButton.place(x=180, y=257)
+        jarButton.lower(javaLabel)
+        jarOverride.lower(jarButton)
+        
+        
         c = True
     jarOverride.delete(0, "end")
     jarOverride.insert(0, data['servers'][server][2])
@@ -203,12 +203,6 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
     except:                     # have realized that Javier is not perfect, which while sad, means that the USER (the doofus reading this) 
         data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
 
-    # old code don't look :(
-    #try:
-    #   data['servers'][server][1]  # 1 is custom launch flags, as those are saved per server.
-    #except:
-    #   data['servers'][server][1] = ''
-
     ## Code to grab the RAM value from everything available
     print(server)
     maxRAM = RAM.get()
@@ -235,7 +229,7 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
     customs = customs.get()
     if customs == '':
         try:
-            customs = data['servers'][server][1]
+            customs = data['servers'][server][1]  # if its not obvious by the code itself, 1 is customs in the json.
         except:
             pass
     else:
@@ -252,23 +246,18 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
         java = f'"{java}"'
 
 
-    
-    #jsonfile = open("./Javier.json", 'w')
-    #json.dump(data, jsonfile, indent = 4)
-    #jsonfile.close()
-
+    safe = safeStr.get()[10:]
     ## Code to find the right JAR file to launch
     file = data['servers'][server][2]
-    if not path.isfile(f"{dire}/{server}/{file}"):
-        print("Jar in override doesn't exist, attempting to find jar...")
+    if not path.isfile(f"{dire}/{server}/{file}") or safe == "ON":
+        if safe == "OFF":
+            print("Jar in override doesn't exist, attempting to find jar...")
         file = []
-        safe = safeStr.get()[10:]
         for item in os.listdir(f"{dire}/{server}"):
             if item[-4:] == '.jar':
                 file.append(item)
         if len(file) > 1:
             for item in file:
-                #print(item)
                 check = zipfile.ZipFile(f"{dire}/{server}/{item}",'r')
                 check = check.open('META-INF/MANIFEST.MF','r')
                 check = check.readlines()
@@ -286,18 +275,14 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
         except:
             print("something went wrong. . .")
             return
+    dump(data)
     ## Actual launch code.
 
-
-
     back = os.getcwd()
-    gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC - because i don't wanna thread him yet.  i'll do that after 1.7 - it'll probably have to be a 2.0 update.
+    gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC -because i (neeko) won't thread him.  i'll do that at Javier 2.0, if that ever comes around.
     #del check, safe
-    print("Server Started!")
-    os.chdir(back)
     
-    dump(data)
-
+    os.chdir(back)
     while True:
         sTime = int(time.time())
         os.chdir(f"{dire}/{server}")
@@ -305,12 +290,15 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
             open('eula.txt', 'r')
         except FileNotFoundError:
             print("EULA Was not found")
-            input("pressing ENTER means you accept and understand the terms of the EULA\nThe license can be found at https://account.mojang.com/documents/minecraft_eula")
+            input("pressing ENTER means you accept and understand the terms and conditions of the EULA\nThe license can be found at https://account.mojang.com/documents/minecraft_eula.\n If you do NOT accept the EULA, Close Javier now.")
             print("USER accepted the EULA, Starting server.")
             eula = open("eula.txt", 'w')
-            eula.write('eula = true\n#This signature was automatically generated by Javier under USER permission.\n#find the EULA at https://account.mojang.com/documents/minecraft_eula')
+            eula.write('eula = true\n#This signature was automatically generated by Javier under USER Authorization.\n#find the EULA at https://account.mojang.com/documents/minecraft_eula')
             eula.close()
+            print("EULA Created and signed! Have fun!")
             del eula
+        
+        print("Server Started!")
         os.system(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
         
 
@@ -322,7 +310,7 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
         else:
 
             os.chdir(back)
-            print("\n\nit seems as though the server has crashed or was stopped forcibly.\n\n\n\nrestarting the server in 10 seconds...")
+            print("\n\nit seems as though the server has crashed or was stopped forcibly.\nfeel free to close the CMD if you want to close the server\n\n\notherwise the server will restart in 10 seconds...")
             for i in range (10, 0, -1):
                 print(str(i) + " seconds remaning\n\n\n")
                 time.sleep(1)
@@ -339,7 +327,7 @@ def getdata():
             with open(f'{path.dirname(__file__)}/Javier.json', 'r') as f:
                 data = json.loads(f.read())
     except FileNotFoundError:
-        data = {"java":"java","dirs":["."],"servers":{},"themes":{"Dark": ["#FFFFFF", "#36393F"],"HC": ["#FFFFFF", "#161719"],"Light": ["#161719", "#FFFFFF"]},"curTheme":"Dark"}
+        data = {"java":"java","dirs":["."],"servers":{},"themes":{"Dark": ["#FFFFFF", "#36393F"],"High Contrast": ["#FFFFFF", "#000000"],"Light": ["#161719", "#FFFFFF"]},"curTheme":"Dark"}
         dump(data)
         if path.exists(f"{path.dirname(__file__)}/;Javier Settings;"):
             jsonfile = open(f"{path.dirname(__file__)}/;Javier Settings;/Javier.json")
@@ -353,17 +341,11 @@ def getdata():
 def getServers(dires):
     servers = []
     serv = []
-    ## finds every folder in the directory given.  if "javier" is passed, it checks the folder javier is in.
+    ## finds every folder in every directory given.
     for dire in dires:
         if not path.isdir(dire):
             data['dirs'].remove(dire)
             servers = [["ERROR - RESTART"]]
-            #if os.path.exists(f"{os.path.dirname(__file__)}/;Javier Settings;"):
-            #    jsonfile = open(f"{os.path.dirname(__file__)}/;Javier Settings;/Javier.json", 'w')
-            #else:
-            #    jsonfile = open(f"{path.dirname(__file__)}/Javier.json", 'w')
-            #json.dump(data, jsonfile, indent = 4)
-            #jsonfile.close()
             dump(data)
             return servers
 
@@ -385,10 +367,7 @@ def runGUI():
         os.chdir(folder)
         if os.name == "nt":
             os.system("explorer .")
-            
-            
         else:
-            print("If an error is or isn't thrown, let me know on Twitter.com @Neeko_iko.  \n\nI don't have a linux-based operating system.  (I know this won't work on macs atm.)")
             os.system("xdg-open .")
         os.chdir(back)
         del back
@@ -403,7 +382,7 @@ def runGUI():
     gui.configure(bg = 'white')
     gui.minsize(250, 363)
     gui.maxsize(250, 363)
-    ## IK it seems redundant to make the min/max the same, but it makes Javier not resizable, saving me a lot of headache.  don't try to change this, it won't help you.
+    ## I know it seems redundant to make the min/max the same, but it makes Javier not resizable, saving me a lot of headache.  don't try to change this, it won't help you.
 
 
     background = data["themes"][data["curTheme"]][1]  #grabs the BG and FG colors for the theme the user is currently using.
@@ -412,13 +391,13 @@ def runGUI():
     ## Frames
 
 
-    JavierFrame = tkinter.Frame(gui, height =360, width = 250, bg = '#40444B')
+    JavierFrame = tkinter.Frame(gui, height =360, width = 250, bg = background)
     JavierFrame.grid(row=0, column = 0)
 
-    settingsFrame = tkinter.Frame(gui,height =363, width = 250, bg = '#40444B')
+    settingsFrame = tkinter.Frame(gui,height =363, width = 250, bg = background)
     settingsFrame.grid(row=0, column = 1)
 
-    ramFrame = tkinter.Frame(JavierFrame, height = 60, width = 250, bg = '#40444B')
+    ramFrame = tkinter.Frame(JavierFrame, height = 60, width = 250, bg = background)
     ramFrame.pack()
 
     
@@ -426,10 +405,10 @@ def runGUI():
 
     ## server list code
 
-    buttonContainer = tkinter.Frame(JavierFrame, bg= '#40444B',height = 60, width = 255)
-    buttonCanvas = tkinter.Canvas(buttonContainer, bg= '#40444B', height = 300, width = 229)
-    scroll = tkinter.Scrollbar(buttonContainer, orient='vertical', command = buttonCanvas.yview, bg= '#40444B')
-    buttonFrame = tkinter.Frame(buttonCanvas, bg= '#40444B')
+    buttonContainer = tkinter.Frame(JavierFrame, bg= background,height = 60, width = 255)
+    buttonCanvas = tkinter.Canvas(buttonContainer, bg= background, height = 300, width = 229)
+    scroll = tkinter.Scrollbar(buttonContainer, orient='vertical', command = buttonCanvas.yview, bg= background)
+    buttonFrame = tkinter.Frame(buttonCanvas, bg= background)
     buttonFrame.bind("<Configure>",lambda e: buttonCanvas.configure(scrollregion=buttonCanvas.bbox("all")))
     buttonCanvas.create_window((0,0), window=buttonFrame, anchor = 'nw')
     buttonCanvas.configure(yscrollcommand=scroll.set)
@@ -464,7 +443,7 @@ def runGUI():
 
     RAM = tkinter.Entry(ramFrame, bd =2,width = 3, bg=background, fg=foreground)  # cute ram entry
     RAM.place(x=4, y=4)
-    label = tkinter.Label(ramFrame, text="< < < Enter RAM", height = 0, bg='#40444B', fg= "#FFFFFF")
+    label = tkinter.Label(ramFrame, text="< < < Enter RAM", height = 0, bg=background, fg= foreground)
     label.place(x=27, y=4)
 
     SettingsButton = tkinter.Button(ramFrame, bd = 1, width = 10, bg=background, fg= "#9999FF", text="Settings", command= lambda : conformWindow(gui)) # the button that makes javier pop in and out his jacket.
@@ -479,17 +458,11 @@ def runGUI():
     confirmBut.place(x=127, y=4)
 
 
-
-
-
-    
-
-
     ### Directory opener ig
 
-    dirMenu = tkinter.Frame(settingsFrame, bg = "Black")
-    dirButtonContainer = tkinter.Frame(dirMenu, bg = "Gray", height = 52, width = 134)
-    dirButtonCanvas = tkinter.Canvas(dirButtonContainer, bg = "Gray", height = 52, width = 134)
+    dirMenu = tkinter.Frame(settingsFrame, bg = background)
+    dirButtonContainer = tkinter.Frame(dirMenu, bg = background, height = 72, width = 230)
+    dirButtonCanvas = tkinter.Canvas(dirButtonContainer, bg = background, height = 72, width = 230)
     dirScroll = tkinter.Scrollbar(dirButtonContainer, orient="vertical", command = dirButtonCanvas.yview, bg= '#40444B')
     dirButtonFrame = tkinter.Frame(dirButtonCanvas)
 
@@ -503,44 +476,57 @@ def runGUI():
     for direct in data["dirs"]:
         if direct == '.':
             direct = os.getcwd()
-        dirButton=tkinter.Button(dirButtonFrame, text=direct, bg=background, fg=foreground, width = 20, command = lambda : openExplorer(direct))
+        dirButton=tkinter.Button(dirButtonFrame, text=direct, bg=background, fg=foreground, width = 35, command = lambda : openExplorer(direct))
         dirButton.pack()
+    NewDir= tkinter.Button(dirButtonFrame, text="Add a Directory. . . ?", width = 35, height = 1, command= lambda : addDir(gui), bg=foreground, fg=background, bd=2)
+    NewDir.pack()
 
-    dirLabel = tkinter.Label(dirMenu, width=20, text="Open a Directory", bg=background, fg=foreground)
+    dirLabel = tkinter.Label(dirMenu, width=35, text="Open a Directory", bg=background, fg=foreground)
     dirLabel.pack(side="top")
-    dirMenu.place(x=0, y=222)
+    dirMenu.place(x=0, y=0)
 
 
     ## Buttons in settings and similar things.
 
     def browse4Java(javaOverride):
         javapath = filedialog.askopenfile(master = gui, initialdir=".", title= "Select a Java Runtime Executable", filetypes=[("Java Runtime Executable", ("java.exe"))])
-        data["java"]=javapath.name
-        dump(data)
-        javaOverride.delete(0, "end")
-        javaOverride.insert(0, javapath.name)
+        if javapath != None:
+            data["java"]=javapath.name
+            dump(data)
+            javaOverride.delete(0, "end")
+            javaOverride.insert(0, javapath.name)
     
     def browse4jar(jarOverride, selectStr):
         serverStr = selectStr.get()[7:]
         jarpath = filedialog.askopenfilename(master=gui, initialdir=f"{data['dirs'][dire]}/{serverStr}", title = "Select a server JAR", filetypes=[("Java Archive file",(".jar"))])
+        jarpath = path.basename(jarpath)
         data['servers'][serverStr][2]=jarpath
         dump(data)
         jarOverride.delete(0, "end")
-        jarOverride.insert(jarpath)
+        jarOverride.insert(0, jarpath)
+
+
+    advancel = tkinter.Label(settingsFrame, text = "_______________________________________________\nADVANCED", width =35, bg=background, fg=foreground)
+    advancel.place(x=0, y=208)
+    serverselectdiscl = tkinter.Label(settingsFrame, text="Please select a server!", bd= 2, bg=background, fg=foreground)
+    serverselectdiscl.place(x=65, y=260)
 
 
     javaOverride = tkinter.Entry(settingsFrame, bd=2, width=30, bg=background, fg= foreground)
     javaOverride.insert(0, data["java"])
-    javaOverride.place(x=0, y=35)
+    javaOverride.place(x=0, y=300)
 
     javaButton = tkinter.Button(settingsFrame, command = lambda: browse4Java(javaOverride), bd=2, height = 1, width = 9, text="Browse...", bg= background, fg=foreground)
-    javaButton.place(x=180, y=30)
+    javaButton.place(x=180, y=298)
 
-    javaLabel = tkinter.Label(settingsFrame, text="ADVANCED: Java Override\n Only edit if your Java runtime is NOT in PATH", bd=2, width =35, height= 2, bg=background, fg=foreground)
-    javaLabel.place(x=-1, y=0)
+    global javaLabel
+    javaLabel = tkinter.Label(settingsFrame, text="Java Override", bd=2, width =35, bg=background, fg=foreground)
+    javaLabel.place(x=0, y=280)
     
-    jarLabel = tkinter.Label(settingsFrame, text= "Jar File Override: \nOnly edit if the filename is wrong. \n Please Select a server!", bd= 2, width = 35, height = 3, bg=background, fg=foreground)
-    jarLabel.place(x=-1, y=56)
+    global jarLabel
+    jarLabel = tkinter.Label(settingsFrame, text= "Jar File Override", bd= 2, width = 35, bg=background, fg=foreground)
+    jarLabel.place(x=0, y=238)
+    
     
     global jarOverride 
     jarOverride = tkinter.Entry(settingsFrame, bd=2, width=30, bg=background, fg=foreground)  # these being global is due to how much of a PAIN they're going to be.
@@ -548,34 +534,42 @@ def runGUI():
     global jarButton 
     jarButton = tkinter.Button(settingsFrame, command = lambda: browse4jar(jarOverride, selectStr),bd=2, width = 9, text = "Browse...", bg= background, fg = foreground)  # i do generally try to stay away from global variables as they make things a bit messy, but due to the nature of how i want to do these I don't see a much cleaner way
 
-    
+
+    safebuttondesc = tkinter.Label(settingsFrame, text = "Only runs Vanilla Jar", width = 17, bg= background, fg=foreground)
+    safebuttondesc.place(x=127, y=142)
 
     safeStr = tkinter.StringVar(value='Safemode: OFF')
-    safeButton = tkinter.Button(settingsFrame, command = lambda: safeTog(safeStr), bd=2, height = 1, width = 12, textvariable = safeStr, bg = background, fg = foreground)
-    safeButton.place(x=-1, y=297)
-
-    guiStr = tkinter.StringVar(value='GUI: OFF')
-    guiTogButton = tkinter.Button(settingsFrame, command = lambda: guiTog(guiStr), bd=2, height = 1, width = 8, textvariable = guiStr, bg = background, fg = foreground)
-    guiTogButton.place(x=92, y=297)
-
-    customsFrame = tkinter.Frame(settingsFrame, bg=background)
-    customsl = tkinter.Label(customsFrame, text = " ADVANCED: Launch Flags ", bg=background, fg=foreground)
-    customs = tkinter.Entry(customsFrame, width=41, bg = background, fg = foreground, bd=2)
-    customsl.pack()
-    customs.pack()
-    customsFrame.place(x=0, y=323)
+    safeButton = tkinter.Button(settingsFrame, command = lambda: safeTog(safeStr), bd=2, height = 1, width = 16, textvariable = safeStr, bg = background, fg = foreground)
+    safeButton.place(x=127, y=119)
 
     
+    guidesc = tkinter.Label(settingsFrame, text = "Toggles JAR GUI", bg=background, fg=foreground, width=17)
+    guidesc.place(x=127, y=197)
+
+    guiStr = tkinter.StringVar(value='GUI: OFF')
+    guiTogButton = tkinter.Button(settingsFrame, command = lambda: guiTog(guiStr), bd=2, height = 1, width = 16, textvariable = guiStr, bg = background, fg = foreground)
+    guiTogButton.place(x=127, y=171)
+
+    optionsL = tkinter.Label(settingsFrame, text = "Options", bg=background, fg=foreground, width=17)
+    optionsL.place(x=127, y=98)
+
+
+    customsl = tkinter.Label(settingsFrame, text = "Java Runtime Args", bg=background, fg=foreground, width=35, height=1)
+    customs = tkinter.Entry(settingsFrame, width=41, bg = background, fg = foreground, bd=2)
+    customsl.place(x=0, y=322)
+    customs.place(x=0, y=343)
+
+    ### CHECK FOR THIS WHILE CRTL+Z, if this goes away YOU'VE OFFICIALLY GONE TOO FAR!!!
 
 
     ### Themes
 
 
-    ThemeMenu = tkinter.Frame(settingsFrame, bg= '#30443B')
-    themeButtonContainer = tkinter.Frame(ThemeMenu, bg= '#40444B',height = 75, width = 75)
-    themeButtonCanvas = tkinter.Canvas(themeButtonContainer, bg= '#40444B', height = 75, width = 75)
-    themeScroll = tkinter.Scrollbar(themeButtonContainer, orient='vertical', command = themeButtonCanvas.yview, bg= '#40444B')
-    themeButtonFrame = tkinter.Frame(themeButtonCanvas, bg= '#40444B')
+    ThemeMenu = tkinter.Frame(settingsFrame)
+    themeButtonContainer = tkinter.Frame(ThemeMenu,height = 100, width = 105)
+    themeButtonCanvas = tkinter.Canvas(themeButtonContainer, height = 100, width = 105)
+    themeScroll = tkinter.Scrollbar(themeButtonContainer, orient='vertical', command = themeButtonCanvas.yview)
+    themeButtonFrame = tkinter.Frame(themeButtonCanvas,)
 
 
     themeButtonFrame.bind("<Configure>",lambda e: themeButtonCanvas.configure(scrollregion=themeButtonCanvas.bbox("all")))
@@ -589,14 +583,15 @@ def runGUI():
     themeScroll.pack(side = 'right',fill = 'y')
 
     for theme in data["themes"]:
-        themeButton = tkinter.Button(themeButtonFrame, text= (list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])])   , width = 10, height=1, command = lambda theme=theme : ThemeChange((list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]), gui), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2, )
+        themeButton = tkinter.Button(themeButtonFrame, text= (list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])])   , width = 15, height=1, command = lambda theme=theme : ThemeChange((list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]), gui), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2, )
         themeButton.pack()
+    createThemeButton = tkinter.Button(themeButtonFrame, text = "Create your own. . . ", command = lambda: themeMaker(), bd=2, bg= foreground, fg= background)
+    createThemeButton.pack()
 
-
-    themeLabel = tkinter.Label(ThemeMenu, width= 13, text = "Themes", bg = background, fg =foreground)
+    themeLabel = tkinter.Label(ThemeMenu, width= 17, text = "Themes", bg = background, fg =foreground)
     themeLabel.pack(side='top')
 
-    ThemeMenu.place(x=155, y=222)
+    ThemeMenu.place(x=0, y=98)
 
 
     gui.mainloop()
