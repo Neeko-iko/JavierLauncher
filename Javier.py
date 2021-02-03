@@ -1,15 +1,13 @@
 import tkinter
 import time
 import os
+from tkinter.constants import LEFT
 import zipfile
 import json
-from tkinter import filedialog
+from tkinter import TclError, filedialog
 from os import path
 toggle = True
 c = 0
-
-
-
 
 def dump(dta):
     if path.exists(f"{path.dirname(__file__)}/;Javier Settings;"):
@@ -44,8 +42,9 @@ def addDir(gui):    ## code to create a new window that's basically a menu to ad
     
 
     dirwindow = tkinter.Toplevel(gui, bg = bg)   # this makes the new window
-    dirwindow.minsize(170, 170)
+    dirwindow.resizable(0,0)
     dirwindow.maxsize(170, 170)
+    dirwindow.title("Javier Dirs")
     label = tkinter.Label(dirwindow, text="Add your directories below!", bg =bg, fg=fg)  # creates the label saying "enter the dirs!"
     label.pack()  # this is required for the label to show up, if its not packed it may as well not exist lmao
 
@@ -73,7 +72,137 @@ def addDir(gui):    ## code to create a new window that's basically a menu to ad
     scroll.pack(side = 'right',fill = 'y')
 
 
-def themeMaker():
+def themeMaker(gui):  
+
+    ###TODO: make new button work, make del a toggle into clicking a theme to del it, create the other boxes, do everything, make it work- dumbass.
+    ### 16 characters is the max for a theme name
+
+    def boxUpdate(theme):
+
+        if delstr.get() == "Del":
+            nameEntry.delete(0, "end")
+            fgentry.delete(0, "end")
+            bgentry.delete(0, "end")
+            if theme != None:
+                nameEntry.insert(0, theme)
+                fgentry.insert(0, data["themes"][theme][0])
+                bgentry.insert(0, data["themes"][theme][1])
+
+        else:
+            if theme != None or theme != "Light" or theme != "Dark" or theme != "High Contrast":
+                try:
+                    del data["themes"][theme]
+                    print(f"{theme} was deleted.")
+                except KeyError:
+                    print(f"{theme} was already deleted!!!\n I know it doesn't look it- you'll have to restart Javier if you'd like to see the changes...")
+            else:
+                print("You cannot delete this.")
+
+        print("REALLY NOT READY!!!")
+
+    
+    def testwindow():
+        try:
+            testwin= tkinter.Toplevel(makerWindow, bg = bgentry.get())
+            closelabel= tkinter.Label(testwin, bg= bgentry.get(), fg=fgentry.get(), text= "Click any button to close.")
+            
+        except TclError:
+            testwin.destroy()
+            print("Something went wrong, please check the entries and try again!")
+            return
+        testwin.resizable(0,0)
+        closelabel.pack()
+        normalbutton = tkinter.Button(testwin, bg= bgentry.get(), fg= fgentry.get(), text = "Normal", command = lambda: testwin.destroy())
+        normalbutton.pack(side="right")
+        invertedbutton = tkinter.Button(testwin, fg= bgentry.get(), bg= fgentry.get(), text = "Inverted", command = lambda: testwin.destroy())
+        invertedbutton.pack(side="left")
+
+
+
+
+
+        
+
+    def newTheme(themegui):
+        newtheme= tkinter.Button(themegui, text ='New Theme', width = 15, command = lambda: boxUpdate(None))
+        newtheme.pack(side="left")
+
+    def toggleDel(delstr):
+        delete = delstr.get()
+        if delete == "Del":
+            delstr.set("ON")
+        else:
+            delstr.set("Del")
+
+
+    fg = data["themes"][data["curTheme"]][0]
+    bg = data["themes"][data["curTheme"]][1]
+
+    makerWindow = tkinter.Toplevel(gui, bg=bg)
+    makerWindow.maxsize(220, 300)
+    makerWindow.resizable(0,0)
+    makerWindow.title("Javier Theme Maker 200")
+
+    funnylabel = tkinter.Label(makerWindow, text= "Select a theme!", bg=bg, fg=fg, width=22)
+    funnylabel.place(x=0,y=0)
+
+    newtheme = tkinter.Button(makerWindow, text="New", width=4, fg="WHITE", bg="GREEN", command = lambda: newTheme(themeButtonFrame))
+    newtheme.place(x=140, y=0)
+    delstr = tkinter.StringVar(value="Del")
+    deltheme = tkinter.Button(makerWindow, textvariable=delstr, width=2, fg="WHITE", bg="RED", command = lambda: toggleDel(delstr))
+    deltheme.place(x=176)
+
+    ThemeMenu = tkinter.Frame(makerWindow)
+    themeButtonContainer = tkinter.Frame(ThemeMenu,height = 28, width = 210)
+    themeButtonCanvas = tkinter.Canvas(themeButtonContainer, height = 28, width = 210)
+    themeScroll = tkinter.Scrollbar(themeButtonContainer, orient='horizontal', command = themeButtonCanvas.xview)
+    themeButtonFrame = tkinter.Frame(themeButtonCanvas)
+
+
+    themeButtonFrame.bind("<Configure>",lambda e: themeButtonCanvas.configure(scrollregion=themeButtonCanvas.bbox("all")))
+    themeButtonCanvas.create_window((0,0), window=themeButtonFrame, anchor = 'n')
+
+    themeButtonCanvas.configure(xscrollcommand=themeScroll.set)
+
+    themeButtonContainer.pack(side="top")
+
+    themeButtonCanvas.pack(side = 'top', fill = 'both')
+    themeScroll.pack(side = 'top',fill = 'x')
+
+    testButton = tkinter.Button(makerWindow, text = "Test", width=9, fg=fg, bg=bg, command = lambda: testwindow())
+    testButton.place(x=120, y=84)
+
+    savebutton= tkinter.Button(makerWindow, text="Set\nSave\nClose", width=11, height=5, fg=fg, bg=bg, )
+    savebutton.place(x=106, y=112)
+
+    
+
+    
+
+    for theme in data["themes"]:
+        themething = list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]
+        themeButton = tkinter.Button(themeButtonFrame, text= (themething)   , width = 15, height=1, command = lambda themething=themething: boxUpdate(themething), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2)
+        themeButton.pack(side="left")
+    ThemeMenu.place(x=0, y=20)
+
+
+    nameEntry = tkinter.Entry(makerWindow, width = 18, bg=bg, fg=fg)
+    nameEntry.place(x=4, y=90)
+    nameLabel = tkinter.Label(makerWindow, text = "Theme Name", bg=bg, fg=fg)
+    nameLabel.place(x=0, y=69)
+
+
+    fgentry=tkinter.Entry(makerWindow,width = 14, bg=bg, fg=fg)
+    fgentry.place(x=4, y=135)
+    fglabel=tkinter.Label(makerWindow, text = "Text Hex Color", bg=bg, fg=fg)
+    fglabel.place(y=114)
+
+    bgentry=tkinter.Entry(makerWindow, width=14, bg=bg, fg=fg)
+    bgentry.place(x=4, y=175)
+    bglabel=tkinter.Label(makerWindow, text="Back Hex Color", bg=bg, fg=fg)
+    bglabel.place(y=154)
+
+
     print("This isn't ready yet lmao :)))))))")
 
 
@@ -121,8 +250,8 @@ def conformWindow(gui):   # this deforms the window to show the settings page - 
     else:
         toggle = True
         gui.title("Javier - MCSL")
-        gui.maxsize(250, 363)
         gui.minsize(250, 363)
+        gui.maxsize(250, 363)
 def dataupdate(server):  # when adding launch flags Javier would complain about indexing, so i have it make a list for every server you click on.
     data['servers'][server] = ['', '','']
     dump(data)
@@ -506,10 +635,10 @@ def runGUI():
         jarOverride.insert(0, jarpath)
 
 
-    advancel = tkinter.Label(settingsFrame, text = "_______________________________________________\nADVANCED", width =35, bg=background, fg=foreground)
+    advancel = tkinter.Label(settingsFrame, text = "__________________________________\nADVANCED", width =35, bg=background, fg=foreground)
     advancel.place(x=0, y=208)
     serverselectdiscl = tkinter.Label(settingsFrame, text="Please select a server!", bd= 2, bg=background, fg=foreground)
-    serverselectdiscl.place(x=65, y=260)
+    serverselectdiscl.place(x=65, y=255)
 
 
     javaOverride = tkinter.Entry(settingsFrame, bd=2, width=30, bg=background, fg= foreground)
@@ -523,7 +652,6 @@ def runGUI():
     javaLabel = tkinter.Label(settingsFrame, text="Java Override", bd=2, width =35, bg=background, fg=foreground)
     javaLabel.place(x=0, y=280)
     
-    global jarLabel
     jarLabel = tkinter.Label(settingsFrame, text= "Jar File Override", bd= 2, width = 35, bg=background, fg=foreground)
     jarLabel.place(x=0, y=238)
     
@@ -540,18 +668,18 @@ def runGUI():
 
     safeStr = tkinter.StringVar(value='Safemode: OFF')
     safeButton = tkinter.Button(settingsFrame, command = lambda: safeTog(safeStr), bd=2, height = 1, width = 16, textvariable = safeStr, bg = background, fg = foreground)
-    safeButton.place(x=127, y=119)
+    safeButton.place(x=128, y=119)
 
     
     guidesc = tkinter.Label(settingsFrame, text = "Toggles JAR GUI", bg=background, fg=foreground, width=17)
-    guidesc.place(x=127, y=197)
+    guidesc.place(x=127, y=195)
 
     guiStr = tkinter.StringVar(value='GUI: OFF')
     guiTogButton = tkinter.Button(settingsFrame, command = lambda: guiTog(guiStr), bd=2, height = 1, width = 16, textvariable = guiStr, bg = background, fg = foreground)
-    guiTogButton.place(x=127, y=171)
+    guiTogButton.place(x=128, y=171)
 
     optionsL = tkinter.Label(settingsFrame, text = "Options", bg=background, fg=foreground, width=17)
-    optionsL.place(x=127, y=98)
+    optionsL.place(x=128, y=98)
 
 
     customsl = tkinter.Label(settingsFrame, text = "Java Runtime Args", bg=background, fg=foreground, width=35, height=1)
@@ -569,7 +697,7 @@ def runGUI():
     themeButtonContainer = tkinter.Frame(ThemeMenu,height = 100, width = 105)
     themeButtonCanvas = tkinter.Canvas(themeButtonContainer, height = 100, width = 105)
     themeScroll = tkinter.Scrollbar(themeButtonContainer, orient='vertical', command = themeButtonCanvas.yview)
-    themeButtonFrame = tkinter.Frame(themeButtonCanvas,)
+    themeButtonFrame = tkinter.Frame(themeButtonCanvas)
 
 
     themeButtonFrame.bind("<Configure>",lambda e: themeButtonCanvas.configure(scrollregion=themeButtonCanvas.bbox("all")))
@@ -583,9 +711,10 @@ def runGUI():
     themeScroll.pack(side = 'right',fill = 'y')
 
     for theme in data["themes"]:
-        themeButton = tkinter.Button(themeButtonFrame, text= (list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])])   , width = 15, height=1, command = lambda theme=theme : ThemeChange((list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]), gui), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2, )
+        themething = list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]  # trust me this is needed
+        themeButton = tkinter.Button(themeButtonFrame, text= (themething)   , width = 15, height=1, command = lambda themething=themething : ThemeChange(themething, gui), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2, )
         themeButton.pack()
-    createThemeButton = tkinter.Button(themeButtonFrame, text = "Create your own. . . ", command = lambda: themeMaker(), bd=2, bg= foreground, fg= background)
+    createThemeButton = tkinter.Button(themeButtonFrame, text = "Create your own. . . ", command = lambda: themeMaker(gui), bd=2, bg= foreground, fg= background)
     createThemeButton.pack()
 
     themeLabel = tkinter.Label(ThemeMenu, width= 17, text = "Themes", bg = background, fg =foreground)
