@@ -5,7 +5,7 @@ from tkinter.constants import LEFT
 import zipfile
 import json
 from tkinter import TclError, filedialog
-from os import path
+from os import name, path
 toggle = True
 c = 0
 
@@ -18,6 +18,9 @@ def dump(dta):
             json.dump(dta, f, indent=4)
 
 def addDir(gui):    ## code to create a new window that's basically a menu to add or delete directories.
+    
+
+
 
 
     def deleteDir(dirStr, dirwindow, gui):  ## function that saves the action to the json, 
@@ -36,13 +39,13 @@ def addDir(gui):    ## code to create a new window that's basically a menu to ad
         addDir(gui)
 
 
-    fg = data["themes"][data["curTheme"]][0]
-    bg = data["themes"][data["curTheme"]][1]
-
-    
+    themes = themeCheck()
+    fg = themes[1]
+    bg = themes[0]
 
     dirwindow = tkinter.Toplevel(gui, bg = bg)   # this makes the new window
     dirwindow.resizable(0,0)
+    dirwindow.geometry(f"+{gui.winfo_x()}+{gui.winfo_y() + 50}")
     dirwindow.maxsize(170, 170)
     dirwindow.title("Javier Dirs")
     label = tkinter.Label(dirwindow, text="Add your directories below!", bg =bg, fg=fg)  # creates the label saying "enter the dirs!"
@@ -72,59 +75,81 @@ def addDir(gui):    ## code to create a new window that's basically a menu to ad
     scroll.pack(side = 'right',fill = 'y')
 
 
-def themeMaker(gui):  
+def themeMaker(gui): 
 
     ###TODO: make new button work, make del a toggle into clicking a theme to del it, create the other boxes, do everything, make it work- dumbass.
     ### 16 characters is the max for a theme name
 
-    def boxUpdate(theme):
+    def boxUpdate(theme, tester):
 
         if delstr.get() == "Del":
+            if tester == 0:
+                nameEntry.place(x=4, y=90)
+                fgentry.place(x=4, y=135)
+                bgentry.place(x=4, y=175)
+                testButton.place(x=120, y=84)
+                savelabel =tkinter.Label(makerWindow, text="successful \n testing of the \ntheme will\n allow you\n to save!", bg=bg, fg=fg)
+                savelabel.place(x=109, y=115)
+                savelabel.lower(nameEntry)
             nameEntry.delete(0, "end")
             fgentry.delete(0, "end")
             bgentry.delete(0, "end")
-            if theme != None:
+            if theme != None and theme != "Dark":
                 nameEntry.insert(0, theme)
                 fgentry.insert(0, data["themes"][theme][0])
                 bgentry.insert(0, data["themes"][theme][1])
 
         else:
-            if theme != None or theme != "Light" or theme != "Dark" or theme != "High Contrast":
+            if theme != None and theme != "Dark":
                 try:
                     del data["themes"][theme]
+                    dump(data)
                     print(f"{theme} was deleted.")
+                    makerWindow.destroy()
+                    return themeMaker(gui)
                 except KeyError:
-                    print(f"{theme} was already deleted!!!\n I know it doesn't look it- you'll have to restart Javier if you'd like to see the changes...")
+                    print(f"{theme} was already deleted!\n I know it doesn't look it- you'll have to restart Javier if you'd like to see the changes...")
             else:
                 print("You cannot delete this.")
 
-        print("REALLY NOT READY!!!")
-
-    
     def testwindow():
+        
         try:
             testwin= tkinter.Toplevel(makerWindow, bg = bgentry.get())
             closelabel= tkinter.Label(testwin, bg= bgentry.get(), fg=fgentry.get(), text= "Click any button to close.")
             
         except TclError:
             testwin.destroy()
-            print("Something went wrong, please check the entries and try again!")
+            print("Something went wrong, please check the entries and try again!\nDid you forget #'s?")
             return
         testwin.resizable(0,0)
+        testwin.geometry(f"+{makerWindow.winfo_x()+ 20}+{makerWindow.winfo_y() + 50}")
         closelabel.pack()
+        savebutton.place(x=106, y=112)
         normalbutton = tkinter.Button(testwin, bg= bgentry.get(), fg= fgentry.get(), text = "Normal", command = lambda: testwin.destroy())
         normalbutton.pack(side="right")
         invertedbutton = tkinter.Button(testwin, fg= bgentry.get(), bg= fgentry.get(), text = "Inverted", command = lambda: testwin.destroy())
         invertedbutton.pack(side="left")
 
+    def saveandclose(name):
+        if name == "Dark":
+            saveStr.set("You cannot\noverrwrite the \nDark theme.")
+            return
+        elif len(name) > 16:
+            saveStr.set(f"Theme names \ncannot be \nover 16\n characters.\ncurrently: {len(name)}")
+            return
+        elif name in data["themes"]:
+            saveStr.set(f"Are you\nsure you'd like\n to overrwrite\n{name}?")
+        else:
+            saveStr.set("Saved!")
+        data["themes"][name] = [fgentry.get(), bgentry.get()]
+        ThemeChange(name)
+        dump(data)
+        makerWindow.destroy()
 
 
-
-
-        
-
-    def newTheme(themegui):
-        newtheme= tkinter.Button(themegui, text ='New Theme', width = 15, command = lambda: boxUpdate(None))
+    def newTheme(themegui, tester):
+        newtheme= tkinter.Button(themegui, text ='New Theme', width = 15, command = lambda: boxUpdate(None, tester))
         newtheme.pack(side="left")
 
     def toggleDel(delstr):
@@ -134,19 +159,23 @@ def themeMaker(gui):
         else:
             delstr.set("Del")
 
+    themes = themeCheck()
+    fg = themes[1]
+    bg = themes[0]
 
-    fg = data["themes"][data["curTheme"]][0]
-    bg = data["themes"][data["curTheme"]][1]
+
+    thiswillneverbeusedoutsideofthis = False
 
     makerWindow = tkinter.Toplevel(gui, bg=bg)
     makerWindow.maxsize(220, 300)
     makerWindow.resizable(0,0)
+    makerWindow.geometry(f"+{gui.winfo_x()+ 300}+{gui.winfo_y() + 30}")
     makerWindow.title("Javier Theme Maker 200")
 
     funnylabel = tkinter.Label(makerWindow, text= "Select a theme!", bg=bg, fg=fg, width=22)
     funnylabel.place(x=0,y=0)
 
-    newtheme = tkinter.Button(makerWindow, text="New", width=4, fg="WHITE", bg="GREEN", command = lambda: newTheme(themeButtonFrame))
+    newtheme = tkinter.Button(makerWindow, text="New", width=4, fg="WHITE", bg="GREEN", command = lambda: newTheme(themeButtonFrame, thiswillneverbeusedoutsideofthis))
     newtheme.place(x=140, y=0)
     delstr = tkinter.StringVar(value="Del")
     deltheme = tkinter.Button(makerWindow, textvariable=delstr, width=2, fg="WHITE", bg="RED", command = lambda: toggleDel(delstr))
@@ -169,41 +198,34 @@ def themeMaker(gui):
     themeButtonCanvas.pack(side = 'top', fill = 'both')
     themeScroll.pack(side = 'top',fill = 'x')
 
+    golabel=tkinter.Label(makerWindow, text="Select theme!", fg=fg, bg=bg)
+    golabel.place(x=117, y=80)
+
     testButton = tkinter.Button(makerWindow, text = "Test", width=9, fg=fg, bg=bg, command = lambda: testwindow())
-    testButton.place(x=120, y=84)
 
-    savebutton= tkinter.Button(makerWindow, text="Set\nSave\nClose", width=11, height=5, fg=fg, bg=bg, )
-    savebutton.place(x=106, y=112)
-
-    
-
-    
 
     for theme in data["themes"]:
         themething = list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]
-        themeButton = tkinter.Button(themeButtonFrame, text= (themething)   , width = 15, height=1, command = lambda themething=themething: boxUpdate(themething), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2)
+        themeButton = tkinter.Button(themeButtonFrame, text= (themething)   , width = 15, height=1, command = lambda themething=themething: boxUpdate(themething, thiswillneverbeusedoutsideofthis), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2)
         themeButton.pack(side="left")
     ThemeMenu.place(x=0, y=20)
 
 
     nameEntry = tkinter.Entry(makerWindow, width = 18, bg=bg, fg=fg)
-    nameEntry.place(x=4, y=90)
     nameLabel = tkinter.Label(makerWindow, text = "Theme Name", bg=bg, fg=fg)
     nameLabel.place(x=0, y=69)
 
 
     fgentry=tkinter.Entry(makerWindow,width = 14, bg=bg, fg=fg)
-    fgentry.place(x=4, y=135)
     fglabel=tkinter.Label(makerWindow, text = "Text Hex Color", bg=bg, fg=fg)
     fglabel.place(y=114)
 
     bgentry=tkinter.Entry(makerWindow, width=14, bg=bg, fg=fg)
-    bgentry.place(x=4, y=175)
     bglabel=tkinter.Label(makerWindow, text="Back Hex Color", bg=bg, fg=fg)
     bglabel.place(y=154)
 
-
-    print("This isn't ready yet lmao :)))))))")
+    saveStr = tkinter.StringVar(value = "Set\nSave\nClose")
+    savebutton= tkinter.Button(makerWindow, textvariable=saveStr, width=11, height=5, fg=fg, bg=bg, command = lambda: saveandclose(nameEntry.get()))
 
 
 def safeTog(safeStr):  # code to toggle the safemode on/off
@@ -224,13 +246,9 @@ def guiTog(guiStr):  # code to toggle the nogui flag on/off
 
 
 
-def ThemeChange(theme, gui):  # code to update the theme.  still requires a restart as idk how to make javier update in real time.
-    global data
+def ThemeChange(theme):  # code to update the theme.  still requires a restart as idk how to make javier update in real time.
     data["curTheme"] = theme
     dump(data)
-    #jsonfile = open("./Javier.json", 'w')
-    #json.dump(data, jsonfile, indent = 4)
-    #jsonfile.close()
     print("These changes will apply next time Javier is launched.")
 
 def aboutWindow():  # this literally just opens the users browser to take them to the FAQ.
@@ -456,7 +474,7 @@ def getdata():
             with open(f'{path.dirname(__file__)}/Javier.json', 'r') as f:
                 data = json.loads(f.read())
     except FileNotFoundError:
-        data = {"java":"java","dirs":["."],"servers":{},"themes":{"Dark": ["#FFFFFF", "#36393F"],"High Contrast": ["#FFFFFF", "#000000"],"Light": ["#161719", "#FFFFFF"]},"curTheme":"Dark"}
+        data = {"java":"java","dirs":["."],"servers":{},"themes":{"Dark": ["#FFFFFF", "#36393F"],"High Contrast": ["#FFFFFF", "#000000"],"Light": ["#000000", "#FFFFFF"]},"curTheme":"Dark"}
         dump(data)
         if path.exists(f"{path.dirname(__file__)}/;Javier Settings;"):
             jsonfile = open(f"{path.dirname(__file__)}/;Javier Settings;/Javier.json")
@@ -488,8 +506,33 @@ def getServers(dires):
     return servers
 
 
+def themeCheck():
+    try:
+        bg = data["themes"][data["curTheme"]][1]  #grabs the BG and FG colors for the theme the user is currently using.
+        fg = data["themes"][data["curTheme"]][0]
+    except KeyError:
+        print("Set theme was deleted or otherwise could not be found...  \nReverting to Dark.")
+        data["curTheme"]="Dark"
+        dump(data)
+        try:
+            bg = data["themes"]["Dark"][1]
+            fg = data["themes"]["Dark"][0]
+        except KeyError:
+            print("Dark theme is unavailable.\n  if you did this without editing the JSON directly, please contact @Neeko_iko as this is a bug and should NOT have happened.\nif you're on the EXE, there is no known way to fix this, and you will need to re-install this 10 megabyte program.\n\nJavier will not run.")
+            input()
+            quit()
+    return (bg, fg)
+
 ## GUI code
 def runGUI():
+    global isadirwindowopen
+    isadirwindowopen = False
+
+    themes = themeCheck()
+    foreground = themes[1]
+    background = themes[0]
+
+    
 
     def openExplorer(folder):
         back = os.getcwd()
@@ -509,14 +552,12 @@ def runGUI():
         gui.iconbitmap(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico")
     gui.title("Javier - MCSL")
     gui.configure(bg = 'white')
+    gui.resizable(0,0)
     gui.minsize(250, 363)
     gui.maxsize(250, 363)
     ## I know it seems redundant to make the min/max the same, but it makes Javier not resizable, saving me a lot of headache.  don't try to change this, it won't help you.
 
-
-    background = data["themes"][data["curTheme"]][1]  #grabs the BG and FG colors for the theme the user is currently using.
-    foreground = data["themes"][data["curTheme"]][0]
-
+    
     ## Frames
 
 
@@ -635,8 +676,8 @@ def runGUI():
         jarOverride.insert(0, jarpath)
 
 
-    advancel = tkinter.Label(settingsFrame, text = "__________________________________\nADVANCED", width =35, bg=background, fg=foreground)
-    advancel.place(x=0, y=208)
+    advancel = tkinter.Button(settingsFrame, text = "__________________________________\nADVANCED", bg=background, fg=foreground, bd=0)
+    advancel.place(x=34, y=208)
     serverselectdiscl = tkinter.Label(settingsFrame, text="Please select a server!", bd= 2, bg=background, fg=foreground)
     serverselectdiscl.place(x=65, y=255)
 
@@ -661,7 +702,8 @@ def runGUI():
 
     global jarButton 
     jarButton = tkinter.Button(settingsFrame, command = lambda: browse4jar(jarOverride, selectStr),bd=2, width = 9, text = "Browse...", bg= background, fg = foreground)  # i do generally try to stay away from global variables as they make things a bit messy, but due to the nature of how i want to do these I don't see a much cleaner way
-
+    jsonbutton = tkinter.Button(settingsFrame, text = "Server data", bg=background, fg=foreground, height=1, bd=1)
+    jsonbutton.place(x=186, y=228)
 
     safebuttondesc = tkinter.Label(settingsFrame, text = "Only runs Vanilla Jar", width = 17, bg= background, fg=foreground)
     safebuttondesc.place(x=127, y=142)
@@ -680,6 +722,8 @@ def runGUI():
 
     optionsL = tkinter.Label(settingsFrame, text = "Options", bg=background, fg=foreground, width=17)
     optionsL.place(x=128, y=98)
+
+    
 
 
     customsl = tkinter.Label(settingsFrame, text = "Java Runtime Args", bg=background, fg=foreground, width=35, height=1)
@@ -712,7 +756,7 @@ def runGUI():
 
     for theme in data["themes"]:
         themething = list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]  # trust me this is needed
-        themeButton = tkinter.Button(themeButtonFrame, text= (themething)   , width = 15, height=1, command = lambda themething=themething : ThemeChange(themething, gui), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2, )
+        themeButton = tkinter.Button(themeButtonFrame, text= (themething)   , width = 15, height=1, command = lambda themething=themething : ThemeChange(themething), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2, )
         themeButton.pack()
     createThemeButton = tkinter.Button(themeButtonFrame, text = "Create your own. . . ", command = lambda: themeMaker(gui), bd=2, bg= foreground, fg= background)
     createThemeButton.pack()
@@ -725,13 +769,8 @@ def runGUI():
 
     gui.mainloop()
 
-
-
 ## actual script.
-
-
 #print(os.path.isfile(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico"))
 dire = None
 data = getdata()
 runGUI()
-
