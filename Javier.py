@@ -20,9 +20,6 @@ def dump(dta):
 def addDir(gui):    ## code to create a new window that's basically a menu to add or delete directories.
     
 
-
-
-
     def deleteDir(dirStr, dirwindow, gui):  ## function that saves the action to the json, 
         print(dirStr)                        #then relaunches the window due to me not knowing how to update it in real time oops sorry.
         data['dirs'].remove(dirStr)
@@ -205,8 +202,7 @@ def themeMaker(gui):
 
 
     for theme in data["themes"]:
-        themething = list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]
-        themeButton = tkinter.Button(themeButtonFrame, text= (themething)   , width = 15, height=1, command = lambda themething=themething: boxUpdate(themething, thiswillneverbeusedoutsideofthis), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2)
+        themeButton = tkinter.Button(themeButtonFrame, text= (theme)   , width = 15, height=1, command = lambda themething=theme: boxUpdate(themething, thiswillneverbeusedoutsideofthis), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2)
         themeButton.pack(side="left")
     ThemeMenu.place(x=0, y=20)
 
@@ -462,6 +458,52 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
                 print(str(i) + " seconds remaning\n\n\n")
                 time.sleep(1)
 
+def displaySData(gui):
+
+    ## 100% NOT REUSED CODE FROM THE DIRS NO SIR I WOULD *NEVER* EVER DO THAT :)
+
+    def deleteData(server):
+        del data['servers'][server]
+        dump(data)
+        print(f"{server}'s data was deleted.")
+        datawindow.destroy()
+        displaySData(gui)
+    
+    themes = themeCheck()
+    fg = themes[1]
+    bg = themes[0]
+
+    datawindow = tkinter.Toplevel(gui, bg = bg)   
+    datawindow.resizable(0,0)
+    datawindow.geometry(f"+{gui.winfo_x()+130}+{gui.winfo_y() + 50}")
+    datawindow.maxsize(170, 200)
+    datawindow.title("Javier's Server Data")
+    label = tkinter.Label(datawindow, text="Delete JSON data below!", bg =bg, fg=fg)  
+    label.pack()
+    
+    buttonContainer = tkinter.Frame(datawindow, bg= bg,height = 160, width = 150)  
+    buttonCanvas = tkinter.Canvas(buttonContainer, bg= bg, height = 150, width = 153) 
+    scroll = tkinter.Scrollbar(buttonContainer, orient='vertical', command = buttonCanvas.yview, bg= bg) 
+    buttonFrame = tkinter.Frame(buttonCanvas, bg= bg)  
+    buttonFrame.bind("<Configure>",lambda e: buttonCanvas.configure(scrollregion=buttonCanvas.bbox("all"))) 
+    buttonCanvas.create_window((0,0), window=buttonFrame, anchor = 'nw')
+    buttonCanvas.configure(yscrollcommand=scroll.set)                    
+
+    funny = tkinter.Label(buttonFrame, text= "No servers have any data...", fg=fg, bg=bg)
+    funny.grid(row=1 ,column=0)
+
+
+    i=-1
+    for server in data["servers"]:
+        i+=1
+        dataentry = tkinter.Label(buttonFrame, text = server,width =19, bg=bg, fg=fg)
+        dataentry.grid(row = i+1, column =0)  
+        delete = tkinter.Button(buttonFrame, width = 1, text= "X", bg = "RED", fg="WHITE", command = lambda server= server: deleteData(server))  ## this is the X button that deletes the DATA from the list in the JSON
+        delete.grid(row = i+1, column = 1) 
+
+    buttonContainer.pack() # the scrolling frame is packed here isntead of earlier - it doesn't really matter where its packed as long as it is,
+    buttonCanvas.pack(side = 'left', fill = 'both')
+    scroll.pack(side = 'right',fill = 'y')
 
 
 def getdata():
@@ -702,7 +744,8 @@ def runGUI():
 
     global jarButton 
     jarButton = tkinter.Button(settingsFrame, command = lambda: browse4jar(jarOverride, selectStr),bd=2, width = 9, text = "Browse...", bg= background, fg = foreground)  # i do generally try to stay away from global variables as they make things a bit messy, but due to the nature of how i want to do these I don't see a much cleaner way
-    jsonbutton = tkinter.Button(settingsFrame, text = "Server data", bg=background, fg=foreground, height=1, bd=1)
+    
+    jsonbutton = tkinter.Button(settingsFrame, text = "Server data", bg=background, fg=foreground, height=1, bd=1, command = lambda: displaySData(gui))
     jsonbutton.place(x=186, y=228)
 
     safebuttondesc = tkinter.Label(settingsFrame, text = "Only runs Vanilla Jar", width = 17, bg= background, fg=foreground)
@@ -755,8 +798,8 @@ def runGUI():
     themeScroll.pack(side = 'right',fill = 'y')
 
     for theme in data["themes"]:
-        themething = list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]  # trust me this is needed
-        themeButton = tkinter.Button(themeButtonFrame, text= (themething)   , width = 15, height=1, command = lambda themething=themething : ThemeChange(themething), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2, )
+        #themething = list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]  # trust me this is needed
+        themeButton = tkinter.Button(themeButtonFrame, text=theme   , width = 15, height=1, command = lambda themething=theme : ThemeChange(themething), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2)
         themeButton.pack()
     createThemeButton = tkinter.Button(themeButtonFrame, text = "Create your own. . . ", command = lambda: themeMaker(gui), bd=2, bg= foreground, fg= background)
     createThemeButton.pack()
