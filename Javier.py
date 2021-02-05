@@ -1,11 +1,10 @@
 import tkinter
 import time
 import os
-from tkinter.constants import LEFT
 import zipfile
 import json
-from tkinter import TclError, filedialog
-from os import name, path
+from tkinter import filedialog
+from os import path
 toggle = True
 c = 0
 
@@ -16,6 +15,46 @@ def dump(dta):
     else:
         with open(f'{path.dirname(__file__)}/Javier.json', 'w') as f:
             json.dump(dta, f, indent=4)
+
+
+
+def addServer(gui):
+    print("Getting versions..")
+    import urllib.request, urllib.error
+    try:
+        allversions = urllib.request.Request("https://launchermeta.mojang.com/mc/game/version_manifest.json")
+        allversions = json.loads(urllib.request.urlopen(allversions).read())
+
+        latestfabricinstaller = urllib.request.Request("https://meta.fabricmc.net/v2/versions/installer")
+        latestfabricinstaller = json.loads(urllib.request.urlopen(latestfabricinstaller).read())
+        latestfabricinstaller = latestfabricinstaller[0]["url"]
+
+        allfabric = urllib.request.Request("https://meta.fabricmc.net/v2/versions/loader")
+        allfabric = json.loads(urllib.request.urlopen(allfabric).read())
+        
+
+        ''
+    except urllib.error.URLError:
+        print("Something went wrong... probably internet related?  Check your connection and try again...")
+        return
+    print(len(allversions["versions"]))
+    allversions["versions"] = allversions["versions"][:-67]  ## the last 67 entries don't have a downloadable server JAR.  Javier is all about Servers, seems unecessary to keep, no?
+    print(allversions["versions"][489])
+
+
+    themes = themeCheck()
+    fg = themes[1]
+    bg = themes[0]
+    serverwindow = tkinter.Toplevel(gui, bg = bg)   # this makes the new window
+    serverwindow.resizable(0,0)
+    serverwindow.geometry(f"+{gui.winfo_x()}+{gui.winfo_y()}")
+    serverwindow.minsize(300, 350)
+    serverwindow.title("Javier Server Creation Tool")
+
+
+
+
+
 
 def addDir(gui):    ## code to create a new window that's basically a menu to add or delete directories.
     
@@ -115,7 +154,7 @@ def themeMaker(gui):
             testwin= tkinter.Toplevel(makerWindow, bg = bgentry.get())
             closelabel= tkinter.Label(testwin, bg= bgentry.get(), fg=fgentry.get(), text= "Click any button to close.")
             
-        except TclError:
+        except tkinter.TclError:
             testwin.destroy()
             print("Something went wrong, please check the entries and try again!\nDid you forget #'s?")
             return
@@ -323,10 +362,6 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
 
     return dire
 
-    
-
-
-
 def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverride):
     dire = data['dirs'][dire]
     nogui = ''
@@ -516,7 +551,7 @@ def getdata():
             with open(f'{path.dirname(__file__)}/Javier.json', 'r') as f:
                 data = json.loads(f.read())
     except FileNotFoundError:
-        data = {"java":"java","dirs":["."],"servers":{},"themes":{"Dark": ["#FFFFFF", "#36393F"],"High Contrast": ["#FFFFFF", "#000000"],"Light": ["#000000", "#FFFFFF"]},"curTheme":"Dark"}
+        data = {"java":"java","dirs":["."],"servers":{},"favVers":[],"themes":{"Dark": ["#FFFFFF", "#36393F"],"High Contrast": ["#FFFFFF", "#000000"],"Light": ["#000000", "#FFFFFF"]},"curTheme":"Dark"}
         dump(data)
         if path.exists(f"{path.dirname(__file__)}/;Javier Settings;"):
             jsonfile = open(f"{path.dirname(__file__)}/;Javier Settings;/Javier.json")
@@ -534,9 +569,9 @@ def getServers(dires):
     for dire in dires:
         if not path.isdir(dire):
             data['dirs'].remove(dire)
-            servers = [["ERROR - RESTART"]]
+            print(f"{dire} couldn't be found.")
             dump(data)
-            return servers
+            break
 
         with os.scandir(dire) as lservers:
             for item in lservers:
@@ -643,7 +678,7 @@ def runGUI():
             
             num+=1
         count += 1
-    newdirButton = tkinter.Button(buttonFrame, text="Add a Directory. . .", width = 33, height = 1, command= lambda : addDir(gui), bg=foreground, fg=background, bd=2)  # persistant button at the bottom to add a DIR.
+    newdirButton = tkinter.Button(buttonFrame, text="Add a server . . .", width = 33, height = 1, command= lambda : addServer(gui), bg=foreground, fg=background, bd=2)  # persistant button at the bottom to add a DIR.
     newdirButton.grid(column = 0, row = num, columnspan= 2, sticky=tkinter.W+tkinter.E)
 
     buttonContainer.pack()
@@ -735,7 +770,7 @@ def runGUI():
     javaLabel = tkinter.Label(settingsFrame, text="Java Override", bd=2, width =35, bg=background, fg=foreground)
     javaLabel.place(x=0, y=280)
     
-    jarLabel = tkinter.Label(settingsFrame, text= "Jar File Override", bd= 2, width = 35, bg=background, fg=foreground)
+    jarLabel = tkinter.Label(settingsFrame, text= "JAR File Override", bd= 2, width = 35, bg=background, fg=foreground)
     jarLabel.place(x=0, y=238)
     
     
@@ -745,10 +780,10 @@ def runGUI():
     global jarButton 
     jarButton = tkinter.Button(settingsFrame, command = lambda: browse4jar(jarOverride, selectStr),bd=2, width = 9, text = "Browse...", bg= background, fg = foreground)  # i do generally try to stay away from global variables as they make things a bit messy, but due to the nature of how i want to do these I don't see a much cleaner way
     
-    jsonbutton = tkinter.Button(settingsFrame, text = "Server data", bg=background, fg=foreground, height=1, bd=1, command = lambda: displaySData(gui))
-    jsonbutton.place(x=186, y=228)
+    jsonbutton = tkinter.Button(settingsFrame, text = "Server data", bg=background, fg=foreground, height=1, width=10, bd=1, command = lambda: displaySData(gui))
+    jsonbutton.place(x=180, y=228)
 
-    safebuttondesc = tkinter.Label(settingsFrame, text = "Only runs Vanilla Jar", width = 17, bg= background, fg=foreground)
+    safebuttondesc = tkinter.Label(settingsFrame, text = "Only runs Vanilla JAR", width = 17, bg= background, fg=foreground)
     safebuttondesc.place(x=127, y=142)
 
     safeStr = tkinter.StringVar(value='Safemode: OFF')
@@ -774,8 +809,6 @@ def runGUI():
     customsl.place(x=0, y=322)
     customs.place(x=0, y=343)
 
-    ### CHECK FOR THIS WHILE CRTL+Z, if this goes away YOU'VE OFFICIALLY GONE TOO FAR!!!
-
 
     ### Themes
 
@@ -798,7 +831,6 @@ def runGUI():
     themeScroll.pack(side = 'right',fill = 'y')
 
     for theme in data["themes"]:
-        #themething = list(data["themes"].keys())[list(data["themes"].values()).index(data["themes"][theme])]  # trust me this is needed
         themeButton = tkinter.Button(themeButtonFrame, text=theme   , width = 15, height=1, command = lambda themething=theme : ThemeChange(themething), bg=data["themes"][theme][1], fg=data["themes"][theme][0], bd=2)
         themeButton.pack()
     createThemeButton = tkinter.Button(themeButtonFrame, text = "Create your own. . . ", command = lambda: themeMaker(gui), bd=2, bg= foreground, fg= background)
@@ -813,7 +845,6 @@ def runGUI():
     gui.mainloop()
 
 ## actual script.
-#print(os.path.isfile(f"{path.dirname(__file__)}/;Javier Settings;/icons/Javier.ico"))
 dire = None
 data = getdata()
 runGUI()
