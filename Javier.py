@@ -94,7 +94,7 @@ def OJDKBrowser(gui, xy=[]):
 
 def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier has.  It 100% without a doubt in my mind has HUGE flaws.  But im not the one dealing with it rn.
 
-    def download(vanver, fabinst, fabloader, vanreq, fabreq, name, port):
+    def download(vanver, fabinst, fabloader, vanreq, fabreq, name, port, launch, gui):
         if name == "Enter your server name!" or name == '':
             print("Please name the server!")
             return
@@ -104,6 +104,7 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
         print("preparing folders...")
         os.mkdir(f"./{name}")
         os.chdir(f"./{name}")
+        immediate = "server.jar"
         if fabreq == "Null":
             
             print(vanver[int(vanreq)]["url"])
@@ -114,16 +115,22 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
             properties.write(f"server-port={port}")
             properties.close()
         else:
+            immediate = "fabric-server-launch.jar"
             urllib.request.urlretrieve(fabinst, "fabricInst.jar")
             #fabinst = fabricInst.jar
             #fabinst = fabinst[fabinst.find("fabric-installer-"):]
             java = data["java"]
             os.system(f"{java} -jar fabricInst.jar server -snapshot -mcversion {vanver[int(vanreq)]['id']} -loader {fabloader[int(fabreq)]['version']} -downloadMinecraft")
-            
-            
-        print("All done! make sure to restart Javier due to my awful code!")
+            print("cleaning up...")
+            os.remove("fabricInst.jar")
+        
         os.chdir(cwd)
 
+        if launch:
+            print("\n\nRunning it immediately, Will be skipping most setup processes!!!\n\n")
+            javierLaunch(f"Start: {name}", '', gui,'SafeMODE: OFF', '',"GUI: OFF", '.', data["java"], immediate=immediate)
+            
+        print("All done! make sure to restart Javier due to my awful code!")
 
         
         
@@ -166,8 +173,8 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
     createstr= tkinter.StringVar(serverwindow, "Select\nA\nVersion")
     
     
-    modcheckint = tkinter.IntVar()
-    moddedcheck = tkinter.Checkbutton(serverwindow, variable=modcheckint, onvalue=1, indicator=0, offvalue=0,text= "? ? ? ", bg=bg,fg=fg)
+    launchcheckint = tkinter.IntVar()
+    launchcheck = tkinter.Checkbutton(serverwindow, variable=launchcheckint, onvalue=1, indicator=0, offvalue=0,text= "Launch? ", bg=bg,fg=fg)
     
 
 
@@ -196,7 +203,7 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
     
 
     
-    moddedcheck.grid(column=0, row=0)
+    launchcheck.grid(column=0, row=0)
     nameEnter.grid(column=0, row=1, columnspan=2)
     portEntry.grid(column=1, row=0)
 
@@ -259,7 +266,7 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
         fabverbutton.grid(row =b+1, column = 0)
         b+=1
 
-    Create = tkinter.Button(serverwindow, width=10, height=3, bd=2, bg=bg, fg=fg, textvariable=createstr, command = lambda : download(allversions, latestfabricinstaller, allfabric, VValues.get(), FValues.get(), nameEnter.get(), portEntry.get()))
+    Create = tkinter.Button(serverwindow, width=10, height=3, bd=2, bg=bg, fg=fg, textvariable=createstr, command = lambda : download(allversions, latestfabricinstaller, allfabric, VValues.get(), FValues.get(), nameEnter.get(), portEntry.get(), launchcheckint.get(), gui))
     Create.grid(column=2, row=0, rowspan=2)
     
     vanContainer.pack()
@@ -601,23 +608,26 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
 
     return dire
 
-def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverride):
-    dire = data['dirs'][dire]
-    nogui = ''
-    if guiStr.get()[5:] == "OFF":
-        nogui="nogui"
+def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverride, immediate = None):
+    if dire == '.':
+        java = javaOverride
+    if dire != '.':
+        dire = data['dirs'][dire]
+    nogui = 'nogui'
+    if guiStr == "ON":
+        nogui=''
     
 
-    if selectStr.get() == "Start: None":
+    if selectStr == "Start: None":
         print("please select a server")
         return
     else:
-        server = selectStr.get()
+        server = selectStr
         server = server[7:]
 
     ## Code to grab the RAM value from everything available
     print(server)
-    maxRAM = RAM.get()
+    maxRAM = RAM
     if maxRAM == '' or not maxRAM.isdigit():
         if not maxRAM.isdigit():
             print("RAM value wasn't entered properly reverting to JSON...")
@@ -628,48 +638,49 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
             print(data['servers'][server][0])
             int(maxRAM) + 1
         except (KeyError, ValueError):
-            print("!!!! IMPORTANT !!!\n\nRAM value was not entered, and not found in the JSON.\n")
-            maxRAM = ''
-            while not maxRAM.isdigit():
-                maxRAM = input("Please enter a ram amount to save to the JSON file for future use:  ")
-            data['servers'][server][0] = int(maxRAM)
+                print("!!!! IMPORTANT !!!\n\nRAM value was not entered, and not found in the JSON.\n")
+                maxRAM = ''
+                while not maxRAM.isdigit():
+                    maxRAM = input("Please enter a ram amount to save to the JSON file for future use:  ")
+                if dire != '.':
+                    data['servers'][server][0] = int(maxRAM)
     else:
         data['servers'][server][0] = int(maxRAM)  # if its not obvious by the code itself, 0 is ram
 
     ## code to try and grab launch options from the JSON
+    if dire != '.':
+        customs = customs.get()
+        if customs == '':
+            try:
+                customs = data['servers'][server][1]  # if its not obvious by the code itself, 1 is customs in the json.
+            except:
+                pass
+        else:
+            data['servers'][server][1] = customs
 
-    customs = customs.get()
-    if customs == '':
+
         try:
-            customs = data['servers'][server][1]  # if its not obvious by the code itself, 1 is customs in the json.
+            data['servers'][server][2]  # 2 is jar file, this is stored as of 1.10 because I (Neeko)
+        except:                     # have realized that Javier is not perfect, which while sad, means that the USER (the doofus reading this) 
+            data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
+
+        try: 
+            print(len(data["servers"][server][3]))
+            if len(data["servers"][server][3]) > 8:
+                java = data['servers'][server][3]
+                java = f'"{java}"'
+            else:
+                print("no specified java path for server, running through default.")
+                raise 'No Java Path Specified'
         except:
-            pass
-    else:
-        data['servers'][server][1] = customs
-
-
-    try:
-        data['servers'][server][2]  # 2 is jar file, this is stored as of 1.10 because I (Neeko)
-    except:                     # have realized that Javier is not perfect, which while sad, means that the USER (the doofus reading this) 
-        data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
-
-    try: 
-        print(len(data["servers"][server][3]))
-        if len(data["servers"][server][3]) > 8:
-            java = data['servers'][server][3]
-            java = f'"{java}"'
-        else:
-            print("no specified java path for server, running through default.")
-            raise 'No Java Path Specified'
-    except:
-        java = javaOverride.get()
-        if len(java) < 8:
-            if java != "java":
-                java = "java"
-                data["java"] = "java"
-                print("Mishap in Java Override, assuming Java Runtime is in PATH and continuing.")
-        else:
-            java = f'"{java}"'
+            java = javaOverride
+            if len(java) < 8:
+                if java != "java":
+                    java = "java"
+                    data["java"] = "java"
+                    print("Mishap in Java Override, assuming Java Runtime is in PATH and continuing.")
+            else:
+                java = f'"{java}"'
         
 
     
@@ -679,37 +690,39 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
 
     
 
-
-    safe = safeStr.get()[10:]
-    ## Code to find the right JAR file to launch
-    file = data['servers'][server][2]
-    if not path.isfile(f"{dire}/{server}/{file}") or safe == "ON":
-        if safe == "OFF":
-            print("Jar in override doesn't exist, attempting to find jar...")
-        file = []
-        for item in os.listdir(f"{dire}/{server}"):
-            if item[-4:] == '.jar':
-                file.append(item)
-        if len(file) > 1:
-            for item in file:
-                check = zipfile.ZipFile(f"{dire}/{server}/{item}",'r')
-                check = check.open('META-INF/MANIFEST.MF','r')
-                check = check.readlines()
-                for line in check:
-                    if 'net.minecraft.server.MinecraftServer' in str(line):
-                        if safe == "ON":
-                            file = item
-                            break
-                        else:
-                            file.remove(item)
-        try:
-            if safe != "ON":
-                file = file[0]
-                data['servers'][server][2] = file
-        except:
-            dump(data)
-            print("something went wrong. . .")
-            return  
+    if dire != '.':
+        safe = safeStr
+        ## Code to find the right JAR file to launch
+        file = data['servers'][server][2]
+        if not path.isfile(f"{dire}/{server}/{file}") or safe == "ON":
+            if safe == "OFF":
+                print("Jar in override doesn't exist, attempting to find jar...")
+            file = []
+            for item in os.listdir(f"{dire}/{server}"):
+                if item[-4:] == '.jar':
+                    file.append(item)
+            if len(file) > 1:
+                for item in file:
+                    check = zipfile.ZipFile(f"{dire}/{server}/{item}",'r')
+                    check = check.open('META-INF/MANIFEST.MF','r')
+                    check = check.readlines()
+                    for line in check:
+                        if 'net.minecraft.server.MinecraftServer' in str(line):
+                            if safe == "ON":
+                                file = item
+                                break
+                            else:
+                                file.remove(item)
+            try:
+                if safe != "ON":
+                    file = file[0]
+                    data['servers'][server][2] = file
+            except:
+                dump(data)
+                print("something went wrong. . .")
+                return  
+    else:
+        file = immediate
     dump(data)#this is here to dump the RAM that you enter into the json incase there isn't any saved anywhere.  i forgot why this existed and nearly deleted the most important dump of all time
 
     ## Actual launch code.
@@ -961,7 +974,7 @@ def runGUI():
 
 
     selectStr = tkinter.StringVar(value="Start: None")
-    confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = lambda :  javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverride), bd=1, bg=background, fg=foreground)
+    confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = lambda :  javierLaunch(selectStr.get(), RAM.get(), gui, safeStr.get()[10:], customs, guiStr.get()[5:], dire, javaOverride.get()), bd=1, bg=background, fg=foreground)
     confirmBut.place(x=127, y=4)
 
 
