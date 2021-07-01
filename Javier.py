@@ -3,8 +3,8 @@ import time
 import os
 import zipfile
 import json
-from tkinter import filedialog
-from os import path
+from tkinter import filedialog, ttk
+from os import name, path
 toggle = True
 c = 0
 
@@ -16,41 +16,139 @@ def dump(dta):
         with open(f'{path.dirname(__file__)}/Javier.json', 'w') as f:
             json.dump(dta, f, indent=4)
 
+def saveJava(javaInt, javaOverride, server):
+    print(javaInt.get(), javaOverride.get(), server)
+    if javaInt.get() == "D":
+        data["java"] = javaOverride.get()
+    else:
+        data["servers"][server][3] = javaOverride.get()
+    dump(data)
 
 
-def addServer(gui):
+def addServer(gui, window, xy=[]):       ## by far the most sphagetti code that Javier has.  It 100% without a doubt in my mind has HUGE flaws.  But im not the one dealing with it rn.
+
+
     print("Getting versions..")
     import urllib.request, urllib.error
     try:
         allversions = urllib.request.Request("https://launchermeta.mojang.com/mc/game/version_manifest.json")
         allversions = json.loads(urllib.request.urlopen(allversions).read())
 
+
+
         latestfabricinstaller = urllib.request.Request("https://meta.fabricmc.net/v2/versions/installer")
         latestfabricinstaller = json.loads(urllib.request.urlopen(latestfabricinstaller).read())
         latestfabricinstaller = latestfabricinstaller[0]["url"]
-
         allfabric = urllib.request.Request("https://meta.fabricmc.net/v2/versions/loader")
         allfabric = json.loads(urllib.request.urlopen(allfabric).read())
-        
-
-        ''
     except urllib.error.URLError:
         print("Something went wrong... probably internet related?  Check your connection and try again...")
         return
-    print(len(allversions["versions"]))
-    allversions["versions"] = allversions["versions"][:-67]  ## the last 67 entries don't have a downloadable server JAR.  Javier is all about Servers, seems unecessary to keep, no?
-    print(allversions["versions"][489])
-
+    allversions = allversions["versions"][:-67]  ## the last 67 entries don't have a downloadable server JAR.  Javier is all about Servers, seems unecessary to keep, no?
+                   ## although i will still have to preform a check just to see if the version has a downloadable jar.  due to the fact that Mojang didn't keep up until recently.
+                                                ## and becuase i don't want the GUI to take forever to launch, it does the check ON CLICK.  If people complain about it too much i'll make it check beforehand, idk.
+    ###TODO: rest of UI at the bottom: "Modded" tickbox, name entry, and big create button
 
     themes = themeCheck()
     fg = themes[1]
     bg = themes[0]
     serverwindow = tkinter.Toplevel(gui, bg = bg)   # this makes the new window
     serverwindow.resizable(0,0)
-    serverwindow.geometry(f"+{gui.winfo_x()}+{gui.winfo_y()}")
-    serverwindow.minsize(300, 350)
-    serverwindow.title("Javier Server Creation Tool")
+    serverwindow.geometry(f"+{xy[0]}+{xy[1]}")
+    serverwindow.minsize(5, 200)
+   # serverwindow.maxsize(200, 375)
+    serverwindow.title("JSCT")        #fav, van, snap are the 3 tabs.   no they aren't, i don't wanna make favorites anymore they're too hard >:(
+    #tabframe = tkinter.Frame(serverwindow, height=40, width=300, bg=bg)
 
+
+    tabframe = ttk.Notebook(serverwindow, width=150, height=230)
+
+    createstr= tkinter.StringVar(serverwindow, "Select\nA\nVersion")
+    Create = tkinter.Button(serverwindow, width=10, height=3, bd=2, bg=bg, fg=fg, textvariable=createstr)
+    
+    modcheckint = tkinter.IntVar()
+    moddedcheck = tkinter.Checkbutton(serverwindow, variable=modcheckint, onvalue=1, indicator=0, offvalue=0,text= "Add Fabric?", bg=bg,fg=fg)
+    
+    nameEnter = tkinter.Entry(serverwindow, bd =2,width = 20, bg=bg, fg=fg)
+
+    Create.grid(column=1, row=0, rowspan=2)
+    moddedcheck.grid(column=0, row=0)
+    nameEnter.grid(column=0, row=1)
+
+
+    #quickFrame = tkinter.Frame(tabframe, height=350, width=300, bg=bg)
+    vanFrame= tkinter.Frame(tabframe, width= 150, height=240, bg=bg)
+    snapFrame = tkinter.Frame(tabframe, width=150, height=240, bg=bg)
+    fabFrame= tkinter.Frame(tabframe, width=150, height =240, bg=bg)
+
+    vanContainer = tkinter.Frame(vanFrame, bg= bg,height = 320, width = 190)
+    vanCanvas = tkinter.Canvas(vanContainer, bg= bg, height = 320, width =190)
+    vanScroll = tkinter.Scrollbar(vanContainer, orient='vertical', command = vanCanvas.yview, bg= bg) 
+    vanButtonFrame = tkinter.Frame(vanCanvas, bg= bg)
+    vanButtonFrame.bind("<Configure>",lambda e: vanCanvas.configure(scrollregion=vanCanvas.bbox("all")))
+    vanCanvas.create_window((0,0), window=vanButtonFrame, anchor = 'nw')
+    vanCanvas.configure(yscrollcommand=vanScroll.set)
+
+
+    snapCotainer = tkinter.Frame(snapFrame, bg=bg, height= 320, width = 190)  
+    snapCanvas = tkinter.Canvas(snapCotainer, bg= bg, height = 320, width=190) 
+    snapScroll = tkinter.Scrollbar(snapCotainer, orient="vertical", command = snapCanvas.yview, bg=bg)
+    snapButtonFrame = tkinter.Frame(snapCanvas, bg=bg)  
+    snapButtonFrame.bind("<Configure>",lambda e: snapCanvas.configure(scrollregion=snapCanvas.bbox("all")))
+    snapCanvas.create_window((0,0), window=snapButtonFrame, anchor = 'nw')
+    snapCanvas.configure(yscrollcommand=snapScroll.set)
+
+
+    fabCotainer = tkinter.Frame(fabFrame, bg=bg, height= 320, width = 190)  
+    fabCanvas = tkinter.Canvas(fabCotainer, bg= bg, height = 320, width =190) 
+    fabScroll = tkinter.Scrollbar(fabCotainer, orient="vertical", command = fabCanvas.yview, bg=bg)
+    fabButtonFrame = tkinter.Frame(fabCanvas, bg=bg)  
+    fabButtonFrame.bind("<Configure>",lambda e: fabCanvas.configure(scrollregion=fabCanvas.bbox("all")))
+    fabCanvas.create_window((0,0), window=fabButtonFrame, anchor = 'nw')
+    fabCanvas.configure(yscrollcommand=fabScroll.set)
+    b = 0
+    print("Putting everythingi in a nice list...")
+    VValues = tkinter.StringVar(tabframe, "Null")
+    for ver in allversions:
+        if ver["type"] == "release":
+            verbutton = tkinter.Radiobutton(vanButtonFrame, indicator=0, variable=VValues, value=b, text=ver["id"], width=25, bg=bg, fg=fg)
+        else:
+            verbutton = tkinter.Radiobutton(snapButtonFrame, indicator=0, variable=VValues, value=b, text=ver["id"], width=25, bg=bg, fg=fg)
+        verbutton.grid(row =b, column = 0)
+        b +=1
+    print("wrapping it up in a nice fabric...")
+    b =0
+    FValues = tkinter.StringVar(tabframe, "Null")
+    for ver in allfabric:
+        fabverbutton = tkinter.Radiobutton(fabButtonFrame, indicator=0, variable=FValues, value=b, text=ver["version"], width=25, bg=bg, fg=fg)
+        fabverbutton.grid(row =b, column = 0)
+        b+=1
+    print(VValues.get())
+    print(FValues.get())
+
+
+    vanContainer.pack()
+    vanCanvas.pack(side = 'left', fill = 'both')
+    vanScroll.pack(side = 'right',fill = 'y')
+    vanFrame.pack()
+
+    snapCotainer.pack()
+    snapCanvas.pack(side="left", fill="both")
+    snapScroll.pack(side="right", fill="y")
+    snapFrame.pack()
+
+    fabCotainer.pack()
+    fabCanvas.pack(side="left", fill="both")
+    fabScroll.pack(side="right", fill="y")
+    fabFrame.pack()
+
+
+    tabframe.add(vanFrame, text=  "Releases")
+    tabframe.add(snapFrame, text=  "Snapshots")
+    tabframe.add(fabFrame, text= "Fabric(Modded)")
+    #tabframe.grid(column = 0, row = num, columnspan= 2, sticky=tkinter.W+tkinter.E)
+    tabframe.grid(column=0, row=2, columnspan=2)
+    
 
 
 
@@ -112,9 +210,6 @@ def addDir(gui):    ## code to create a new window that's basically a menu to ad
 
 
 def themeMaker(gui): 
-
-    ###TODO: make new button work, make del a toggle into clicking a theme to del it, create the other boxes, do everything, make it work- dumbass.
-    ### 16 characters is the max for a theme name
 
     def boxUpdate(theme, tester):
 
@@ -279,6 +374,21 @@ def guiTog(guiStr):  # code to toggle the nogui flag on/off
         guiStr.set("GUI: ON")
     return guiStr
 
+def javaDefTog(javaInt, javaOverride, server):
+    loc = javaInt.get()
+    if loc == "D":
+        javaInt.set("S")
+        javaOverride.delete(0, "end")
+        try:
+            javaOverride.insert(0, data["servers"][server][3])
+        except:
+            "this is only here so that it doesn't whine and complain"
+    else:
+        javaInt.set("D")
+        javaOverride.delete(0, "end")
+        javaOverride.insert(0, data["java"])
+    return javaInt
+
 
 
 def ThemeChange(theme):  # code to update the theme.  still requires a restart as idk how to make javier update in real time.
@@ -306,19 +416,13 @@ def conformWindow(gui):   # this deforms the window to show the settings page - 
         gui.minsize(250, 363)
         gui.maxsize(250, 363)
 def dataupdate(server):  # when adding launch flags Javier would complain about indexing, so i have it make a list for every server you click on.
-    data['servers'][server] = ['', '','']
+    data['servers'][server] = ['', '','','']
     dump(data)
 
 def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to select a server, not launch it.
     global dire
     global c
     dire = d
-
-    java = javaOverride.get()
-    if len(java) < 8:
-        if java != "java":
-            java = "java"
-    data["java"] = java
 
     #awful check to see if the key is wrong, or if the index is incorrect.
     try:
@@ -328,10 +432,9 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
     except IndexError:
         pass
 
-
-    
-
-
+    if javaInt.get() == "S":
+        javaOverride.delete(0, "end")
+        javaOverride.insert(0, data['servers'][server][3])
 
     selectStr.set(f"Start: {server}") # this updates the start button to show the server name in the worst way possible.
     try:
@@ -354,6 +457,7 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
         jarButton.place(x=180, y=257)
         jarButton.lower(javaLabel)
         jarOverride.lower(jarButton)
+        javaDefault.place(x=0, y=300)
         
         
         c = True
@@ -375,11 +479,6 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
     else:
         server = selectStr.get()
         server = server[7:]
-
-    try:
-        data['servers'][server][2]  # 2 is jar file, this is stored as of 1.10 because I (Neeko)
-    except:                     # have realized that Javier is not perfect, which while sad, means that the USER (the doofus reading this) 
-        data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
 
     ## Code to grab the RAM value from everything available
     print(server)
@@ -414,14 +513,30 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
         data['servers'][server][1] = customs
 
 
-    java = javaOverride.get()
-    if len(java) < 8:
-        if java != "java":
-            java = "java"
-            data["java"] = "java"
-            print("Mishap in Java Override, assuming Java Runtime is in PATH and continuing.")
-    else:
-        java = f'"{java}"'
+    try:
+        data['servers'][server][2]  # 2 is jar file, this is stored as of 1.10 because I (Neeko)
+    except:                     # have realized that Javier is not perfect, which while sad, means that the USER (the doofus reading this) 
+        data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
+
+    try: 
+        java = data['servers'][server][3]
+    except:
+        java = javaOverride.get()
+        if len(java) < 8:
+            if java != "java":
+                java = "java"
+                data["java"] = "java"
+                print("Mishap in Java Override, assuming Java Runtime is in PATH and continuing.")
+        else:
+            java = f'"{java}"'
+        
+
+    
+
+    
+
+
+    
 
 
     safe = safeStr.get()[10:]
@@ -451,9 +566,11 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
                 file = file[0]
                 data['servers'][server][2] = file
         except:
+            dump(data)
             print("something went wrong. . .")
-            return
-    dump(data)
+            return  
+    dump(data)#this is here to dump the RAM that you enter into the json incase there isn't any saved anywhere.  i forgot why this existed and nearly deleted the most important dump of all time
+
     ## Actual launch code.
 
     back = os.getcwd()
@@ -544,13 +661,13 @@ def displaySData(gui):
 def getdata():
     ## Searching for the JSON file to pull RAM values from
     try:
-        if path.exists(f"{path.dirname(__file__)}/;Javier Settings;"):
-            with open(f'{path.dirname(__file__)}/;Javier Settings;/Javier.json', 'r') as f:
-                data = json.loads(f.read())
-        else:
-            with open(f'{path.dirname(__file__)}/Javier.json', 'r') as f:
-                data = json.loads(f.read())
-    except FileNotFoundError:
+            if path.exists(f"{path.dirname(__file__)}/;Javier Settings;"):
+                    with open(f'{path.dirname(__file__)}/;Javier Settings;/Javier.json', 'r') as f:
+                        data = json.loads(f.read())
+            else:
+                    with open(f'{path.dirname(__file__)}/Javier.json', 'r') as f:
+                        data = json.loads(f.read())
+    except (FileNotFoundError, json.decoder.JSONDecodeError):
         data = {"java":"java","dirs":["."],"servers":{},"favVers":[],"themes":{"Dark": ["#FFFFFF", "#36393F"],"High Contrast": ["#FFFFFF", "#000000"],"Light": ["#000000", "#FFFFFF"]},"curTheme":"Dark"}
         dump(data)
         if path.exists(f"{path.dirname(__file__)}/;Javier Settings;"):
@@ -670,6 +787,7 @@ def runGUI():
             dlbl.set("Javier  |  " +  os.getcwd())
         listdirL.grid(column = 0, row = num, columnspan= 2, sticky=tkinter.W+tkinter.E)
         num+=1
+        
         for i in range(0, len(servers[count])):
             launchButton = tkinter.Button(buttonFrame, text=servers[count][i], width = 32, height=1, command = lambda i=i, d=d, count=count : confirmUpdate(servers[count][i], RAM, selectStr, customs, count, javaOverride), bg=background, fg=foreground, bd=2)
             launchButton.grid(column = 1, row = num)
@@ -678,7 +796,7 @@ def runGUI():
             
             num+=1
         count += 1
-    newdirButton = tkinter.Button(buttonFrame, text="Add a server . . .", width = 33, height = 1, command= lambda : addServer(gui), bg=foreground, fg=background, bd=2)  # persistant button at the bottom to add a DIR.
+    newdirButton = tkinter.Button(buttonFrame, text="Add a server . . .", width = 33, height = 1, command= lambda : addServer(gui, "fav", [gui.winfo_x(), gui.winfo_y()]), bg=foreground, fg=background, bd=2)  # persistant button at the bottom to add a DIR.
     newdirButton.grid(column = 0, row = num, columnspan= 2, sticky=tkinter.W+tkinter.E)
 
     buttonContainer.pack()
@@ -759,9 +877,9 @@ def runGUI():
     serverselectdiscl.place(x=65, y=255)
 
 
-    javaOverride = tkinter.Entry(settingsFrame, bd=2, width=30, bg=background, fg= foreground)
+    javaOverride = tkinter.Entry(settingsFrame, bd=2, width=23, bg=background, fg= foreground)
     javaOverride.insert(0, data["java"])
-    javaOverride.place(x=0, y=300)
+    javaOverride.place(x=13, y=300)
 
     javaButton = tkinter.Button(settingsFrame, command = lambda: browse4Java(javaOverride), bd=2, height = 1, width = 9, text="Browse...", bg= background, fg=foreground)
     javaButton.place(x=180, y=298)
@@ -773,7 +891,11 @@ def runGUI():
     jarLabel = tkinter.Label(settingsFrame, text= "JAR File Override", bd= 2, width = 35, bg=background, fg=foreground)
     jarLabel.place(x=0, y=238)
     
-    
+    global javaInt, javaDefault
+    javaInt = tkinter.StringVar(value = "D")
+    javaDefault = tkinter.Button(settingsFrame, bd=1, width=1, bg=background, fg=foreground, textvariable = javaInt, command = lambda selectStr=selectStr: javaDefTog(javaInt, javaOverride, server = selectStr.get()[7:]))
+    javaSave = tkinter.Button(settingsFrame, bd=1, width=3, bg=background, fg=foreground, text = 'SAVE', command = lambda : saveJava(javaInt, javaOverride, server = selectStr.get()[7:]))
+    javaSave.place(x=155, y=300)
     global jarOverride 
     jarOverride = tkinter.Entry(settingsFrame, bd=2, width=30, bg=background, fg=foreground)  # these being global is due to how much of a PAIN they're going to be.
 
@@ -844,6 +966,12 @@ def runGUI():
 
     gui.mainloop()
 
+#java = javaOverride.get()
+#    if len(java) < 8:
+#        if java != "java":
+#            java = "java"
+#    data["java"] = java
+#
 ## actual script.
 dire = None
 data = getdata()
