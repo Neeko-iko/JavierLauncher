@@ -118,7 +118,7 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
             #fabinst = fabricInst.jar
             #fabinst = fabinst[fabinst.find("fabric-installer-"):]
             java = data["java"]
-            os.system(f"{java} -jar fabricInst.jar server -snapshot -mcversion {vanver[int(vanreq)]['id']} -loader{fabloader[int(fabreq)]['version']} -downloadMinecraft")
+            os.system(f"{java} -jar fabricInst.jar server -snapshot -mcversion {vanver[int(vanreq)]['id']} -loader {fabloader[int(fabreq)]['version']} -downloadMinecraft")
             
             
         print("All done! make sure to restart Javier due to my awful code!")
