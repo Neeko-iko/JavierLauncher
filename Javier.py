@@ -5,6 +5,7 @@ import zipfile
 import json
 from tkinter import Entry, filedialog, ttk
 from os import name, path
+import urllib.request, urllib.error
 toggle = True
 c = 0
 
@@ -25,11 +26,111 @@ def saveJava(javaInt, javaOverride, server):
     dump(data)
 
 
-def addServer(gui, window, xy=[]):       ## by far the most sphagetti code that Javier has.  It 100% without a doubt in my mind has HUGE flaws.  But im not the one dealing with it rn.
+
+def OJDKBrowser(gui, xy=[]):
+
+    def downloadOJDK(j8, j16):
+        cwd = os.getcwd()
+        if not os.path.isdir("./.java"):
+            print("Java folder not found, creating .java folder")
+            os.mkdir("./.java")
+        if j8:
+            print("Downloading OpenJDK Java 8...")
+            os.chdir("./.java")
+            if not os.path.isdir("OpenJDK Java 8"):
+                urllib.request.urlretrieve("https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u292-b10/OpenJDK8U-jre_x64_windows_hotspot_8u292b10.zip", "java8")
+                print("Unzipping everything...")
+                javazipp = zipfile.ZipFile("java8")
+                zipfile.ZipFile.extractall(javazipp, "OpenJDK Java 8")
+                print("Cleaning up...")
+                javazipp.close()
+                os.remove("java8")
+                print("Succesfully downloaded Java 8")
+            else:
+                print("You already have OpenJDK Java 8 installed.")
+        os.chdir(cwd)
+        
+        if j16:
+            print("Downloading Open JDK Java 16")
+            os.chdir("./.java")
+            if not os.path.isdir("OpenJDK Java 16"):
+                urllib.request.urlretrieve("https://github.com/AdoptOpenJDK/openjdk16-binaries/releases/download/jdk-16.0.1%2B9/OpenJDK16U-jre_x64_windows_hotspot_16.0.1_9.zip", "java16")
+                print("Unzipping everything...")
+                javazipp = zipfile.ZipFile("java16")
+                zipfile.ZipFile.extractall(javazipp, "OpenJDK Java 16")
+                print("Cleaning up...")
+                javazipp.close()
+                os.remove("java16")
+                print("Succesfully downloaded Java 16")
+            else:
+                print("You already have OpenJDK Java 16 installed.")
+        os.chdir(cwd)
+
+
+    themes = themeCheck()
+    fg = themes[1]
+    bg = themes[0]
+    OJDKwindow = tkinter.Toplevel(gui, bg = bg)   # this makes the new window
+    OJDKwindow.resizable(0,0)
+    OJDKwindow.geometry(f"+{xy[0] + 150}+{xy[1]+50}")
+    OJDKwindow.minsize(200, 80)
+    OJDKwindow.title("OJDKB") #Open JDK Browser
+
+    java8int = tkinter.IntVar()
+    java16int =tkinter.IntVar()
+
+    java8 =tkinter.Checkbutton(OJDKwindow, indicator=0, variable=java8int, offvalue=0, onvalue=1, text="    Java 8    ", fg=fg,bg=bg)
+    java16 = tkinter.Checkbutton(OJDKwindow, indicator=0,variable=java16int, offvalue=0, onvalue=1,text="    Java 16    ",fg=fg,bg=bg)
+    java8.grid(row=0, column=0)
+    java16.grid(row=0, column=1)
+    label8 = tkinter.Label(OJDKwindow, text="MC 1.16 and below", bg=bg,fg=fg)
+    label16=tkinter.Label(OJDKwindow, text="MC 1.17 and above", bg=bg,fg=fg)
+    label8.grid(row=1, column=0)
+    label16.grid(row=1, column=1)
+
+    downloadButton = tkinter.Button(OJDKwindow, text="Download selected version(s)", bg=bg,fg=fg, command= lambda : downloadOJDK(java8int.get(), java16int.get()))
+    downloadButton.grid(row=2, column=0, columnspan=2)
+    
+
+def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier has.  It 100% without a doubt in my mind has HUGE flaws.  But im not the one dealing with it rn.
+
+    def download(vanver, fabinst, fabloader, vanreq, fabreq, name, port):
+        if name == "Enter your server name!" or name == '':
+            print("Please name the server!")
+            return
+        if not port.isdigit():
+            port = 22565
+        cwd = os.getcwd()
+        print("preparing folders...")
+        os.mkdir(f"./{name}")
+        os.chdir(f"./{name}")
+        if fabreq == "Null":
+            
+            print(vanver[int(vanreq)]["url"])
+            vanver = urllib.request.Request(vanver[int(vanreq)]["url"])
+            print("Downloading jar...")
+            urllib.request.urlretrieve(json.loads(urllib.request.urlopen(vanver).read())["downloads"]["server"]["url"], "server.jar")
+            properties = open("server.properties", "w")
+            properties.write(f"server-port={port}")
+            properties.close()
+        else:
+            urllib.request.urlretrieve(fabinst, "fabricInst.jar")
+            #fabinst = fabricInst.jar
+            #fabinst = fabinst[fabinst.find("fabric-installer-"):]
+            java = data["java"]
+            os.system(f"{java} -jar fabricInst.jar server -snapshot -mcversion {vanver[int(vanreq)]['id']} -loader{fabloader[int(fabreq)]['version']} -downloadMinecraft")
+            
+            
+        print("All done! make sure to restart Javier due to my awful code!")
+        os.chdir(cwd)
+
+
+        
+        
 
 
     print("Getting versions..")
-    import urllib.request, urllib.error
+    
     try:
         allversions = urllib.request.Request("https://launchermeta.mojang.com/mc/game/version_manifest.json")
         allversions = json.loads(urllib.request.urlopen(allversions).read())
@@ -56,7 +157,6 @@ def addServer(gui, window, xy=[]):       ## by far the most sphagetti code that 
     serverwindow.resizable(0,0)
     serverwindow.geometry(f"+{xy[0]}+{xy[1]}")
     serverwindow.minsize(5, 200)
-   # serverwindow.maxsize(200, 375)
     serverwindow.title("JSCT")        #fav, van, snap are the 3 tabs.   no they aren't, i don't wanna make favorites anymore they're too hard >:(
     #tabframe = tkinter.Frame(serverwindow, height=40, width=300, bg=bg)
 
@@ -64,10 +164,10 @@ def addServer(gui, window, xy=[]):       ## by far the most sphagetti code that 
     tabframe = ttk.Notebook(serverwindow, width=150, height=230)
 
     createstr= tkinter.StringVar(serverwindow, "Select\nA\nVersion")
-    Create = tkinter.Button(serverwindow, width=10, height=3, bd=2, bg=bg, fg=fg, textvariable=createstr)
+    
     
     modcheckint = tkinter.IntVar()
-    moddedcheck = tkinter.Checkbutton(serverwindow, variable=modcheckint, onvalue=1, indicator=0, offvalue=0,text= "Add Fabric?", bg=bg,fg=fg)
+    moddedcheck = tkinter.Checkbutton(serverwindow, variable=modcheckint, onvalue=1, indicator=0, offvalue=0,text= "? ? ? ", bg=bg,fg=fg)
     
 
 
@@ -95,7 +195,7 @@ def addServer(gui, window, xy=[]):       ## by far the most sphagetti code that 
     portEntry.bind('<FocusIn>', portstuff)
     
 
-    Create.grid(column=2, row=0, rowspan=2)
+    
     moddedcheck.grid(column=0, row=0)
     nameEnter.grid(column=0, row=1, columnspan=2)
     portEntry.grid(column=1, row=0)
@@ -131,27 +231,37 @@ def addServer(gui, window, xy=[]):       ## by far the most sphagetti code that 
     fabButtonFrame.bind("<Configure>",lambda e: fabCanvas.configure(scrollregion=fabCanvas.bbox("all")))
     fabCanvas.create_window((0,0), window=fabButtonFrame, anchor = 'nw')
     fabCanvas.configure(yscrollcommand=fabScroll.set)
-    b = 0
-    print("Putting everythingi in a nice list...")
+    
+    FValues = tkinter.StringVar(tabframe, "Null")
     VValues = tkinter.StringVar(tabframe, "Null")
+    def UpdateButton(btnstr, Fabval, ver="b"):
+        modstr = "Vanilla"
+        if Fabval != "Null":
+            modstr = "Modded"
+        btnstr.set(f"{modstr}\n{ver}\nServer")
+
+
+    print("Putting everythingi in a nice list...")
+    b=0
     for ver in allversions:
         if ver["type"] == "release":
-            verbutton = tkinter.Radiobutton(vanButtonFrame, indicator=0, variable=VValues, value=b, text=ver["id"], width=25, bg=bg, fg=fg)
+            verbutton = tkinter.Radiobutton(vanButtonFrame, indicator=0, variable=VValues, value=b, text=ver["id"], width=27, bg=bg, fg=fg, command= lambda ver=ver : UpdateButton(createstr, FValues.get(), ver["id"]))
         else:
-            verbutton = tkinter.Radiobutton(snapButtonFrame, indicator=0, variable=VValues, value=b, text=ver["id"], width=25, bg=bg, fg=fg)
+            verbutton = tkinter.Radiobutton(snapButtonFrame, indicator=0, variable=VValues, value=b, text=ver["id"], width=27, bg=bg, fg=fg, command= lambda ver=ver : UpdateButton(createstr, FValues.get(), ver["id"]))
         verbutton.grid(row =b, column = 0)
         b +=1
     print("wrapping it up in a nice fabric...")
     b =0
-    FValues = tkinter.StringVar(tabframe, "Null")
-    for ver in allfabric:
-        fabverbutton = tkinter.Radiobutton(fabButtonFrame, indicator=0, variable=FValues, value=b, text=ver["version"], width=25, bg=bg, fg=fg)
+    fabverbutton = tkinter.Radiobutton(fabButtonFrame, indicator=0, variable=FValues, value="Null", text="No Fabric, Please!", width=27, bg=fg, fg=bg)
+    for loader in allfabric:
         fabverbutton.grid(row =b, column = 0)
+        fabverbutton = tkinter.Radiobutton(fabButtonFrame, indicator=0, variable=FValues, value=b, text=loader["version"], width=27, bg=bg, fg=fg)
+        fabverbutton.grid(row =b+1, column = 0)
         b+=1
-    print(VValues.get())
-    print(FValues.get())
 
-
+    Create = tkinter.Button(serverwindow, width=10, height=3, bd=2, bg=bg, fg=fg, textvariable=createstr, command = lambda : download(allversions, latestfabricinstaller, allfabric, VValues.get(), FValues.get(), nameEnter.get(), portEntry.get()))
+    Create.grid(column=2, row=0, rowspan=2)
+    
     vanContainer.pack()
     vanCanvas.pack(side = 'left', fill = 'both')
     vanScroll.pack(side = 'right',fill = 'y')
@@ -544,8 +654,10 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
         data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
 
     try: 
-        if data["servers"][server][3] != '':
+        print(len(data["servers"][server][3]))
+        if len(data["servers"][server][3]) > 8:
             java = data['servers'][server][3]
+            java = f'"{java}"'
         else:
             print("no specified java path for server, running through default.")
             raise 'No Java Path Specified'
@@ -623,7 +735,7 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
             del eula
         
         print("Server Started!")
-        #print(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
+        print(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
         os.system(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
         
 
@@ -723,7 +835,7 @@ def getServers(dires):
         with os.scandir(dire) as lservers:
             for item in lservers:
                 if path.isdir(path.abspath(item)):
-                    if item.name != ";Javier Settings;":
+                    if item.name != ";Javier Settings;" and item.name !=".java":
                         serv.append(item.name)
             servers.append(serv)
             serv = []
@@ -826,7 +938,7 @@ def runGUI():
             
             num+=1
         count += 1
-    newdirButton = tkinter.Button(buttonFrame, text="Add a server . . .", width = 33, height = 1, command= lambda : addServer(gui, "fav", [gui.winfo_x(), gui.winfo_y()]), bg=foreground, fg=background, bd=2)  # persistant button at the bottom to add a DIR.
+    newdirButton = tkinter.Button(buttonFrame, text="Add a server . . .", width = 33, height = 1, command= lambda : addServer(gui, [gui.winfo_x(), gui.winfo_y()]), bg=foreground, fg=background, bd=2)  # persistant button at the bottom to add a DIR.
     newdirButton.grid(column = 0, row = num, columnspan= 2, sticky=tkinter.W+tkinter.E)
 
     buttonContainer.pack()
@@ -955,7 +1067,7 @@ def runGUI():
     optionsL = tkinter.Label(settingsFrame, text = "Options", bg=background, fg=foreground, width=17)
     optionsL.place(x=128, y=98)
 
-    OJDKbutton = tkinter.Button(settingsFrame, text="Install OJDK", bg=background, fg=foreground, height=1, width=10, bd=1)
+    OJDKbutton = tkinter.Button(settingsFrame, text="Install OJDK", bg=background, fg=foreground, height=1, width=10, bd=1, command = lambda : OJDKBrowser(gui, [gui.winfo_x(), gui.winfo_y()]))
     OJDKbutton.place(x=-5, y=228)
 
 
@@ -998,13 +1110,6 @@ def runGUI():
 
 
     gui.mainloop()
-
-#java = javaOverride.get()
-#    if len(java) < 8:
-#        if java != "java":
-#            java = "java"
-#    data["java"] = java
-#
 ## actual script.
 dire = None
 data = getdata()
