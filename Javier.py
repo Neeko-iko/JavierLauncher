@@ -3,7 +3,7 @@ import time
 import os
 import zipfile
 import json
-from tkinter import filedialog, ttk
+from tkinter import Entry, filedialog, ttk
 from os import name, path
 toggle = True
 c = 0
@@ -69,11 +69,36 @@ def addServer(gui, window, xy=[]):       ## by far the most sphagetti code that 
     modcheckint = tkinter.IntVar()
     moddedcheck = tkinter.Checkbutton(serverwindow, variable=modcheckint, onvalue=1, indicator=0, offvalue=0,text= "Add Fabric?", bg=bg,fg=fg)
     
-    nameEnter = tkinter.Entry(serverwindow, bd =2,width = 20, bg=bg, fg=fg)
 
-    Create.grid(column=1, row=0, rowspan=2)
+
+    global firsttimeNAME
+    firsttimeNAME=True
+    def namestuff(e):
+        global firsttimeNAME
+        if firsttimeNAME:
+            firsttimeNAME = False
+            nameEnter.delete(0,"end")
+    nameEnter = tkinter.Entry(serverwindow, bd =2,width = 20, bg=bg, fg=fg)
+    nameEnter.insert(0,"Enter your server name!")
+    nameEnter.bind('<FocusIn>', namestuff)
+    
+    global firsttimePORT
+    firsttimePORT=True
+    def portstuff(e):
+        global firsttimePORT
+        if firsttimePORT:
+            firsttimePORT = False
+            portEntry.delete(0,"end")
+
+    portEntry= tkinter.Entry(serverwindow, bd=2, width=7, bg=bg, fg=fg)
+    portEntry.insert(0,"Port #")
+    portEntry.bind('<FocusIn>', portstuff)
+    
+
+    Create.grid(column=2, row=0, rowspan=2)
     moddedcheck.grid(column=0, row=0)
-    nameEnter.grid(column=0, row=1)
+    nameEnter.grid(column=0, row=1, columnspan=2)
+    portEntry.grid(column=1, row=0)
 
 
     #quickFrame = tkinter.Frame(tabframe, height=350, width=300, bg=bg)
@@ -147,7 +172,7 @@ def addServer(gui, window, xy=[]):       ## by far the most sphagetti code that 
     tabframe.add(snapFrame, text=  "Snapshots")
     tabframe.add(fabFrame, text= "Fabric(Modded)")
     #tabframe.grid(column = 0, row = num, columnspan= 2, sticky=tkinter.W+tkinter.E)
-    tabframe.grid(column=0, row=2, columnspan=2)
+    tabframe.grid(column=0, row=2, columnspan=3)
     
 
 
@@ -519,7 +544,11 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
         data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
 
     try: 
-        java = data['servers'][server][3]
+        if data["servers"][server][3] != '':
+            java = data['servers'][server][3]
+        else:
+            print("no specified java path for server, running through default.")
+            raise 'No Java Path Specified'
     except:
         java = javaOverride.get()
         if len(java) < 8:
@@ -594,6 +623,7 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
             del eula
         
         print("Server Started!")
+        #print(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
         os.system(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
         
 
@@ -877,11 +907,19 @@ def runGUI():
     serverselectdiscl.place(x=65, y=255)
 
 
+    global javaInt, javaDefault
+    javaInt = tkinter.StringVar(value = "D")
+    javaDefault = tkinter.Button(settingsFrame, bd=1, width=1, bg=background, fg=foreground, textvariable = javaInt, command = lambda selectStr=selectStr: javaDefTog(javaInt, javaOverride, server = selectStr.get()[7:]))
+    javaSave = tkinter.Button(settingsFrame, bd=1, width=3, bg=background, fg=foreground, text = 'SAVE', command = lambda : saveJava(javaInt, javaOverride, server = selectStr.get()[7:]))
+    javaSave.place(x=155, y=300)
+
+
     javaOverride = tkinter.Entry(settingsFrame, bd=2, width=23, bg=background, fg= foreground)
     javaOverride.insert(0, data["java"])
     javaOverride.place(x=13, y=300)
 
     javaButton = tkinter.Button(settingsFrame, command = lambda: browse4Java(javaOverride), bd=2, height = 1, width = 9, text="Browse...", bg= background, fg=foreground)
+    javaButton.lower(javaSave)
     javaButton.place(x=180, y=298)
 
     global javaLabel
@@ -890,12 +928,6 @@ def runGUI():
     
     jarLabel = tkinter.Label(settingsFrame, text= "JAR File Override", bd= 2, width = 35, bg=background, fg=foreground)
     jarLabel.place(x=0, y=238)
-    
-    global javaInt, javaDefault
-    javaInt = tkinter.StringVar(value = "D")
-    javaDefault = tkinter.Button(settingsFrame, bd=1, width=1, bg=background, fg=foreground, textvariable = javaInt, command = lambda selectStr=selectStr: javaDefTog(javaInt, javaOverride, server = selectStr.get()[7:]))
-    javaSave = tkinter.Button(settingsFrame, bd=1, width=3, bg=background, fg=foreground, text = 'SAVE', command = lambda : saveJava(javaInt, javaOverride, server = selectStr.get()[7:]))
-    javaSave.place(x=155, y=300)
     global jarOverride 
     jarOverride = tkinter.Entry(settingsFrame, bd=2, width=30, bg=background, fg=foreground)  # these being global is due to how much of a PAIN they're going to be.
 
@@ -923,7 +955,8 @@ def runGUI():
     optionsL = tkinter.Label(settingsFrame, text = "Options", bg=background, fg=foreground, width=17)
     optionsL.place(x=128, y=98)
 
-    
+    OJDKbutton = tkinter.Button(settingsFrame, text="Install OJDK", bg=background, fg=foreground, height=1, width=10, bd=1)
+    OJDKbutton.place(x=-5, y=228)
 
 
     customsl = tkinter.Label(settingsFrame, text = "Java Runtime Args", bg=background, fg=foreground, width=35, height=1)
