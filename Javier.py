@@ -94,7 +94,7 @@ def OJDKBrowser(gui, xy=[]):
 
 def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier has.  It 100% without a doubt in my mind has HUGE flaws.  But im not the one dealing with it rn.
 
-    def download(vanver, fabinst, fabloader, vanreq, fabreq, name, port, launch, gui):
+    def download(vanver, fabinst, fabloader, vanreq, fabreq, name, port, launch, gui, window):
         if name == "Enter your server name!" or name == '':
             print("Please name the server!")
             return
@@ -128,7 +128,8 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
 
         if launch:
             print("\n\nRunning it immediately, Will be skipping most setup processes!!!\n\n")
-            javierLaunch(f"Start: {name}", '', gui,'SafeMODE: OFF', '',"GUI: OFF", '.', data["java"], immediate=immediate)
+            window.destroy()
+            javierLaunch(f"Start: {name}", '', gui,'SafeMODE: OFF', '',"GUI: OFF", 'GO!', data["java"], immediate=immediate)
             
         print("All done! make sure to restart Javier due to my awful code!")
 
@@ -266,7 +267,7 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
         fabverbutton.grid(row =b+1, column = 0)
         b+=1
 
-    Create = tkinter.Button(serverwindow, width=10, height=3, bd=2, bg=bg, fg=fg, textvariable=createstr, command = lambda : download(allversions, latestfabricinstaller, allfabric, VValues.get(), FValues.get(), nameEnter.get(), portEntry.get(), launchcheckint.get(), gui))
+    Create = tkinter.Button(serverwindow, width=10, height=3, bd=2, bg=bg, fg=fg, textvariable=createstr, command = lambda : download(allversions, latestfabricinstaller, allfabric, VValues.get(), FValues.get(), nameEnter.get(), portEntry.get(), launchcheckint.get(), gui, serverwindow))
     Create.grid(column=2, row=0, rowspan=2)
     
     vanContainer.pack()
@@ -609,9 +610,9 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
     return dire
 
 def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverride, immediate = None):
-    if dire == '.':
+    if dire == 'GO!':
         java = javaOverride
-    if dire != '.':
+    if dire != 'GO!':
         dire = data['dirs'][dire]
     nogui = 'nogui'
     if guiStr == "ON":
@@ -642,13 +643,13 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
                 maxRAM = ''
                 while not maxRAM.isdigit():
                     maxRAM = input("Please enter a ram amount to save to the JSON file for future use:  ")
-                if dire != '.':
+                if dire != 'GO!':
                     data['servers'][server][0] = int(maxRAM)
     else:
         data['servers'][server][0] = int(maxRAM)  # if its not obvious by the code itself, 0 is ram
 
     ## code to try and grab launch options from the JSON
-    if dire != '.':
+    if dire != 'GO!':
         customs = customs.get()
         if customs == '':
             try:
@@ -690,7 +691,7 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
 
     
 
-    if dire != '.':
+    if dire != 'GO!':
         safe = safeStr
         ## Code to find the right JAR file to launch
         file = data['servers'][server][2]
@@ -731,9 +732,10 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
     gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC -because i (neeko) won't thread him.  i'll do that at Javier 2.0, if that ever comes around.
     #del check, safe
     
-    os.chdir(back)
     while True:
         sTime = int(time.time())
+        if dire == "GO!":
+            dire='.'
         os.chdir(f"{dire}/{server}")
         try:
             open('eula.txt', 'r')
