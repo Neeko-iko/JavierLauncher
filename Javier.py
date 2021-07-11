@@ -249,7 +249,7 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
         btnstr.set(f"{modstr}\n{ver}\nServer")
 
 
-    print("Putting everythingi in a nice list...")
+    print("putting everything in a nice list...")
     b=0
     for ver in allversions:
         if ver["type"] == "release":
@@ -850,7 +850,7 @@ def getServers(dires):
         with os.scandir(dire) as lservers:
             for item in lservers:
                 if path.isdir(path.abspath(item)):
-                    if item.name != ";Javier Settings;" and item.name !=".java":
+                    if item.name != ";Javier Settings;" and item.name !=".java" and item.name != "__pycache__":
                         serv.append(item.name)
             servers.append(serv)
             serv = []
