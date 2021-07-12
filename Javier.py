@@ -719,9 +719,24 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
                     file = file[0]
                     data['servers'][server][2] = file
             except:
-                dump(data)
-                print("something went wrong. . .")
-                return  
+                
+                print("Jar File not found... checking for Bedrock mayhaps?")
+                if os.name == "nt":
+                    for item in os.listdir(f"{dire}/{server}"):
+                        if item[-4:] == '.exe':
+                            file = item
+                            break
+                    print("found windows executable binary! running with that!")
+                else:
+                    if not path.isfile(f"{dire}/{server}/bedrock_server"):
+                        print("This isn't a server!")
+                    else:
+                        del file
+                
+
+                
+                
+
     else:
         file = immediate
     dump(data)#this is here to dump the RAM that you enter into the json incase there isn't any saved anywhere.  i forgot why this existed and nearly deleted the most important dump of all time
@@ -731,12 +746,11 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
     back = os.getcwd()
     gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC -because i (neeko) won't thread him.  i'll do that at Javier 2.0, if that ever comes around.
     #del check, safe
-    
-    while True:
-        sTime = int(time.time())
-        if dire == "GO!":
-            dire='.'
-        os.chdir(f"{dire}/{server}")
+    if dire == "GO!":
+        dire='.'
+    os.chdir(f"{dire}/{server}")
+    if file[-4:] == ".jar":
+        launch = f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}"
         try:
             open('eula.txt', 'r')
         except FileNotFoundError:
@@ -748,10 +762,20 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
             eula.close()
             print("EULA Created and signed! Have fun!")
             del eula
+    elif os.name == "nt":
+        launch = file
+    else:
+        launch = "LD_LIBRARY_PATH=. ./bedrock_server" #no other way to do this- no good way to read through the binaries.
+    while True:
+        sTime = int(time.time())
+        
+        
         
         print("Server Started!")
-        print(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
-        os.system(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
+        #print(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
+        #os.system(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
+        print(launch)
+        os.system(launch)
         
 
         if ( int(time.time()) - int(sTime) < 220):
@@ -760,13 +784,10 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
             break
 
         else:
-
-            os.chdir(back)
             print("\n\nit seems as though the server has crashed or was stopped forcibly.\nfeel free to close the CMD if you want to close the server\n\n\notherwise the server will restart in 10 seconds...")
             for i in range (10, 0, -1):
                 print(str(i) + " seconds remaning\n\n\n")
                 time.sleep(1)
-
 def displaySData(gui):
 
     ## 100% NOT REUSED CODE FROM THE DIRS NO SIR I WOULD *NEVER* EVER DO THAT :)
