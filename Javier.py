@@ -725,8 +725,12 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
                     for item in os.listdir(f"{dire}/{server}"):
                         if item[-4:] == '.exe':
                             file = item
+                            print("found windows executable binary! running with that!")
+                            data['servers'][server][2] = file
                             break
-                    print("found windows executable binary! running with that!")
+                    if file == []:
+                        print("Nothing was found.")
+                        return
                 else:
                     if not path.isfile(f"{dire}/{server}/bedrock_server"):
                         print("This isn't a server!")
