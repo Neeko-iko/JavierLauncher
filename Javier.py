@@ -1,10 +1,11 @@
 import tkinter
 import time
-import os
+import os, getopt
 import zipfile
 import json
-from tkinter import Entry, filedialog, ttk
-from os import name, path
+from sys import argv
+from tkinter import filedialog, ttk
+from os import path
 import urllib.request, urllib.error
 toggle = True
 c = 0
@@ -129,7 +130,7 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
         if launch:
             print("\n\nRunning it immediately, Will be skipping most setup processes!!!\n\n")
             window.destroy()
-            javierLaunch(f"Start: {name}", '', gui,'SafeMODE: OFF', '',"GUI: OFF", 'GO!', data["java"], immediate=immediate)
+            javierLaunch(f"Start: {name}", '','SafeMODE: OFF', '',"GUI: OFF", 'GO!', data["java"], immediate=immediate, gui=gui)
             
         print("All done! make sure to restart Javier due to my awful code!")
 
@@ -609,10 +610,10 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
 
     return dire
 
-def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverride, immediate = None):
-    if dire == 'GO!':
+def javierLaunch(selectStr, RAM, safeStr, customs, guiStr, dire, javaOverride, immediate = None, gui=None):
+    if dire[:2] == 'GO':
         java = javaOverride
-    if dire != 'GO!':
+    if dire[:2] != 'GO':
         dire = data['dirs'][dire]
     nogui = 'nogui'
     if guiStr == "ON":
@@ -625,6 +626,10 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
     else:
         server = selectStr
         server = server[7:]
+    try:
+        data['servers'][server]
+    except:
+        dataupdate(server)
 
     ## Code to grab the RAM value from everything available
     print(server)
@@ -633,7 +638,8 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
         if not maxRAM.isdigit():
             print("RAM value wasn't entered properly reverting to JSON...")
         try:
-            gui.withdraw()
+            if gui:
+                gui.withdraw()
             maxRAM = data['servers'][server][0]
             
             print(data['servers'][server][0])
@@ -643,13 +649,13 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
                 maxRAM = ''
                 while not maxRAM.isdigit():
                     maxRAM = input("Please enter a ram amount to save to the JSON file for future use:  ")
-                if dire != 'GO!':
+                if dire[:2] != 'GO':
                     data['servers'][server][0] = int(maxRAM)
     else:
         data['servers'][server][0] = int(maxRAM)  # if its not obvious by the code itself, 0 is ram
 
     ## code to try and grab launch options from the JSON
-    if dire != 'GO!':
+    if dire[:2] != 'GO':
         customs = customs.get()
         if customs == '':
             try:
@@ -699,6 +705,8 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
             if safe == "OFF":
                 print("Jar in override doesn't exist, attempting to find jar...")
             file = []
+            if dire == "GO":
+                dire = '.'
             for item in os.listdir(f"{dire}/{server}"):
                 if item[-4:] == '.jar':
                     file.append(item)
@@ -748,11 +756,13 @@ def javierLaunch(selectStr, RAM, gui, safeStr, customs, guiStr, dire, javaOverri
     ## Actual launch code.
 
     back = os.getcwd()
-    gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC -because i (neeko) won't thread him.  i'll do that at Javier 2.0, if that ever comes around.
+    if gui:
+        gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC -because i (neeko) won't thread him.  i'll do that at Javier 2.0, if that ever comes around.
     #del check, safe
-    if dire == "GO!":
+    if dire[:2] == "GO":
         dire='.'
     os.chdir(f"{dire}/{server}")
+    print(file)
     if file[-4:] == ".jar":
         launch = f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}"
         try:
@@ -1001,7 +1011,7 @@ def runGUI():
 
 
     selectStr = tkinter.StringVar(value="Start: None")
-    confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = lambda :  javierLaunch(selectStr.get(), RAM.get(), gui, safeStr.get()[10:], customs, guiStr.get()[5:], dire, javaOverride.get()), bd=1, bg=background, fg=foreground)
+    confirmBut = tkinter.Button(ramFrame, textvariable = selectStr, width = 17, height =3, command = lambda :  javierLaunch(selectStr.get(), RAM.get(), safeStr.get()[10:], customs, guiStr.get()[5:], dire, javaOverride.get(), gui=gui), bd=1, bg=background, fg=foreground)
     confirmBut.place(x=127, y=4)
 
 
@@ -1034,6 +1044,8 @@ def runGUI():
 
 
     ## Buttons in settings and similar things.
+    javaSave = tkinter.Button(settingsFrame, bd=1, width=3, bg=background, fg=foreground, text = 'SAVE', command = lambda : saveJava(javaInt, javaOverride, server = selectStr.get()[7:]))
+    javaSave.place(x=155, y=300)
 
     def browse4Java(javaOverride):
         javapath = filedialog.askopenfile(master = gui, initialdir=".", title= "Select a Java Runtime Executable", filetypes=[("Java Runtime Executable", ("java.exe"))])
@@ -1062,8 +1074,7 @@ def runGUI():
     global javaInt, javaDefault
     javaInt = tkinter.StringVar(value = "D")
     javaDefault = tkinter.Button(settingsFrame, bd=1, width=1, bg=background, fg=foreground, textvariable = javaInt, command = lambda selectStr=selectStr: javaDefTog(javaInt, javaOverride, server = selectStr.get()[7:]))
-    javaSave = tkinter.Button(settingsFrame, bd=1, width=3, bg=background, fg=foreground, text = 'SAVE', command = lambda : saveJava(javaInt, javaOverride, server = selectStr.get()[7:]))
-    javaSave.place(x=155, y=300)
+    
 
 
     javaOverride = tkinter.Entry(settingsFrame, bd=2, width=23, bg=background, fg= foreground)
@@ -1071,8 +1082,10 @@ def runGUI():
     javaOverride.place(x=13, y=300)
 
     javaButton = tkinter.Button(settingsFrame, command = lambda: browse4Java(javaOverride), bd=2, height = 1, width = 9, text="Browse...", bg= background, fg=foreground)
-    javaButton.lower(javaSave)
+    
     javaButton.place(x=180, y=298)
+    javaButton.lower(javaSave)
+    javaOverride.lower(javaSave)
 
     global javaLabel
     javaLabel = tkinter.Label(settingsFrame, text="Java Override", bd=2, width =35, bg=background, fg=foreground)
@@ -1153,4 +1166,17 @@ def runGUI():
 ## actual script.
 dire = None
 data = getdata()
-runGUI()
+argv = argv[1:]
+if argv == []:
+    runGUI()
+else:
+    print(argv)
+    if len(argv) > 1:
+        opts = "sdrjc:"
+        longOpts = ["Server", ("Directory", "Dir"), "ram", "java", ("customs", "args")]
+        #try:
+        args, vals = getopt.getopt(argv, opts, longOpts)
+
+       # javierLaunch(f"Start: {argv}", '', 'SafeMODE: OFF', '',"GUI: OFF", data["java"])
+    else:
+        javierLaunch(f"Start: {argv[0]}", '', 'SafeMODE: OFF', '',"GUI: OFF", "GO",data["java"])
