@@ -1,9 +1,9 @@
 import tkinter
 import time
-import os, getopt
+import os, argparse
 import zipfile
 import json
-from sys import argv
+#from sys import argv
 from tkinter import filedialog, ttk
 from os import path
 import urllib.request, urllib.error
@@ -1166,17 +1166,21 @@ def runGUI():
 ## actual script.
 dire = None
 data = getdata()
-argv = argv[1:]
-if argv == []:
+parser = argparse.ArgumentParser()
+parser.add_argument("-s", "--Server", help = "The name of the folder of the server, doesn't default", required = False)
+parser.add_argument('-r', "--Ram", help = "Amount of ram to dump into the server, doesn't default.", required= False, default= '0', type=int)
+parser.add_argument('-d', "--Directory", help = "Directory to look for the server. Defaults to Javier's current working directory.", required= False, default = '.')
+parser.add_argument('-j', '--Java', help = "direct path to a java executable to run the server from. Defaults to default Java in the json, which defaults to PATH.", required = False, default= data['java'])
+parser.add_argument('-c', '--Customs', help = "Custom Java runtime arguments. Defaults to none.", required = False, default='')
+argv = parser.parse_args()
+if argv.Server == None:
     runGUI()
 else:
-    print(argv)
-    if len(argv) > 1:
-        opts = "sdrjc:"
-        longOpts = ["Server", ("Directory", "Dir"), "ram", "java", ("customs", "args")]
-        #try:
-        args, vals = getopt.getopt(argv, opts, longOpts)
-
-       # javierLaunch(f"Start: {argv}", '', 'SafeMODE: OFF', '',"GUI: OFF", data["java"])
+    if path.isdir(f"{argv.Directory}/{argv.Server}"):
+        if argv.Directory == ".":
+            argv.Directory = 'GO'
+        if argv.Ram == 0:
+            argv.Ram = ''
+        javierLaunch(f"Start: {argv.Server}", argv.Ram, 'SafeMODE: OFF', argv.customs,"GUI: OFF", argv.Directory, argv.Java)
     else:
-        javierLaunch(f"Start: {argv[0]}", '', 'SafeMODE: OFF', '',"GUI: OFF", "GO",data["java"])
+        print("That server wasn't found.  Make sure its in the proper directory, or make sure that you sent the directory through, and try again!  if you're still confused, make sure to use the help command.")
