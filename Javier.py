@@ -7,8 +7,9 @@ c = 0
 # 1. UPDATE (updates the vanilla jar to the latest version.)
 # 2. ADD MINI (adds a shortcut to run Javier with launch args to dummy it down)
 # 3. DEL MINI (deletes a shortcut to run Javier with launch args)
-def secretStuff():
+def secretStuff():  # Holy fuck this shit SUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCKS
     ''
+    
 
 
 def dump(dta):
@@ -41,7 +42,7 @@ def OJDKBrowser(gui, xy=[]):
             os.chdir("./.java")
             if not os.path.isdir("OpenJDK Java 8"):
                 urllib.request.urlretrieve("https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u292-b10/OpenJDK8U-jre_x64_windows_hotspot_8u292b10.zip", "java8")
-                print("Unzipping everything...")
+                print("Unzipping everything...") 
                 javazipp = zipfile.ZipFile("java8")
                 zipfile.ZipFile.extractall(javazipp, "OpenJDK Java 8")
                 print("Cleaning up...")
@@ -311,7 +312,7 @@ def addDir(gui):    ## code to create a new window that's basically a menu to ad
         addDir(gui)
         
 
-    def addNewDir(dirwindow, gui, dirStr):     # creates an empty dir for the user to update
+    def addNewDir(dirwindow, gui):     # creates an empty dir for the user to update
         directory = filedialog.askdirectory(master =dirwindow, initialdir=".", title= "Select a folder")
         data['dirs'].append(directory)
         dump(data)
@@ -347,8 +348,12 @@ def addDir(gui):    ## code to create a new window that's basically a menu to ad
         delete.grid(row = i+1, column = 1) 
         place = i+2  ## im bad.
     
-    addnewButton = tkinter.Button(buttonFrame, width = 20, text = "ADD NEW DIR", bg = "GREEN", fg = "WHITE", command = lambda: addNewDir(dirwindow, gui, direntry.get()))  ## button to run code to add empty dir for user to edit.
-    addnewButton.grid(row = place, column = 0, columnspan= 2, sticky=tkinter.W+tkinter.E)
+    addnewButton = tkinter.Button(buttonFrame, width = 20, text = "ADD NEW DIR", bg = "GREEN", fg = "WHITE", command = lambda: addNewDir(dirwindow, gui))  ## button to run code to add empty dir for user to edit.
+    try:
+        addnewButton.grid(row = place, column = 0, columnspan= 2, sticky=tkinter.W+tkinter.E)
+    except Exception:
+        print("Javier is looking in no Dirs. Making him USELESS!!\n\n\n, if you'd like you can always have him scan the DIR he's in.")
+        addnewButton.grid(row = 0, column = 0, columnspan= 2, sticky=tkinter.W+tkinter.E)
 
     buttonContainer.pack() # the scrolling frame is packed here isntead of earlier - it doesn't really matter where its packed as long as it is,
     buttonCanvas.pack(side = 'left', fill = 'both')
