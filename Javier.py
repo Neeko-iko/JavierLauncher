@@ -1,14 +1,15 @@
-import tkinter
-import time
-import os, argparse
-import zipfile
-import json
-#from sys import argv
-from tkinter import filedialog, ttk
-from os import path
-import urllib.request, urllib.error
+
 toggle = True
 c = 0
+###
+# SECRET SETTINGS:
+
+# 1. UPDATE (updates the vanilla jar to the latest version.)
+# 2. ADD MINI (adds a shortcut to run Javier with launch args to dummy it down)
+# 3. DEL MINI (deletes a shortcut to run Javier with launch args)
+def secretStuff():
+    ''
+
 
 def dump(dta):
     if path.exists(f"{path.dirname(__file__)}/;Javier Settings;"):
@@ -130,7 +131,8 @@ def addServer(gui, xy=[]):       ## by far the most sphagetti code that Javier h
         if launch:
             print("\n\nRunning it immediately, Will be skipping most setup processes!!!\n\n")
             window.destroy()
-            javierLaunch(f"Start: {name}", '','SafeMODE: OFF', '',"GUI: OFF", 'GO!', data["java"], immediate=immediate, gui=gui)
+            #javierLaunch(f"Start: {name}", '', '',"GUI: OFF", 'GO!', data["java"], immediate=immediate, gui=gui)
+            javierProper('.', f"Start: {name}", immediate, "nogui", 2, '', data["java"])
             
         print("All done! make sure to restart Javier due to my awful code!")
 
@@ -559,7 +561,7 @@ def conformWindow(gui):   # this deforms the window to show the settings page - 
         gui.title("Javier - MCSL")
         gui.minsize(250, 363)
         gui.maxsize(250, 363)
-def dataupdate(server):  # when adding launch flags Javier would complain about indexing, so i have it make a list for every server you click on.
+def dataupdate(server):  #  when adding launch flags Javier would complain about indexing, so i have it make a list for every server you click on.
     data['servers'][server] = ['', '','','']
     dump(data)
 
@@ -610,11 +612,70 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
 
     return dire
 
-def javierLaunch(selectStr, RAM, safeStr, customs, guiStr, dire, javaOverride, immediate = None, gui=None):
-    if dire[:2] == 'GO':
-        java = javaOverride
-    if dire[:2] != 'GO':
-        dire = data['dirs'][dire]
+def findThatJar(dire, server, safe, file = ''):
+    if not path.isfile(f"{dire}/{server}/{file}") or safe == "ON":
+        if safe == "OFF":
+            print("Jar in override doesn't exist, attempting to find jar...")
+        file = []
+        for item in os.listdir(f"{dire}/{server}"):
+            if item[-4:] == '.jar':
+                file.append(item)
+        if len(file) > 1:
+            for item in file:
+                check = zipfile.ZipFile(f"{dire}/{server}/{item}",'r')
+                check = check.open('META-INF/MANIFEST.MF','r')
+                check = check.readlines()
+                for line in check:
+                    if 'net.minecraft.server.MinecraftServer' in str(line):
+                        if safe == "ON":
+                            file = item
+                            break
+                        else:
+                            file.remove(item)
+        try:
+            if safe != "ON":
+                file = file[0]
+                data['servers'][server][2] = file
+        except:
+            
+            print("Jar File not found... checking for Bedrock mayhaps?")
+            if os.name == "nt":
+                for item in os.listdir(f"{dire}/{server}"):
+                    if item[-4:] == '.exe':
+                        file = item
+                        print("found windows executable binary! running with that!")
+                        data['servers'][server][2] = file
+                        break
+                if file == []:
+                    print("Nothing was found.")
+                    return
+            else:
+                if not path.isfile(f"{dire}/{server}/bedrock_server"):
+                    print("This isn't a server!")
+                else:
+                    del file
+    return file
+
+def GrabThatRAM(maxRAM, server):
+    if not maxRAM.isdigit():
+        print("RAM value wasn't entered properly reverting to JSON...")
+    try:
+        maxRAM = data['servers'][server][0]
+        
+        print(data['servers'][server][0])
+        int(maxRAM) + 1
+    except (KeyError, ValueError):
+            print("!!!! IMPORTANT !!!\n\nRAM value was not entered, and not found in the JSON.\n")
+            maxRAM = ''
+            while not maxRAM.isdigit():
+                maxRAM = input("Please enter a ram amount to save to the JSON file for future use:  ")
+                data['servers'][server][0] = int(maxRAM)
+      # if its not obvious by the code itself, 0 is ram
+    return maxRAM
+
+def javierLaunch(selectStr, maxRAM, safeStr, customs, guiStr, dire, javaOverride, gui=None):
+    java = javaOverride
+    dire = data['dirs'][dire]
     nogui = 'nogui'
     if guiStr == "ON":
         nogui=''
@@ -632,62 +693,43 @@ def javierLaunch(selectStr, RAM, safeStr, customs, guiStr, dire, javaOverride, i
         dataupdate(server)
 
     ## Code to grab the RAM value from everything available
-    print(server)
-    maxRAM = RAM
     if maxRAM == '' or not maxRAM.isdigit():
-        if not maxRAM.isdigit():
-            print("RAM value wasn't entered properly reverting to JSON...")
-        try:
-            if gui:
-                gui.withdraw()
-            maxRAM = data['servers'][server][0]
-            
-            print(data['servers'][server][0])
-            int(maxRAM) + 1
-        except (KeyError, ValueError):
-                print("!!!! IMPORTANT !!!\n\nRAM value was not entered, and not found in the JSON.\n")
-                maxRAM = ''
-                while not maxRAM.isdigit():
-                    maxRAM = input("Please enter a ram amount to save to the JSON file for future use:  ")
-                if dire[:2] != 'GO':
-                    data['servers'][server][0] = int(maxRAM)
+        maxRAM = GrabThatRAM(maxRAM, server) # Grabs the RAM!!! GET HIM!!!
     else:
-        data['servers'][server][0] = int(maxRAM)  # if its not obvious by the code itself, 0 is ram
+        data['servers'][server][0] = int(maxRAM)
+    print(server)
+    
 
     ## code to try and grab launch options from the JSON
-    if dire[:2] != 'GO':
-        customs = customs.get()
-        if customs == '':
-            try:
-                customs = data['servers'][server][1]  # if its not obvious by the code itself, 1 is customs in the json.
-            except:
-                pass
-        else:
-            data['servers'][server][1] = customs
-
-
+    customs = customs.get()
+    if customs == '':
         try:
-            data['servers'][server][2]  # 2 is jar file, this is stored as of 1.10 because I (Neeko)
-        except:                     # have realized that Javier is not perfect, which while sad, means that the USER (the doofus reading this) 
-            data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
-
-        try: 
-            print(len(data["servers"][server][3]))
-            if len(data["servers"][server][3]) > 8:
-                java = data['servers'][server][3]
-                java = f'"{java}"'
-            else:
-                print("no specified java path for server, running through default.")
-                raise 'No Java Path Specified'
+            customs = data['servers'][server][1]  # if its not obvious by the code itself, 1 is customs in the json.
         except:
-            java = javaOverride
-            if len(java) < 8:
-                if java != "java":
-                    java = "java"
-                    data["java"] = "java"
-                    print("Mishap in Java Override, assuming Java Runtime is in PATH and continuing.")
-            else:
-                java = f'"{java}"'
+            pass
+    else:
+        data['servers'][server][1] = customs
+    try:
+        data['servers'][server][2]  # 2 is jar file, this is stored as of 1.10 because I (Neeko)
+    except:                     # have realized that Javier is not perfect, which while sad, means that the USER (the doofus reading this) 
+        data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
+    try: 
+        print(len(data["servers"][server][3]))
+        if len(data["servers"][server][3]) > 8:
+            java = data['servers'][server][3]
+            java = f'"{java}"'
+        else:
+            print("no specified java path for server, running through default.")
+            raise 'No Java Path Specified'
+    except:
+        java = javaOverride
+        if len(java) < 8:
+            if java != "java":
+                java = "java"
+                data["java"] = "java"
+                print("Mishap in Java Override, assuming Java Runtime is in PATH and continuing.")
+        else:
+            java = f'"{java}"'
         
 
     
@@ -697,72 +739,28 @@ def javierLaunch(selectStr, RAM, safeStr, customs, guiStr, dire, javaOverride, i
 
     
 
-    if dire != 'GO!':
-        safe = safeStr
-        ## Code to find the right JAR file to launch
-        file = data['servers'][server][2]
-        if not path.isfile(f"{dire}/{server}/{file}") or safe == "ON":
-            if safe == "OFF":
-                print("Jar in override doesn't exist, attempting to find jar...")
-            file = []
-            if dire == "GO":
-                dire = '.'
-            for item in os.listdir(f"{dire}/{server}"):
-                if item[-4:] == '.jar':
-                    file.append(item)
-            if len(file) > 1:
-                for item in file:
-                    check = zipfile.ZipFile(f"{dire}/{server}/{item}",'r')
-                    check = check.open('META-INF/MANIFEST.MF','r')
-                    check = check.readlines()
-                    for line in check:
-                        if 'net.minecraft.server.MinecraftServer' in str(line):
-                            if safe == "ON":
-                                file = item
-                                break
-                            else:
-                                file.remove(item)
-            try:
-                if safe != "ON":
-                    file = file[0]
-                    data['servers'][server][2] = file
-            except:
-                
-                print("Jar File not found... checking for Bedrock mayhaps?")
-                if os.name == "nt":
-                    for item in os.listdir(f"{dire}/{server}"):
-                        if item[-4:] == '.exe':
-                            file = item
-                            print("found windows executable binary! running with that!")
-                            data['servers'][server][2] = file
-                            break
-                    if file == []:
-                        print("Nothing was found.")
-                        return
-                else:
-                    if not path.isfile(f"{dire}/{server}/bedrock_server"):
-                        print("This isn't a server!")
-                    else:
-                        del file
-                
+    safe = safeStr
 
-                
-                
+    file = data['servers'][server][2]
+    print(file)
+    findThatJar(dire, server, safe, file) # Finds that Jar!!!  We can't let him get away with this!!!
 
-    else:
-        file = immediate
+    
     dump(data)#this is here to dump the RAM that you enter into the json incase there isn't any saved anywhere.  i forgot why this existed and nearly deleted the most important dump of all time
 
     ## Actual launch code.
 
-    back = os.getcwd()
+    
     if gui:
         gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC -because i (neeko) won't thread him.  i'll do that at Javier 2.0, if that ever comes around.
     #del check, safe
-    if dire[:2] == "GO":
-        dire='.'
-    os.chdir(f"{dire}/{server}")
+    #os.chdir(f"{dire}/{server}")
     print(file)
+    javierProper(dire, server, file, nogui, maxRAM, customs, java)
+
+
+def javierProper(dire, server, file, nogui, maxRAM, customs, java):
+    os.chdir(f"{dire}/{server}")
     if file[-4:] == ".jar":
         launch = f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}"
         try:
@@ -780,11 +778,12 @@ def javierLaunch(selectStr, RAM, safeStr, customs, guiStr, dire, javaOverride, i
         launch = file
     else:
         launch = "LD_LIBRARY_PATH=. ./bedrock_server" #no other way to do this- no good way to read through the binaries.
+
+
+
     while True:
         sTime = int(time.time())
-        
-        
-        
+
         print("Server Started!")
         #print(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
         #os.system(f"{java} -Xmx{maxRAM}G -Xms256M {customs} -jar {file} {nogui}")
@@ -1164,6 +1163,14 @@ def runGUI():
 
     gui.mainloop()
 ## actual script.
+
+
+
+import os, argparse, json, time
+from os import path
+
+
+
 dire = None
 data = getdata()
 parser = argparse.ArgumentParser()
@@ -1174,13 +1181,16 @@ parser.add_argument('-j', '--Java', help = "direct path to a java executable to 
 parser.add_argument('-c', '--Customs', help = "Custom Java runtime arguments. Defaults to none.", required = False, default='')
 argv = parser.parse_args()
 if argv.Server == None:
+    import urllib.request, urllib.error
+    import tkinter
+    from tkinter import filedialog, ttk
+    import zipfile
     runGUI()
 else:
     if path.isdir(f"{argv.Directory}/{argv.Server}"):
-        if argv.Directory == ".":
-            argv.Directory = 'GO'
         if argv.Ram == 0:
-            argv.Ram = ''
-        javierLaunch(f"Start: {argv.Server}", argv.Ram, 'SafeMODE: OFF', argv.customs,"GUI: OFF", argv.Directory, argv.Java)
+            argv.Ram = GrabThatRAM('', argv.Server)
+        file = findThatJar(argv.Directory, argv.Server, "OFF")
+        javierProper(argv.Directory, argv.Server, file, "nogui", argv.Ram, argv.Customs, argv.Java)
     else:
         print("That server wasn't found.  Make sure its in the proper directory, or make sure that you sent the directory through, and try again!  if you're still confused, make sure to use the help command.")
