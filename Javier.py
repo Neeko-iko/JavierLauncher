@@ -1,4 +1,7 @@
 
+from tkinter import Button
+
+
 toggle = True
 c = 0
 ###
@@ -7,9 +10,54 @@ c = 0
 # 1. UPDATE (updates the vanilla jar to the latest version.)
 # 2. ADD MINI (adds a shortcut to run Javier with launch args to dummy it down)
 # 3. DEL MINI (deletes a shortcut to run Javier with launch args)
-def secretStuff():  # Holy fuck this shit SUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCKS
-    ''
-    
+def SSS(Secret, server):
+    def SecretUpdate(secret, server):
+        request = urllib.request.Request
+        open = urllib.request.urlopen
+        dir = data['dirs'][dire]
+        id = json.loads(open(request("https://launchermeta.mojang.com/mc/game/version_manifest.json")).read())["latest"]
+        if 'snap' in secret:
+            print("Getting the latest snapshot...")
+            id = id["snapshot"]
+        else:
+            print("Getting the latest release...")
+            id =id["release"]
+        versions = json.loads(open(request("https://launchermeta.mojang.com/mc/game/version_manifest.json")).read())["versions"]
+        for version in versions:
+            if version['id'] == id:
+                id = json.loads(open(request(version['url'])).read())['downloads']['server']['url']
+        print("out with the old and in with the new...")
+        os.remove(f"{dir}/{server}/{findThatJar(dir, server, 'ON', file = '')[0]}")
+        urllib.request.urlretrieve(id, f"{dir}/{server}/server.jar")
+            
+    if Secret[0:6] == "update":
+        SecretUpdate(Secret, server)
+    elif Secret[0:7] == "addstart":
+        ''
+
+
+
+
+def secretStuff(gui, startstr, xy=[]):  # this code is abysmal
+    if startstr != "None":
+        themes = themeCheck()
+        fg = themes[1]
+        bg = themes[0]
+        Secretwindow = tkinter.Toplevel(gui, bg = bg)   # this makes the new window
+        Secretwindow.resizable(0,0)
+        Secretwindow.geometry(f"+{xy[0] + 150}+{xy[1]+50}")
+        Secretwindow.minsize(200, 22)
+        Secretwindow.maxsize(200,22)
+        Secretwindow.title("SERET!")
+        SecretCode = tkinter.Entry(Secretwindow, fg=bg, bg=fg, width=25, bd=2)
+        SecretCode.grid(row=0, column=0)
+
+        
+
+
+        SecretButton = tkinter.Button(Secretwindow, text="SECRE?T", bd=2, bg=bg, fg=fg, command = lambda: SSS(SecretCode.get().lower(), startstr))
+        SecretButton.grid(row=0, column=1)
+
 
 
 def dump(dta):
@@ -610,7 +658,6 @@ def confirmUpdate(server, RAM, selectStr, customs, d, javaOverride):  # code to 
         jarOverride.lower(jarButton)
         javaDefault.place(x=0, y=300)
         
-        
         c = True
     jarOverride.delete(0, "end")
     jarOverride.insert(0, data['servers'][server][2])
@@ -659,6 +706,7 @@ def findThatJar(dire, server, safe, file = ''):
                     print("This isn't a server!")
                 else:
                     del file
+    print("server file is: " + file)
     return file
 
 def GrabThatRAM(maxRAM, server):
@@ -679,6 +727,7 @@ def GrabThatRAM(maxRAM, server):
     return maxRAM
 
 def javierLaunch(selectStr, maxRAM, safeStr, customs, guiStr, dire, javaOverride, gui=None):
+    
     java = javaOverride
     dire = data['dirs'][dire]
     nogui = 'nogui'
@@ -690,12 +739,13 @@ def javierLaunch(selectStr, maxRAM, safeStr, customs, guiStr, dire, javaOverride
         print("please select a server")
         return
     else:
-        server = selectStr
-        server = server[7:]
+        server = selectStr[7:]
     try:
         data['servers'][server]
     except:
         dataupdate(server)
+
+    gui.withdraw()   
 
     ## Code to grab the RAM value from everything available
     if maxRAM == '' or not maxRAM.isdigit():
@@ -719,7 +769,7 @@ def javierLaunch(selectStr, maxRAM, safeStr, customs, guiStr, dire, javaOverride
     except:                     # have realized that Javier is not perfect, which while sad, means that the USER (the doofus reading this) 
         data['servers'][server][2] = '' # should be perfectly capable of solving his mistakes
     try: 
-        print(len(data["servers"][server][3]))
+        #print(len(data["servers"][server][3]))
         if len(data["servers"][server][3]) > 8:
             java = data['servers'][server][3]
             java = f'"{java}"'
@@ -748,7 +798,7 @@ def javierLaunch(selectStr, maxRAM, safeStr, customs, guiStr, dire, javaOverride
 
     file = data['servers'][server][2]
     print(file)
-    findThatJar(dire, server, safe, file) # Finds that Jar!!!  We can't let him get away with this!!!
+    file = findThatJar(dire, server, safe, file) # Finds that Jar!!!  We can't let him get away with this!!!
 
     
     dump(data)#this is here to dump the RAM that you enter into the json incase there isn't any saved anywhere.  i forgot why this existed and nearly deleted the most important dump of all time
@@ -756,11 +806,11 @@ def javierLaunch(selectStr, maxRAM, safeStr, customs, guiStr, dire, javaOverride
     ## Actual launch code.
 
     
-    if gui:
-        gui.destroy()   #DESTORYS JAVIER WITH FACTS AND LOGIC -because i (neeko) won't thread him.  i'll do that at Javier 2.0, if that ever comes around.
+    
     #del check, safe
     #os.chdir(f"{dire}/{server}")
     print(file)
+    gui.destroy()  #DESTORYS JAVIER WITH FACTS AND LOGIC -because i (neeko) won't thread him.  i'll do that at Javier 2.0, if that ever comes around.  
     javierProper(dire, server, file, nogui, maxRAM, customs, java)
 
 
@@ -1069,7 +1119,7 @@ def runGUI():
         jarOverride.insert(0, jarpath)
 
 
-    advancel = tkinter.Button(settingsFrame, text = "__________________________________\nADVANCED", bg=background, fg=foreground, bd=0)
+    advancel = tkinter.Button(settingsFrame, text = "__________________________________\nADVANCED", bg=background, fg=foreground, bd=0, command = lambda: secretStuff(gui, selectStr.get()[7:], [gui.winfo_x(), gui.winfo_y()]))
     advancel.place(x=34, y=208)
     serverselectdiscl = tkinter.Label(settingsFrame, text="Please select a server!", bd= 2, bg=background, fg=foreground)
     serverselectdiscl.place(x=65, y=255)
