@@ -8,7 +8,7 @@ class mainwindow(gtk.Window):
     def __init__(self):
         super().__init__(title = "JavierGTK")
 
-        #settingbutton = gtk.Button(label = "open settings") will work on this stuff L8R NERDS!!!!!!!
+        #settingbutton = gtk.Button(label = "open settings") will work on this stuff L8R NERDS!!!!!!
         #settingbutton.connect("clicked", self.opensettings)
         #self.add(settingbutton)
         listof = gtk.ListBox()
