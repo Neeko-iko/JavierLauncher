@@ -15,7 +15,7 @@ class mainwindow(gtk.Window):
         listof.set_selection_mode(gtk.SelectionMode.NONE)
         #items = gtk.ListBoxRow()
 
-        serverlist = serverfinder.folders("/home/neeko/Desktop/Programming/Python/Javier-GTK")
+        serverlist = serverfinder.folders()
         if serverlist == []:
             emptylabel = gtk.Label(label = "Javier found no servers!")
             listof.add(emptylabel)
