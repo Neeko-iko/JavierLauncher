@@ -1,31 +1,22 @@
-from http import server
-from Internals import serverfinder, settingsconfig
-from PySide6 import QtCore, QtWidgets, QtGui
-import sys
-class MainScreen(QtWidgets.QWidget):
-    def __init__ (self):
+import PySide6
+from PySide6 import QtWidgets
+from Internals import ui
+
+
+class MainJavier(QtWidgets.QWidget):
+    def __init__(self):
         super().__init__()
-        self.button = QtWidgets.QPushButton("Start Server!")
-
-        self.label = QtWidgets.QLabel("This doesn't work, and it won't for a long time.")
-
-
-        self.layout = QtWidgets.QVBoxLayout(self)
-        self.layout.addWidget(self.button)
-        self.layout.addWidget(self.label)
-
-        self.button.clicked.connect(self.findServers)
+        self.ui = ui.Ui_Main()
+        self.ui.setupUi(self)
 
 
-    @QtCore.Slot()
-    def findServers(self):
-        self.label.setText(str(serverfinder.folders()))
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
+    app = QtWidgets.QApplication()
+    widget = MainJavier()
 
-    widget = MainScreen()
-    widget.resize(500, 696) # double the size of the original!!! that's right!! go big or go home!!!!!!!!!!!!!!!!!!
+    #widget.resize(500, 696) # double the size of the original!!! that's right!! go big or go home!!!!!!!!!!!!!!!!!!
+    #widget.setWindowTitle("Javier | MC Server Launcher")
     widget.show()
-    sys.exit(app.exec())
+    app.exec()
