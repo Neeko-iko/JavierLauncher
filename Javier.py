@@ -1,4 +1,3 @@
-import PySide6
 from PySide6 import QtWidgets
 from Internals import ui
 
@@ -10,11 +9,8 @@ class MainJavier(QtWidgets.QWidget):
         self.ui.setupUi(self)
 
 
+app = QtWidgets.QApplication()
+widget = MainJavier()
 
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication()
-    widget = MainJavier()
-    
-    widget.show()
-    app.exec()
+widget.show()
+app.exec()

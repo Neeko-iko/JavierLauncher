@@ -21,7 +21,7 @@ Developed with Python 3.10 on Debian
 > is Javier-QT available as a windows executable file?
 
 not at the moment. if you want to run it, you'll have to install QT (PySide6 is the package im using) on your local machine and run Javier.py from your terminal (or by double clicking, how fancy)
-i'll make a windows exe
+i'll make a Windows, MacOS, and Linux executable when it's up-to-snuff with GUI version 1.6 or later. 
 
 > Why not just continue the old (GUI) build?
 
