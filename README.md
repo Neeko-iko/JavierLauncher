@@ -8,9 +8,11 @@ if you want a working build of Javier that has features, check out the [GUI](htt
 Thank you for your continued support.
 
 
-# Libraries/Modules Used
+# Libraries/Modules and Tools Used
 
 Developed with Python 3.10 on Debian
+Using VSCode for Code editing
+Using QTDesigner for designing the UI
 
  - QT for the GUI (PySide6)
  - OS for finding servers and launching them (at your command)
