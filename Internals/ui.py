@@ -134,6 +134,10 @@ class Ui_Main(object):
         self.Tabs.addTab(self.tab, "")
         self.tab_2 = QWidget()
         self.tab_2.setObjectName(u"tab_2")
+        self.plainTextEdit = QPlainTextEdit(self.tab_2)
+        self.plainTextEdit.setObjectName(u"plainTextEdit")
+        self.plainTextEdit.setGeometry(QRect(60, 50, 361, 291))
+        self.plainTextEdit.setReadOnly(True)
         self.Tabs.addTab(self.tab_2, "")
         self.tab_4 = QWidget()
         self.tab_4.setObjectName(u"tab_4")
@@ -142,7 +146,7 @@ class Ui_Main(object):
 
         self.retranslateUi(Main)
 
-        self.Tabs.setCurrentIndex(0)
+        self.Tabs.setCurrentIndex(3)
         self.startButton.setDefault(False)
 
 
@@ -159,6 +163,13 @@ class Ui_Main(object):
         self.refreshButton.setText(QCoreApplication.translate("Main", u"Refresh Server List / Search", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.tab_3), QCoreApplication.translate("Main", u"Launcher", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.tab), QCoreApplication.translate("Main", u"Settings", None))
+        self.plainTextEdit.setPlainText(QCoreApplication.translate("Main", u"Hi Javier is unfinished \n"
+"\n"
+"this is the \"Creator\" Page!\n"
+"it will be up and running or culled soon\n"
+"\n"
+"its purpose will be to assist you in making servers for you and your friends to enjoy! all from the comfort from Javiers admittedly mediocre design\n"
+"", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.tab_2), QCoreApplication.translate("Main", u"Creator", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.tab_4), QCoreApplication.translate("Main", u"Help", None))
     # retranslateUi

@@ -2,3 +2,5 @@ __pycache__
 .github
 .git
 .qt_for_python
+testfolder
+*.db

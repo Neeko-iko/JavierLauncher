@@ -24,3 +24,6 @@ def folders(dir = os.getcwd()):
             if ".jar" in folder:
                 servers.append(dir)
     return servers
+
+def runServer():
+    """but for real this time :)"""
