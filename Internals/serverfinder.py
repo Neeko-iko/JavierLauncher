@@ -1,4 +1,3 @@
-from http import server
 import os
 def folders(dir = os.getcwd()):
     servers = []
@@ -25,5 +24,3 @@ def folders(dir = os.getcwd()):
             if ".jar" in folder:
                 servers.append(dir)
     return servers
-
-print(folders())#here for testing cuz im dumb

@@ -9,11 +9,11 @@ Thank you for your continued support.
 
 
 # Libraries/Modules and Tools Used
-
-Developed with Python 3.10 on Debian
-Using VSCode for Code editing
-Using QTDesigner for designing the UI
-
+    Tools
+ - Developed with Python 3.10 on Debian
+ - Using VSCode for Code editing
+ - Using QTDesigner for designing the UI
+    Libraries/Modules
  - QT for the GUI (PySide6)
  - OS for finding servers and launching them (at your command)
 

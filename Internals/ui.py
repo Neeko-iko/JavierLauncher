@@ -36,6 +36,7 @@ class Ui_Main(object):
         self.Tabs = QTabWidget(self.centralwidget)
         self.Tabs.setObjectName(u"Tabs")
         self.Tabs.setGeometry(QRect(0, 0, 501, 721))
+        self.Tabs.setTabBarAutoHide(True)
         self.tab_3 = QWidget()
         self.tab_3.setObjectName(u"tab_3")
         self.gridLayoutWidget = QWidget(self.tab_3)
@@ -44,15 +45,17 @@ class Ui_Main(object):
         self.gridLayout = QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.lineEdit = QLineEdit(self.gridLayoutWidget)
-        self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setClearButtonEnabled(True)
+        self.searchBar = QLineEdit(self.gridLayoutWidget)
+        self.searchBar.setObjectName(u"searchBar")
+        self.searchBar.setClearButtonEnabled(True)
 
-        self.gridLayout.addWidget(self.lineEdit, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.searchBar, 1, 0, 1, 1)
 
         self.startButton = QPushButton(self.gridLayoutWidget)
         self.startButton.setObjectName(u"startButton")
-        self.startButton.setMinimumSize(QSize(0, 70))
+        self.startButton.setMinimumSize(QSize(97, 70))
+        self.startButton.setMaximumSize(QSize(97, 70))
+        self.startButton.setFlat(False)
 
         self.gridLayout.addWidget(self.startButton, 0, 2, 2, 1)
 
@@ -63,25 +66,30 @@ class Ui_Main(object):
 
         self.gridLayout.addWidget(self.ramEnter, 1, 1, 1, 1)
 
-        self.plainTextEdit = QPlainTextEdit(self.gridLayoutWidget)
-        self.plainTextEdit.setObjectName(u"plainTextEdit")
+        self.miniSole = QPlainTextEdit(self.gridLayoutWidget)
+        self.miniSole.setObjectName(u"miniSole")
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.plainTextEdit.sizePolicy().hasHeightForWidth())
-        self.plainTextEdit.setSizePolicy(sizePolicy)
-        self.plainTextEdit.setMaximumSize(QSize(16777215, 150))
-        self.plainTextEdit.setMouseTracking(False)
-        self.plainTextEdit.setFocusPolicy(Qt.NoFocus)
-        self.plainTextEdit.setContextMenuPolicy(Qt.NoContextMenu)
-        self.plainTextEdit.setLineWidth(0)
-        self.plainTextEdit.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.plainTextEdit.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        sizePolicy.setHeightForWidth(self.miniSole.sizePolicy().hasHeightForWidth())
+        self.miniSole.setSizePolicy(sizePolicy)
+        self.miniSole.setMaximumSize(QSize(16777215, 150))
+        self.miniSole.setMouseTracking(False)
+        self.miniSole.setFocusPolicy(Qt.NoFocus)
+        self.miniSole.setContextMenuPolicy(Qt.NoContextMenu)
+        self.miniSole.setLineWidth(0)
+        self.miniSole.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.miniSole.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.miniSole.setUndoRedoEnabled(False)
+        self.miniSole.setReadOnly(True)
 
-        self.gridLayout.addWidget(self.plainTextEdit, 4, 0, 1, 3)
+        self.gridLayout.addWidget(self.miniSole, 4, 0, 1, 3)
 
         self.label_2 = QLabel(self.gridLayoutWidget)
         self.label_2.setObjectName(u"label_2")
+        self.label_2.setScaledContents(False)
+        self.label_2.setAlignment(Qt.AlignBottom|Qt.AlignHCenter)
+        self.label_2.setOpenExternalLinks(False)
 
         self.gridLayout.addWidget(self.label_2, 0, 1, 1, 1)
 
@@ -102,16 +110,23 @@ class Ui_Main(object):
         self.ButtonScroller.setWidgetResizable(False)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 461, 442))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 500, 442))
         sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.scrollAreaWidgetContents.sizePolicy().hasHeightForWidth())
         self.scrollAreaWidgetContents.setSizePolicy(sizePolicy2)
+        self.scrollAreaWidgetContents.setMinimumSize(QSize(500, 0))
         self.scrollAreaWidgetContents.setFocusPolicy(Qt.NoFocus)
         self.ButtonScroller.setWidget(self.scrollAreaWidgetContents)
 
         self.gridLayout.addWidget(self.ButtonScroller, 2, 0, 1, 3)
+
+        self.refreshButton = QPushButton(self.gridLayoutWidget)
+        self.refreshButton.setObjectName(u"refreshButton")
+        self.refreshButton.setMinimumSize(QSize(0, 34))
+
+        self.gridLayout.addWidget(self.refreshButton, 0, 0, 1, 1)
 
         self.Tabs.addTab(self.tab_3, "")
         self.tab = QWidget()
@@ -120,11 +135,15 @@ class Ui_Main(object):
         self.tab_2 = QWidget()
         self.tab_2.setObjectName(u"tab_2")
         self.Tabs.addTab(self.tab_2, "")
+        self.tab_4 = QWidget()
+        self.tab_4.setObjectName(u"tab_4")
+        self.Tabs.addTab(self.tab_4, "")
         #Main.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(Main)
 
         self.Tabs.setCurrentIndex(0)
+        self.startButton.setDefault(False)
 
 
         QMetaObject.connectSlotsByName(Main)
@@ -132,13 +151,15 @@ class Ui_Main(object):
 
     def retranslateUi(self, Main):
         Main.setWindowTitle(QCoreApplication.translate("Main", u"Javier | MC Server Launcher", None))
-        self.lineEdit.setInputMask("")
-        self.lineEdit.setText("")
-        self.lineEdit.setPlaceholderText(QCoreApplication.translate("Main", u"Search", None))
-        self.startButton.setText(QCoreApplication.translate("Main", u"Start Server ?", None))
-        self.label_2.setText(QCoreApplication.translate("Main", u"set RAM", None))
-        self.Tabs.setTabText(self.Tabs.indexOf(self.tab_3), QCoreApplication.translate("Main", u"Page", None))
+        self.searchBar.setInputMask("")
+        self.searchBar.setText("")
+        self.searchBar.setPlaceholderText(QCoreApplication.translate("Main", u"Query", None))
+        self.startButton.setText(QCoreApplication.translate("Main", u"Select a Server", None))
+        self.label_2.setText(QCoreApplication.translate("Main", u"Set RAM", None))
+        self.refreshButton.setText(QCoreApplication.translate("Main", u"Refresh Server List / Search", None))
+        self.Tabs.setTabText(self.Tabs.indexOf(self.tab_3), QCoreApplication.translate("Main", u"Launcher", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.tab), QCoreApplication.translate("Main", u"Settings", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.tab_2), QCoreApplication.translate("Main", u"Creator", None))
+        self.Tabs.setTabText(self.Tabs.indexOf(self.tab_4), QCoreApplication.translate("Main", u"Help", None))
     # retranslateUi
 
