@@ -146,7 +146,7 @@ class Ui_Main(object):
 
         self.retranslateUi(Main)
 
-        self.Tabs.setCurrentIndex(3)
+        self.Tabs.setCurrentIndex(0)
         self.startButton.setDefault(False)
 
 

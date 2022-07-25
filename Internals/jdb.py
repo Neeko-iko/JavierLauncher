@@ -10,7 +10,7 @@ def dbconnect(dbf):
     print(Error)
   else:
     return conn
-db = dbconnect('javier.db')
+db = dbconnect('./Internals/javier.db')
 cursor = db.cursor()
 
 #Builds tables

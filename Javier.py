@@ -1,8 +1,9 @@
 #!/usr/local/bin/python3
 try:
+    import threading
     import shiboken6
     from PySide6 import QtWidgets, QtCore, QtGui
-    from Internals import ui, serverRelated
+    from Internals import ui, serverRelated, jdb
 except ModuleNotFoundError as e:
     print("imports failed, see error")
     print(e)
@@ -23,6 +24,7 @@ class MainJavier(QtWidgets.QWidget):
         servers = serverRelated.folders()  # testing cuz it doesn't have proper functionality yet anyways. will remove in future update
         self.buttonlist = []
         self.favorlist = []
+        self.dire = "."  # testing for rn will add when i add the db into the mix
         for i in range(0, len(servers)):
             server = servers[i]
 
@@ -36,26 +38,31 @@ class MainJavier(QtWidgets.QWidget):
             if len(self.buttonlist) > 10:
                 self.ui.scrollAreaWidgetContents.setFixedHeight(self.ui.scrollAreaWidgetContents.height() +45)
         for i in range (0, len(self.buttonlist)):
-            #TODO: make sure to sort these for favorites fisrt using the TO BE JSON/MONGOvvv
+
             self.SButtonFrames.addWidget(self.buttonlist[i], i+1,1,1,1)
             self.SButtonFrames.addWidget(self.favorlist[i],i+1,0,1,1)
 
+        self.ui.startButton.clicked.connect(lambda : self.Startup(self.ui.startButton.text()[6:] , self.dire, self.ui.ramEnter.text()))
+
+
+
         
-
-
-        self.ui.startButton.clicked.connect(lambda : self.Startup(self.ui.startButton.text()[6:] ))
 
 
     def printl(self, string):
         self.ui.miniSole.appendPlainText(string)
 
+
     @QtCore.Slot()
-    def setServer(self, name):
+    def setServer(self, name, dire=None):
         self.printl(f"Selected: {name}")
         self.ui.startButton.setText(f"Start {name}")
 
-    def Startup(self, name):
-        self.printl(f"This doesn't work yet, but if it did, it'd say something like: 'Starting {name}'")
+    def Startup(self, name, dire, RAM):
+        self.printl(f"'Starting {name}'")
+
+        a = threading.Thread(target= serverRelated.runServer, args=(name, dire, RAM))
+        a.start()
 
     def Refreshing(self):
         self.ui.scrollAreaWidgetContents.setFixedHeight(450)
@@ -67,7 +74,6 @@ class MainJavier(QtWidgets.QWidget):
             shiboken6.delete(favorite)
         shiboken6.delete(self.SButtonFrames)
         del self.SButtonFrames
-        #TODO: grab stuff from eventual mongo/json data
         self.SButtonFrames = QtWidgets.QGridLayout(self.ui.scrollAreaWidgetContents)
         self.SButtonFrames.setContentsMargins(0,0,0,0)
         servers = serverRelated.folders()  # testing cuz it doesn't have proper functionality yet anyways. will remove in future update
@@ -92,13 +98,13 @@ class MainJavier(QtWidgets.QWidget):
                 self.ui.scrollAreaWidgetContents.setFixedHeight(self.ui.scrollAreaWidgetContents.height() +45)
 
         for i in range (0, len(self.buttonlist)):
-            #TODO: make sure to sort these for favorites fisrt using the TO BE JSON/MONGO
+
             self.SButtonFrames.addWidget(self.buttonlist[i], i+1,1,1,1)
             self.SButtonFrames.addWidget(self.favorlist[i],i+1,0,1,1)
 
 
 app = QtWidgets.QApplication()
-widget = MainJavier()
+widget =MainJavier()
 widget.setWindowIcon(QtGui.QIcon("./Internals/resources/icon.png"))
 
 widget.show()
