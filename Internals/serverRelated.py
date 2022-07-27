@@ -25,6 +25,7 @@ def folders(dir = os.getcwd()):
     return servers
 
 def runServer(server, dire, RAM):
+    dire = dire.replace("\\", "/")
     file =[]
     for item in os.listdir(f"{dire}/{server}"):
         if item[-4:] == '.jar':
@@ -41,9 +42,13 @@ def runServer(server, dire, RAM):
     universe = f"{dire}/{server}"
     java = "java"
     operating = os.name
-    if operating == "NT":
-        cmd = (f"'{java}' -Xmx{RAM}G -Xms256M -jar '{jar}' nogui")
-        subprocess.Popen((cmd), shell=True, cwd=universe)
+    if operating == "nt":
+
+        cmd = (f'start cmd /C {java} -Xmx{RAM}G -Xms256M -jar "{jar}" nogui')
+        print(cmd)
+        subprocess.run((cmd), shell=True, cwd=universe)
+        #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
+        #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE)
     
     else:      #xterm -e 
         cmd = (f"xterm -e '{java}' -Xmx{RAM}G -Xms256M -jar '{jar}' nogui")
