@@ -82,7 +82,7 @@ def addServerPath(path: str):
   """
   Adds a new path to the ServerPaths table.
   """
-  cursor.execute("INSERT INTO ServerPaths(Path) VALUES(?)", path)
+  cursor.execute("INSERT INTO ServerPaths(Path) VALUES('"+path+"')")
   db.commit()
 
 def delServerPath(path: str):
@@ -117,17 +117,22 @@ def readServerValue(name, obj):
   """
   Reads a specific cell from the ServerList table. 
   
-  Returns a single variable. "name" is the name of the server and "obj" is the value to read.
+  Returns a single variable or an empty tuple if the cell is empty. 
+  
+  "name" is the name of the server and "obj" is the value to read.
   """
   cursor.execute("SELECT "+str(obj)+" FROM ServerList WHERE Name='"+str(name)+"'")
   r = cursor.fetchone()
-  return r[0]
+  if r:
+    return r[0]
+  else:
+    return ()
 
 def readServerPaths():
   """
   Reads all rows in the ServerPath table. 
   
-  Returns a tuple with the data. The order of the data is determined by the "deploy" function.
+  Returns a tuple with the data read. The order of the data is determined by the "deploy" function.
   """
   cursor.execute("SELECT * FROM ServerPaths")
   r = cursor.fetchall()
@@ -141,8 +146,11 @@ def readSettingValue(obj):
   """
   Reads a specific cell from the Settings table. 
   
-  Returns a single variable. "obj" is the value to read.
+  Returns a single variable or an empty tuple if the cell is empty. "obj" is the value to read.
   """
   cursor.execute("SELECT "+str(obj)+" FROM Settings WHERE ID='1'")
   r = cursor.fetchone()
-  return r[0]
+  if r:
+    return r[0]
+  else:
+    return ()
