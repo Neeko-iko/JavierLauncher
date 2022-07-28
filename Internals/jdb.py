@@ -131,7 +131,10 @@ def readServerPaths():
   """
   cursor.execute("SELECT * FROM ServerPaths")
   r = cursor.fetchall()
-  return r[0]
+  if r:
+    return r[0]
+  else:
+    return ()
 
 #Selects and reads a cell by name
 def readSettingValue(obj):

@@ -13,6 +13,7 @@ Tools
  - Mainly developed with Python 3.10 on Debian
  - Using VSCode for Code editing
  - Using QTDesigner for designing the UI
+
 Libraries/Modules
  - SQLite for the db and subsequent settings
  - QT for the GUI (PySide6)

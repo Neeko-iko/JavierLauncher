@@ -60,7 +60,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="movable">
      <bool>false</bool>
@@ -291,7 +291,7 @@
      <attribute name="toolTip">
       <string>The Settings Page</string>
      </attribute>
-     <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QTabWidget" name="tabWidget">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -306,19 +306,19 @@
       <property name="autoFillBackground">
        <bool>false</bool>
       </property>
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="lineWidth">
-       <number>0</number>
+      <property name="tabPosition">
+       <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="page">
+      <property name="tabBarAutoHide">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="normSettings" native="true">
+       <attribute name="title">
+        <string>Normal Settings</string>
+       </attribute>
        <widget class="QWidget" name="verticalLayoutWidget">
         <property name="geometry">
          <rect>
@@ -467,7 +467,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>510</y>
+          <y>470</y>
           <width>491</width>
           <height>32</height>
          </rect>
@@ -492,7 +492,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>450</y>
+          <y>430</y>
           <width>191</width>
           <height>32</height>
          </rect>
@@ -510,8 +510,8 @@
        <widget class="QLineEdit" name="jarFileOver">
         <property name="geometry">
          <rect>
-          <x>280</x>
-          <y>450</y>
+          <x>290</x>
+          <y>430</y>
           <width>201</width>
           <height>32</height>
          </rect>
@@ -530,7 +530,33 @@
         </property>
        </widget>
       </widget>
-      <widget class="QWidget" name="page_2"/>
+      <widget class="QWidget" name="advancedSettings" native="true">
+       <attribute name="title">
+        <string>Advanced Settings</string>
+       </attribute>
+       <widget class="QPushButton" name="pushButton">
+        <property name="geometry">
+         <rect>
+          <x>260</x>
+          <y>190</y>
+          <width>169</width>
+          <height>34</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>169</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>quirky button lol</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
