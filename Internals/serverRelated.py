@@ -25,6 +25,7 @@ def folders(dir = os.getcwd()):
     return servers
 
 def runServer(server, dire, RAM):
+    
     dire = dire.replace("\\", "/")
     file =[]
     for item in os.listdir(f"{dire}/{server}"):
@@ -42,14 +43,12 @@ def runServer(server, dire, RAM):
     universe = f"{dire}/{server}"
     java = "java"
     operating = os.name
+    print(operating)
     if operating == "nt":
-
         cmd = (f'start cmd /C {java} -Xmx{RAM}G -Xms256M -jar "{jar}" nogui')
-        print(cmd)
         subprocess.run((cmd), shell=True, cwd=universe)
         #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
-        #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE)
-    
-    else:      #xterm -e 
-        cmd = (f"xterm -e '{java}' -Xmx{RAM}G -Xms256M -jar '{jar}' nogui")
+        #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE
+    else:      #xterm -e    # MacOS hates this.  will have to determine a workaround for Mac, eventually.
+        cmd = (f"xterm -e '{java}' -Xmx{RAM}G -Xms256M -jar '{jar}' nogui") # probably will have it limited to 1 server on mac :L
         subprocess.run((cmd), shell=True, cwd=universe)

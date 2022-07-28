@@ -10,20 +10,26 @@ Thank you for your continued support.
 
 # Libraries/Modules and Tools Used
 Tools
- - Developed with Python 3.10 on Debian
+ - Mainly developed with Python 3.10 on Debian
  - Using VSCode for Code editing
  - Using QTDesigner for designing the UI
- Libraries/Modules
+Libraries/Modules
+ - SQLite for the db and subsequent settings
  - QT for the GUI (PySide6)
- - OS for finding servers and launching them (at your command)
+ - OS for finding servers
+ - subproccess for launching everything
+ - zipfile for finding the right file
 
+
+not really a lib or mod but Xterm is used for launching the servers consoles' on Linux
+figured that should be said somehwere
 
 
 # FAQ
 > is Javier-QT available as a windows executable file?
 
 not at the moment. if you want to run it, you'll have to install QT (PySide6 is the package im using) on your local machine and run Javier.py from your terminal (or by double clicking, how fancy)
-i'll make a Windows, MacOS, and Linux executable when it's up-to-snuff with GUI version 1.6 or later. 
+i'll make a Windows, MacOS, and Linux executable when it's capable of doing anything proper. 
 
 > Why not just continue the old (GUI) build?
 

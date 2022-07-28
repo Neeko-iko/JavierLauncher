@@ -13,12 +13,14 @@ except ModuleNotFoundError as e:
 class MainJavier(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        jdb.deploy() # the database initiizlaition! YAY! DB!!!! YAY
         self.ui = ui.Ui_Main()
         self.ui.setupUi(self)
-
         self.ui.refreshButton.clicked.connect(lambda : self.Refreshing())
         self.ui.searchBar.returnPressed.connect(lambda : self.Refreshing())
-
+        self.ui.LogClearer.clicked.connect(lambda : self.ui.miniSole.setPlainText(""))
+        
+    # Launcher Tab Code
         self.SButtonFrames = QtWidgets.QGridLayout(self.ui.scrollAreaWidgetContents)
         self.SButtonFrames.setContentsMargins(0,0,0,0)
         servers = serverRelated.folders()  # testing cuz it doesn't have proper functionality yet anyways. will remove in future update
@@ -33,7 +35,8 @@ class MainJavier(QtWidgets.QWidget):
             self.favorlist.append(self.favorButton)
             self.serverButton = QtWidgets.QPushButton(str(server))
             self.serverButton.setFixedSize(500,45)
-            self.serverButton.clicked.connect(lambda _=False, e =server: self.setServer(e))
+            self.serverButton.clicked.connect(lambda _=False, e =server, d = self.dire: self.setServer(e, d))
+            #self.serverButton.mouseDoubleClickEvent.connect(print("holyyyy"))
             self.buttonlist.append(self.serverButton)
             if len(self.buttonlist) > 10:
                 self.ui.scrollAreaWidgetContents.setFixedHeight(self.ui.scrollAreaWidgetContents.height() +45)
@@ -43,8 +46,9 @@ class MainJavier(QtWidgets.QWidget):
             self.SButtonFrames.addWidget(self.favorlist[i],i+1,0,1,1)
 
         self.ui.startButton.clicked.connect(lambda : self.Startup(self.ui.startButton.text()[6:] , self.dire, self.ui.ramEnter.text()))
-
-
+    
+    # Settings Tab Code
+        # there is none! hah! to be added!
 
         
 
@@ -57,8 +61,11 @@ class MainJavier(QtWidgets.QWidget):
     def setServer(self, name, dire=None):
         self.printl(f"Selected: {name}")
         self.ui.startButton.setText(f"Start {name}")
-
+        self.dire = dire
     def Startup(self, name, dire, RAM):
+        if name == " a Server":  ## i'll figure out a better way of doing this later
+            self.printl("You need to select a server! You can't just start nothing!")
+            return
         self.printl(f"'Starting {name}'")
 
         a = threading.Thread(target= serverRelated.runServer, args=(name, dire, RAM))
@@ -101,6 +108,7 @@ class MainJavier(QtWidgets.QWidget):
 
             self.SButtonFrames.addWidget(self.buttonlist[i], i+1,1,1,1)
             self.SButtonFrames.addWidget(self.favorlist[i],i+1,0,1,1)
+        self.printl("Servers Refreshed successfully!")
 
 
 app = QtWidgets.QApplication()
