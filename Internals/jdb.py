@@ -1,6 +1,7 @@
 import sqlite3
 from sqlite3 import Error
 from inspect import currentframe
+from typing import Iterable
 
 #Connecting
 def dbconnect(dbf):
@@ -12,26 +13,50 @@ def dbconnect(dbf):
     return conn
 db = dbconnect('./Internals/javier.db')
 cursor = db.cursor()
+pyColumnDict = {}
 
 #Builds tables
 def deploy():
   """
   Creates tables in the javier.db file if they do not already exist.
   """
-  cursor.execute("create table if not exists ServerList(ID integer PRIMARY KEY AUTOINCREMENT, Name text, IsFavorite integer, RAM integer, LaunchFlags text, JavaFilePath text, JARName text)")
+  cursor.execute("create table if not exists ServerList(ID integer PRIMARY KEY AUTOINCREMENT, Name text, IsFavorite integer, RAM integer, LaunchFlags text, JavaFilePath text, JARName text, Port integer)")
   cursor.execute("create table if not exists ServerPaths(ID integer PRIMARY KEY AUTOINCREMENT, Path text)")
   cursor.execute("create table if not exists Settings(ID integer PRIMARY KEY AUTOINCREMENT, DefaultJava text, DefaultJRA text, DefaultRAM integer, LastVersion text)")
   db.commit()
 
 #Function to check if DB structure needs to be updated after
-#Javier is updated. Currently a stub.
-def tableCheck():
+#Javier is updated. The DB structure is still being decided
+#so the tableCheck will always fail right now
+def tableCheck(name: str, returnType=0):
   """
   Ensures that tables have all of the columns required.
-  """
-  lineNum = lambda : currentframe().f_back.f_lineno
-  print("Function 'tableCheck'(Line ", lineNum, ") is currently a stub")
 
+  Returns True if the check passes, returns a dict containing the names of the missing columns and their data types if the check fails.
+
+  The return type is 0 by default. If set to 1 the function will return False if the check fails instead of a dict.
+  """
+  dbColumnList = []
+  pyColumnList = list(pyColumnDict.keys())
+  dbColumnObj = cursor.execute("SELECT * from "+name)
+  for i in dbColumnObj.description:
+    dbColumnList.append(i[0])
+  if dbColumnList == pyColumnList:
+    return True
+  else:
+    if returnType == 1:
+      return False
+    missingColumns = []
+    for i in pyColumnList:
+      if i not in dbColumnList:
+        missingColumns.append(i)
+    return tuple(missingColumns)
+
+#Adds missing columns to a table
+def repairTable(table, missingColumns):
+  for i in missingColumns:
+    typ = pyColumnDict[i]
+    cursor.execute("ALTER TABLE "+table+" ADD "+i+" "+typ)
 
 #Updates a cell of a given type from a server
 def updateServerValue(name, obj, val):
@@ -44,13 +69,13 @@ def updateServerValue(name, obj, val):
   db.commit()
 
 #Updates a cell of a given type from a setting
-def updateSettingValue(name, obj, val):
+def updateSettingValue(obj, val):
   """
   Updates a value in the Settings table. 
   
-  "name" is the name of the server, "obj" is the name of the value being edited, and "val" is the new value. 
+  "obj" is the name of the value being edited, and "val" is the new value. 
   """
-  cursor.execute("UPDATE Settings SET "+str(obj)+" = '"+str(val)+"' WHERE Name = '"+str(name)+"'")
+  cursor.execute("UPDATE Settings SET "+str(obj)+" = '"+str(val)+"'")
   db.commit()
 
 def addServerPath(path: str):
