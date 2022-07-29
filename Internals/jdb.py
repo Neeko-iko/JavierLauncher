@@ -18,9 +18,9 @@ def deploy():
   """
   Creates tables in the javier.db file if they do not already exist.
   """
-  cursor.execute("create table if not exists ServerList(ID integer PRIMARY KEY AUTOINCREMENT, Name text, IsFavorite integer, RAM integer, LaunchFlags text, JavaFilePath text, JARName text, Port integer)")
+  cursor.execute("create table if not exists ServerList(ID integer PRIMARY KEY AUTOINCREMENT, Name text, IsFavorite integer, RAM integer, LaunchFlags text, JavaFilePath text, JARName text, Port integer, Color text)")
   cursor.execute("create table if not exists ServerPaths(ID integer PRIMARY KEY AUTOINCREMENT, Path text)")
-  cursor.execute("create table if not exists Settings(ID integer PRIMARY KEY AUTOINCREMENT, DefaultJava text, DefaultJRA text, DefaultRAM integer, LastVersion text, CurrentTheme text)")
+  cursor.execute("create table if not exists Settings(ID integer PRIMARY KEY AUTOINCREMENT, DefaultJava text, DefaultJRA text, DefaultRAM integer, LastVersion text, CurrentTheme text, DefaultPort integer)")
   db.commit()
 
 #Function to check if DB structure needs to be updated after
