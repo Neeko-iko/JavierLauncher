@@ -1,7 +1,5 @@
 import sqlite3
 from sqlite3 import Error
-from inspect import currentframe
-from typing import Iterable
 
 #Connecting
 def dbconnect(dbf):
