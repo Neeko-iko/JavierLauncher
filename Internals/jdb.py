@@ -110,6 +110,16 @@ def readServerAll():
   cursor.execute("SELECT * FROM ServerList")
   return cursor.fetchall()
 
+#Function to convert the returns into linear tuples
+#Removes primary key (ID)
+def flatten(tot):
+  r = []
+  for t in tot:
+    for i in t:
+      if type(i) == str:
+        r.append(i)
+  return tuple(r)
+
 #Selects and reads a cell by name
 def readServerValue(name, obj):
   """
@@ -135,7 +145,7 @@ def readServerPaths():
   cursor.execute("SELECT * FROM ServerPaths")
   r = cursor.fetchall()
   if r:
-    return r[0]
+    return flatten(r)
   else:
     return ()
 
