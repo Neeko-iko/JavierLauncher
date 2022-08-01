@@ -5,6 +5,8 @@ import zipfile
 def folders(dir = os.getcwd()):
     """gets all folders that have a .jar file in it from passed in directory.\n if nothing is passed, will check CWD"""
     servers = []
+    if dir == ".":
+        dir == os.getcwd()
     dir = os.path.expanduser(dir)
     if dir[-1] != "/":
         dir = dir+"/"
@@ -25,7 +27,7 @@ def folders(dir = os.getcwd()):
     return servers
 
 def runServer(server, dire, RAM):
-    
+
     dire = dire.replace("\\", "/")
     file =[]
     for item in os.listdir(f"{dire}/{server}"):

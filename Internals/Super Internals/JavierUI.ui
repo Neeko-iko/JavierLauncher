@@ -153,7 +153,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;RAM to use for the server, in gigabytes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="suffix">
-          <string> Gb</string>
+          <string> GB</string>
          </property>
          <property name="minimum">
           <number>1</number>
@@ -300,6 +300,9 @@
         <height>545</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="layoutDirection">
        <enum>Qt::LeftToRight</enum>
       </property>
@@ -315,7 +318,7 @@
       <property name="tabBarAutoHide">
        <bool>true</bool>
       </property>
-      <widget class="QWidget" name="normSettings" native="true">
+      <widget class="QWidget" name="normSettings">
        <attribute name="title">
         <string>Normal Settings</string>
        </attribute>
@@ -358,7 +361,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QScrollArea" name="scrollArea">
+          <widget class="QScrollArea" name="DirScoller">
            <property name="focusPolicy">
             <enum>Qt::NoFocus</enum>
            </property>
@@ -374,7 +377,7 @@
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents_2">
+           <widget class="QWidget" name="dirScrollerWidget">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -529,8 +532,71 @@
          <string>.jar file override</string>
         </property>
        </widget>
+       <widget class="QScrollArea" name="themeScroller">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>220</y>
+          <width>231</width>
+          <height>211</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOn</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="themeArea">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>206</width>
+           <height>207</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QPushButton" name="themeRefresh">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>190</y>
+          <width>231</width>
+          <height>34</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Refresh Theme Selector</string>
+        </property>
+       </widget>
+       <widget class="QTextBrowser" name="textBrowser">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>270</y>
+          <width>171</width>
+          <height>141</height>
+         </rect>
+        </property>
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Hi! this isn't a final design- infact im very aware that this looks absolutely terrible&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;if you think im unaware, i don't care.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
       </widget>
-      <widget class="QWidget" name="advancedSettings" native="true">
+      <widget class="QWidget" name="advancedSettings">
        <attribute name="title">
         <string>Advanced Settings</string>
        </attribute>
@@ -550,7 +616,7 @@
          </size>
         </property>
         <property name="text">
-         <string>quirky button lol</string>
+         <string>quirky button lol but this time extra</string>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -661,6 +727,25 @@ its purpose will be to assist you in making servers for you and your friends to 
     </property>
     <property name="default">
      <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="UpdateCheckerButton">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>0</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="text">
+     <string>No Updates Found!</string>
     </property>
     <property name="flat">
      <bool>true</bool>

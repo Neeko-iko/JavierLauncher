@@ -18,7 +18,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QCheckBox, QFrame,
     QGridLayout, QLabel, QLineEdit, QMainWindow,
     QPlainTextEdit, QPushButton, QScrollArea, QSizePolicy,
-    QSpinBox, QTabWidget, QVBoxLayout, QWidget)
+    QSpinBox, QTabWidget, QTextBrowser, QVBoxLayout,
+    QWidget)
 
 class Ui_Main(object):
     def setupUi(self, Main):
@@ -129,6 +130,7 @@ class Ui_Main(object):
         self.tabWidget = QTabWidget(self.tab)
         self.tabWidget.setObjectName(u"tabWidget")
         self.tabWidget.setGeometry(QRect(0, 0, 495, 545))
+        self.tabWidget.setFocusPolicy(Qt.NoFocus)
         self.tabWidget.setLayoutDirection(Qt.LeftToRight)
         self.tabWidget.setAutoFillBackground(False)
         self.tabWidget.setTabPosition(QTabWidget.South)
@@ -148,19 +150,19 @@ class Ui_Main(object):
 
         self.verticalLayout.addWidget(self.addDirbutton)
 
-        self.scrollArea = QScrollArea(self.verticalLayoutWidget)
-        self.scrollArea.setObjectName(u"scrollArea")
-        self.scrollArea.setFocusPolicy(Qt.NoFocus)
-        self.scrollArea.setContextMenuPolicy(Qt.NoContextMenu)
-        self.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollAreaWidgetContents_2 = QWidget()
-        self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 464, 128))
-        self.scrollArea.setWidget(self.scrollAreaWidgetContents_2)
+        self.DirScoller = QScrollArea(self.verticalLayoutWidget)
+        self.DirScoller.setObjectName(u"DirScoller")
+        self.DirScoller.setFocusPolicy(Qt.NoFocus)
+        self.DirScoller.setContextMenuPolicy(Qt.NoContextMenu)
+        self.DirScoller.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.DirScoller.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.DirScoller.setWidgetResizable(True)
+        self.dirScrollerWidget = QWidget()
+        self.dirScrollerWidget.setObjectName(u"dirScrollerWidget")
+        self.dirScrollerWidget.setGeometry(QRect(0, 0, 464, 128))
+        self.DirScoller.setWidget(self.dirScrollerWidget)
 
-        self.verticalLayout.addWidget(self.scrollArea)
+        self.verticalLayout.addWidget(self.DirScoller)
 
         self.normallabel = QLabel(self.normSettings)
         self.normallabel.setObjectName(u"normallabel")
@@ -194,6 +196,23 @@ class Ui_Main(object):
         self.jarFileOver.setObjectName(u"jarFileOver")
         self.jarFileOver.setGeometry(QRect(290, 430, 201, 32))
         self.jarFileOver.setDragEnabled(True)
+        self.themeScroller = QScrollArea(self.normSettings)
+        self.themeScroller.setObjectName(u"themeScroller")
+        self.themeScroller.setGeometry(QRect(0, 220, 231, 211))
+        self.themeScroller.setFocusPolicy(Qt.NoFocus)
+        self.themeScroller.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.themeScroller.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.themeScroller.setWidgetResizable(True)
+        self.themeArea = QWidget()
+        self.themeArea.setObjectName(u"themeArea")
+        self.themeArea.setGeometry(QRect(0, 0, 206, 207))
+        self.themeScroller.setWidget(self.themeArea)
+        self.themeRefresh = QPushButton(self.normSettings)
+        self.themeRefresh.setObjectName(u"themeRefresh")
+        self.themeRefresh.setGeometry(QRect(0, 190, 231, 34))
+        self.textBrowser = QTextBrowser(self.normSettings)
+        self.textBrowser.setObjectName(u"textBrowser")
+        self.textBrowser.setGeometry(QRect(240, 270, 171, 141))
         self.tabWidget.addTab(self.normSettings, "")
         self.advancedSettings = QWidget()
         self.advancedSettings.setObjectName(u"advancedSettings")
@@ -236,10 +255,16 @@ class Ui_Main(object):
         self.LogClearer.setGeometry(QRect(380, 690, 101, 34))
         self.LogClearer.setFocusPolicy(Qt.NoFocus)
         self.LogClearer.setFlat(True)
+        self.UpdateCheckerButton = QPushButton(self.centralwidget)
+        self.UpdateCheckerButton.setObjectName(u"UpdateCheckerButton")
+        self.UpdateCheckerButton.setGeometry(QRect(370, 0, 131, 31))
+        self.UpdateCheckerButton.setFocusPolicy(Qt.NoFocus)
+        self.UpdateCheckerButton.setFlat(True)
+        #Main.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(Main)
 
-        self.Tabs.setCurrentIndex(0)
+        self.Tabs.setCurrentIndex(1)
         self.startButton.setDefault(False)
         self.refreshButton.setDefault(False)
         self.tabWidget.setCurrentIndex(0)
@@ -264,7 +289,7 @@ class Ui_Main(object):
 #if QT_CONFIG(tooltip)
         self.ramEnter.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>RAM to use for the server, in gigabytes.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.ramEnter.setSuffix(QCoreApplication.translate("Main", u" Gb", None))
+        self.ramEnter.setSuffix(QCoreApplication.translate("Main", u" GB", None))
 #if QT_CONFIG(tooltip)
         self.refreshButton.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>Refreshes the serverlist<br/>maybe Javier forgot something?</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
@@ -300,8 +325,15 @@ class Ui_Main(object):
 #endif // QT_CONFIG(tooltip)
         self.jarFileOver.setText("")
         self.jarFileOver.setPlaceholderText(QCoreApplication.translate("Main", u".jar file override", None))
+        self.themeRefresh.setText(QCoreApplication.translate("Main", u"Refresh Theme Selector", None))
+        self.textBrowser.setHtml(QCoreApplication.translate("Main", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Hi! this isn't a final design- infact im very aware that this looks absolutely terrible</p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">if you think im unaware, i don't care.</p></body></html>", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.normSettings), QCoreApplication.translate("Main", u"Normal Settings", None))
-        self.pushButton.setText(QCoreApplication.translate("Main", u"quirky button lol", None))
+        self.pushButton.setText(QCoreApplication.translate("Main", u"quirky button lol but this time extra", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.advancedSettings), QCoreApplication.translate("Main", u"Advanced Settings", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.tab), QCoreApplication.translate("Main", u"Settings", None))
 #if QT_CONFIG(tooltip)
@@ -323,5 +355,6 @@ class Ui_Main(object):
         self.Tabs.setTabToolTip(self.Tabs.indexOf(self.tab_4), QCoreApplication.translate("Main", u"What do you expect this to mean?", None))
 #endif // QT_CONFIG(tooltip)
         self.LogClearer.setText(QCoreApplication.translate("Main", u"Clear MiniSole", None))
+        self.UpdateCheckerButton.setText(QCoreApplication.translate("Main", u"No Updates Found!", None))
     # retranslateUi
 
