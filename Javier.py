@@ -22,12 +22,12 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.selectedDir = None
 
     # Nontabbed buttosn/other code
-        self.ui.LogClearer.clicked.connect(lambda : self.ui.miniSole.setPlainText(""))
+        self.ui.logClearButton.clicked.connect(lambda : self.ui.miniSole.setPlainText(""))
         
         
     # Launcher Tab Code
         self.refreshingServers(False)
-        self.ui.refreshButton.clicked.connect(lambda : self.refreshingServers())
+        self.ui.serverRefreshButton.clicked.connect(lambda : self.refreshingServers())
         self.ui.searchBar.returnPressed.connect(lambda : self.refreshingServers())
         
         self.ui.startButton.clicked.connect(lambda : self.Startup())

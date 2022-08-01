@@ -68,7 +68,7 @@
     <property name="tabBarAutoHide">
      <bool>false</bool>
     </property>
-    <widget class="QWidget" name="tab_3">
+    <widget class="QWidget" name="launcherTab">
      <attribute name="title">
       <string>Launcher</string>
      </attribute>
@@ -173,7 +173,7 @@
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="QPushButton" name="refreshButton">
+        <widget class="QPushButton" name="serverRefreshButton">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -204,7 +204,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="setRamLabel">
          <property name="text">
           <string>Set RAM</string>
          </property>
@@ -284,7 +284,7 @@
       </layout>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab">
+    <widget class="QWidget" name="settingsTab">
      <attribute name="title">
       <string>Settings</string>
      </attribute>
@@ -391,7 +391,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QLabel" name="normallabel">
+       <widget class="QLabel" name="normalLabel">
         <property name="geometry">
          <rect>
           <x>30</x>
@@ -416,7 +416,7 @@
          <bool>false</bool>
         </property>
        </widget>
-       <widget class="QCheckBox" name="safemodecheck">
+       <widget class="QCheckBox" name="safemodeCheck">
         <property name="geometry">
          <rect>
           <x>380</x>
@@ -438,7 +438,7 @@
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QCheckBox" name="jarguicheck">
+       <widget class="QCheckBox" name="jarGuiCheck">
         <property name="geometry">
          <rect>
           <x>390</x>
@@ -466,7 +466,7 @@
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLineEdit" name="sJRA">
+       <widget class="QLineEdit" name="jraEntry">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -510,7 +510,7 @@
          <string>java binary runtime override</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="jarFileOver">
+       <widget class="QLineEdit" name="jarFileEntry">
         <property name="geometry">
          <rect>
           <x>290</x>
@@ -580,7 +580,7 @@
        <widget class="QTextBrowser" name="textBrowser">
         <property name="geometry">
          <rect>
-          <x>240</x>
+          <x>290</x>
           <y>270</y>
           <width>171</width>
           <height>141</height>
@@ -710,7 +710,7 @@ its purpose will be to assist you in making servers for you and your friends to 
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="LogClearer">
+   <widget class="QPushButton" name="logClearButton">
     <property name="geometry">
      <rect>
       <x>380</x>
