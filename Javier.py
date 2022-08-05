@@ -224,8 +224,9 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
 
 app = QtWidgets.QApplication()
 widget =MainJavier()
-if jdb.readSettingValue("CurrentTheme") != ():
-    sheet= open("./Internals/themes/Dark.jss", "r")
+style =jdb.readSettingValue("CurrentTheme") 
+if jdb.readSettingValue("CurrentTheme") != None:
+    sheet= open(style, "r")
     style = sheet.readlines()
     sheet.close()
     sheet = "" # don't act like im unaware of the malpractice done here.
