@@ -1,5 +1,5 @@
 #!/usr/local/bin/python3
-from re import T
+from Internals.jdb import readServerValue
 
 
 try:
@@ -99,20 +99,24 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
     def refreshingServers(self, subs = True):
         self.ui.scrollAreaWidgetContents.setFixedHeight(450)
         if subs:
-            for button in self.buttonlist:
-                self.SButtonFrames.removeWidget(button)
-                shiboken6.delete(button)
-            for favorite in self.favorlist:
-                self.SButtonFrames.removeWidget(favorite)
-                shiboken6.delete(favorite)
+            for i in range (0, len(self.normal["buttons"])):
+                self.SButtonFrames.removeWidget(self.normal["buttons"][i])
+                self.SButtonFrames.removeWidget(self.normal["checks"][i])
+                shiboken6.delete(self.normal["buttons"][i])
+                shiboken6.delete(self.normal["checks"][i])
+            for i in range (0, len(self.favorites["buttons"])):
+                self.SButtonFrames.removeWidget(self.favorites["buttons"][i])
+                self.SButtonFrames.removeWidget(self.favorites["checks"][i])
+                shiboken6.delete(self.favorites["buttons"][i])
+                shiboken6.delete(self.favorites["checks"][i])
             shiboken6.delete(self.SButtonFrames)
             del self.SButtonFrames
         
         self.SButtonFrames = QtWidgets.QGridLayout(self.ui.scrollAreaWidgetContents)
         self.SButtonFrames.setContentsMargins(0,0,0,0) # probably a better way to do this!
         self.thisvarsucks = True
-        self.buttonlist = []
-        self.favorlist = []
+        self.normal = {"buttons":[], "checks":[] }
+        self.favorites = { "buttons":[], "checks":[]}
         directories = list(jdb.readServerPaths())
         directories.append(".")
         print(directories)
@@ -130,21 +134,38 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
                 
                 self.favorButton = QtWidgets.QCheckBox(text='')
                 self.favorButton.setFixedSize(20,20)
-                self.favorlist.append(self.favorButton)
 
                 self.serverButton = QtWidgets.QPushButton(str(server))
                 self.serverButton.setFixedSize(500,45)
                 self.serverButton.setContentsMargins(0,0,0,0)
                 self.serverButton.clicked.connect(lambda _=False, e =server, d = dire: self.setServer(e, d))
-                self.buttonlist.append(self.serverButton)
-                if len(self.buttonlist) > 10:
+                self.favorButton.clicked.connect(lambda _=False, e = server, d = self.favorButton : self.favoritism(e, d))
+                favorite = bool(readServerValue(server, "IsFavorite"))
+                if favorite:
+                    self.favorButton.setChecked(True)
+                    self.favorites["buttons"].append(self.serverButton)
+                    self.favorites["checks"].append(self.favorButton)
+                else:
+                    self.normal["buttons"].append(self.serverButton)
+                    self.normal["checks"].append(self.favorButton)
+                if len(self.normal["buttons"]) + len(self.favorites["buttons"]) > 10:
                     self.ui.scrollAreaWidgetContents.setFixedHeight(self.ui.scrollAreaWidgetContents.height() +45)
+            for i in range (0, len(self.favorites["buttons"])):
+                self.SButtonFrames.addWidget(self.favorites["buttons"][i], i+1,1,1,1)
+                self.SButtonFrames.addWidget(self.favorites["checks"][i],i+1,0,1,1)
+            for i in range (0, len(self.normal["buttons"])): #this disgusts you as much as it does me
+                self.SButtonFrames.addWidget(self.normal["buttons"][i], i+len(self.favorites["buttons"])+1,1,1,1)
+                self.SButtonFrames.addWidget(self.normal["checks"][i],i+len(self.favorites["buttons"])+1,0,1,1)
+            
 
-        for i in range (0, len(self.buttonlist)):
-
-            self.SButtonFrames.addWidget(self.buttonlist[i], i+1,1,1,1)
-            self.SButtonFrames.addWidget(self.favorlist[i],i+1,0,1,1)
+            
         self.printl("Servers Refreshed successfully!")
+
+    def favoritism(self, server, button):
+        if jdb.readServer(server) == None:
+            jdb.addServer(server)
+        jdb.updateServerValue(server, "IsFavorite", int(button.isChecked()))
+
 
     def refreshingDirs(self, subs = True):
         if subs:
@@ -178,7 +199,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.directButton.setContentsMargins(0,0,0,0)
             self.directButton.clicked.connect(lambda _=False, e = dire: self.printl(e))
             self.dirbuttlist.append(self.directButton)
-            if len(self.buttonlist) > 10:
+            if len(self.dirbuttlist) > 10:
                     self.ui.dirScrollerWidget.setFixedHeight(self.ui.dirScrollerWidget.height() +45)
         for i in range (0, len(self.dirbuttlist)):
             
@@ -186,7 +207,6 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.DButtonframes.addWidget(self.deldirlist[i],i,0,1,1)
         self.subsequentdirs = True
     def refreshThemes(self, subs = True): # i absolutely love reusing HUGE chunks of code 3 times because im incompetent!!! it *will* happen again.
-        self.printl("Themes are currently not working- should be soon!") # remove this later.
         if subs:
             for button in self.themebutts:
                 self.TButtonframes.removeWidget(button)
@@ -225,7 +245,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
 app = QtWidgets.QApplication()
 widget =MainJavier()
 style =jdb.readSettingValue("CurrentTheme") 
-if jdb.readSettingValue("CurrentTheme") != None:
+if style != None:
     sheet= open(style, "r")
     style = sheet.readlines()
     sheet.close()

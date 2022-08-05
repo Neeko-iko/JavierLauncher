@@ -61,11 +61,11 @@ def repairTable(table, missingColumns):
     cursor.execute("ALTER TABLE "+table+" ADD "+i+" "+typ)
 
 #Adds a new row of servers
-def addServer():
+def addServer(name):
   """
   Adds a new row in the ServerList table.
   """
-  cursor.execute("INSERT INTO ServerList DEFAULT VALUES")
+  cursor.execute("INSERT INTO ServerList (name) values ('"+name+"')")
   db.commit()
 
 #Updates a cell of a given type from a server
