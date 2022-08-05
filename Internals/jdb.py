@@ -16,11 +16,15 @@ pyColumnDict = {}
 #Builds tables
 def deploy():
   """
-  Creates tables in the javier.db file if they do not already exist.
+  Creates tables in the javier.db file if they do not already exist. Initializes the Settings table
   """
-  cursor.execute("create table if not exists ServerList(ID integer PRIMARY KEY AUTOINCREMENT, Name text, IsFavorite integer, RAM integer, LaunchFlags text, JavaFilePath text, JARName text, Port integer, Color text)")
+  cursor.execute("create table if not exists ServerList(ID integer PRIMARY KEY AUTOINCREMENT, Name text, IsFavorite integer DEFAULT 0, RAM integer DEFAULT 1, LaunchFlags text DEFAULT '' , JavaFilePath text DEFAULT '', JARName text, Port integer, Color text)")
   cursor.execute("create table if not exists ServerPaths(ID integer PRIMARY KEY AUTOINCREMENT, Path text)")
   cursor.execute("create table if not exists Settings(ID integer PRIMARY KEY AUTOINCREMENT, DefaultJava text, DefaultJRA text, DefaultRAM integer, LastVersion text, CurrentTheme text, DefaultPort integer)")
+  #This is a hack solution that breaks the table if the value is > 1
+  #however the only way for the table to be > 1 is if someone breaks it on purpose
+  if readSettingValue('ID') != 1:
+    cursor.execute("INSERT INTO Settings DEFAULT VALUES")
   db.commit()
 
 #Function to check if DB structure needs to be updated after
@@ -56,6 +60,14 @@ def repairTable(table, missingColumns):
     typ = pyColumnDict[i]
     cursor.execute("ALTER TABLE "+table+" ADD "+i+" "+typ)
 
+#Adds a new row of servers
+def addServer():
+  """
+  Adds a new row in the ServerList table.
+  """
+  cursor.execute("INSERT INTO ServerList DEFAULT VALUES")
+  db.commit()
+
 #Updates a cell of a given type from a server
 def updateServerValue(name, obj, val):
   """
@@ -73,7 +85,10 @@ def updateSettingValue(obj, val):
   
   "obj" is the name of the value being edited, and "val" is the new value. 
   """
-  cursor.execute("UPDATE Settings SET "+str(obj)+" = '"+str(val)+"'")
+  if val == None:
+    cursor.execute("UPDATE Settings SET "+str(obj)+" = NULL")
+  else:
+    cursor.execute("UPDATE Settings SET "+str(obj)+" = '"+str(val)+"'")
   db.commit()
 
 def addServerPath(path: str):
@@ -156,7 +171,7 @@ def readSettingValue(obj):
   
   Returns a single variable or an empty tuple if the cell is empty. "obj" is the value to read.
   """
-  cursor.execute("SELECT "+str(obj)+" FROM Settings WHERE ID='1'")
+  cursor.execute("SELECT "+str(obj)+" FROM Settings")
   r = cursor.fetchone()
   if r:
     return r[0]

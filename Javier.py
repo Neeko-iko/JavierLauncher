@@ -200,7 +200,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.deftheme = QtWidgets.QToolButton(text= "System")
         self.deftheme.setFixedSize(215,45)
         self.deftheme.setStyleSheet("") # this makes it ignore the current theme
-        self.deftheme.clicked.connect(lambda _=False : self.updateTheme("NULL"))
+        self.deftheme.clicked.connect(lambda _=False : self.updateTheme(None))
         self.themebutts.append(self.deftheme)
         self.TButtonframes.addWidget(self.deftheme)
 
