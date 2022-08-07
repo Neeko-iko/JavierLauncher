@@ -1,7 +1,10 @@
 from Internals import updater, jdb
+from sys import platform
 jdb.deploy()
 currVersion = jdb.readSettingValue('LastVersion')
-currVersion = '1.9.0' #delete this line before shipping
 ucResult = updater.updateCheck(currVersion)
 if ucResult != False:
-  updater.update(ucResult)
+  if platform == 'win32':
+    updater.update(ucResult)
+  else:
+    print("An update is required.")

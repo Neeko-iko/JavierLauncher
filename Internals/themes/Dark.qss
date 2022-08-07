@@ -1,0 +1,17 @@
+//background-color : #111111; color : #FFFFFF;
+//first line of every QSS file is a showcase. it is used for the theme selector.  if it doesn't start with // it won't be used
+//every line with a // is a comment, and is ignored when loading the stylesheet upon Javier itself.
+//apologies for the QSS malpractice, but it is a custom file after all haha!
+QWidget{background : #000000; border: 8px #333333;}
+QTabWidget{background : #000000}
+QScrollArea{background : #000000}
+
+QPushButton {background-color : #111111;border: 8px #333333}
+QLineEdit[text=""]{color : #AAAAAA}
+QLineEdit{ color: #FFFFFF; background : #000000 }
+QMainWindow {background : #000000}
+QPushButton#updateCheckerButton{background : #000000}
+
+QLabel{background : #000000}
+QToolButton{background : #000000}
+QCheckBox{background: #212121}

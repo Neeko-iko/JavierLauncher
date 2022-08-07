@@ -10,7 +10,7 @@ Thank you for your continued support.
 
 # Libraries/Modules and Tools Used
 Tools
- - Mainly developed with Python 3.10 on Debian
+ - Mainly developed with Python 3.10 on ~~Debian~~ Manjaro
  - Using VSCode for Code editing
  - Using QTDesigner for designing the UI
 
@@ -34,7 +34,7 @@ figured that should be said somehwere
 > is Qter Javier available as a windows executable file?
 
 not at the moment. if you want to run it, you'll have to install QT (PySide6 is the package im using) on your local machine and run Javier.py from your terminal (or by double clicking, how fancy)
-i'll make a Windows, MacOS, and Linux executable when it's capable of doing anything proper. 
+i'll make a Windows~~, MacOS,~~ and Linux executable when it's capable of doing anything proper. 
 
 > Why not just continue the old (GUI) build?
 
