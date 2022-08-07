@@ -1,6 +1,8 @@
 import sqlite3
 from sqlite3 import Error
 
+########UPDATE THIS STRING WITH EVERY UPDATE###########
+version='2.0.0'
 #Connecting
 def dbconnect(dbf):
   try:
@@ -18,9 +20,9 @@ def deploy():
   """
   Creates tables in the javier.db file if they do not already exist. Initializes the Settings table
   """
-  cursor.execute("create table if not exists ServerList(ID integer PRIMARY KEY AUTOINCREMENT, Name text, IsFavorite integer DEFAULT 0, RAM integer DEFAULT 1, LaunchFlags text DEFAULT '' , JavaFilePath text DEFAULT '', JARName text, Port integer, Color text)")
+  cursor.execute("create table if not exists ServerList(ID integer PRIMARY KEY AUTOINCREMENT, Name text, IsFavorite integer DEFAULT 0, RAM integer DEFAULT 1, LaunchFlags text DEFAULT '', JavaFilePath text DEFAULT '', JARName text, Port integer, Color text)")
   cursor.execute("create table if not exists ServerPaths(ID integer PRIMARY KEY AUTOINCREMENT, Path text)")
-  cursor.execute("create table if not exists Settings(ID integer PRIMARY KEY AUTOINCREMENT, DefaultJava text, DefaultJRA text, DefaultRAM integer, LastVersion text, CurrentTheme text, DefaultPort integer)")
+  cursor.execute("create table if not exists Settings(ID integer PRIMARY KEY AUTOINCREMENT, DefaultJava text, DefaultJRA text, DefaultRAM integer, LastVersion text DEFAULT "+version+", CurrentTheme text, DefaultPort integer)")
   #This is a hack solution that breaks the table if the value is > 1
   #however the only way for the table to be > 1 is if someone breaks it on purpose
   if readSettingValue('ID') != 1:
