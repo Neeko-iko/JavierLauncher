@@ -1,5 +1,10 @@
-import jdb
+if __name__ == '__main__':
+  import jdb
+else:
+  from Internals import jdb
 import requests
+import zipfile
+import os
 cv = jdb.readSettingValue('LastVersion')
 def updateCheck(clientVersion):
   """
@@ -26,7 +31,14 @@ def updateCheck(clientVersion):
     else:
       return False
 def update(targetVers):
-  print("This function is currently a stub (update() function)")
-ucResult = updateCheck(cv)
-if ucResult != False:
-  update(ucResult)
+  #This is to avoid file name conflicts with update downloads
+  updateFileName = 'FHUSIDHGFUIVJSRHUIOGHRUIOHGJIOURHDOIUGHOIURSHGOIURHGOIURHFGOIUHSEIUOHGUIJKOLSRFHNGEUHGEOIURHFNGOIHGOIUHG.zip'
+  r = requests.get('https://api.github.com/repos/Neeko-iko/JavierLauncher/releases/tags/'+targetVers)
+  print(r)
+  r = r.json()
+  dl = r['assets'][-1]['browser_download_url']
+  updatePackage = requests.get(dl)
+  open(updateFileName, 'wb').write(updatePackage.content)
+  with zipfile.ZipFile(updateFileName, 'r') as zippy:
+    zippy.extractall()
+  os.remove(updateFileName)
