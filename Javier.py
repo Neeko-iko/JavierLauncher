@@ -162,7 +162,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
                 self.serverButton.setContentsMargins(0,0,0,0)
                 self.serverButton.clicked.connect(lambda _=False, e =server, d = dire: self.setServer(e, d))
                 self.favorButton.clicked.connect(lambda _=False, e = server, d = self.favorButton : self.favoritism(e, d))
-                favorite = bool(jdb.readServerValue(server, "IsFavorite"))
+                favorite = bool(readServerValue(server, "IsFavorite"))
                 if favorite:
                     self.favorButton.setChecked(True)
                     self.favorites["buttons"].append(self.serverButton)
