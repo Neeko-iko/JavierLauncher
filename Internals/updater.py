@@ -22,14 +22,12 @@ def updateCheck(clientVersion):
     #semantic versioning processing time
     splCommitTag = commitTag.split('.')
     splClientVersion = clientVersion.split('.')
+    returning = False
     if int(splCommitTag[0]) > int(splClientVersion[0]):
-      return commitTag
-    elif int(splCommitTag[1]) > int(splClientVersion[1]):
-      return commitTag
-    elif int(splCommitTag[2]) > int(splClientVersion[2]):
-      return commitTag
-    else:
-      return False
+      if int(splCommitTag[1]) > int(splClientVersion[1]):
+        if int(splCommitTag[2]) > int(splClientVersion[2]):
+          returning = commitTag
+    return returning
 def update(targetVers):
   #This is to avoid file name conflicts with update downloads
   updateFileName = 'FHUSIDHGFUIVJSRHUIOGHRUIOHGJIOURHDOIUGHOIURSHGOIURHGOIURHFGOIUHSEIUOHGUIJKOLSRFHNGEUHGEOIURHFNGOIHGOIUHG.zip'

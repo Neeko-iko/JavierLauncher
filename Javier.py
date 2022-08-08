@@ -264,7 +264,6 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         
 
 
-
 app = QtWidgets.QApplication()
 widget =MainJavier()
 style =jdb.readSettingValue("CurrentTheme") 

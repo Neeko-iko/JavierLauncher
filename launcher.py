@@ -8,3 +8,5 @@ if ucResult != False:
     updater.update(ucResult)
   else:
     print("An update is required.")
+else:
+  import Javier
