@@ -6,7 +6,7 @@ version='2.0.0'
 #Connecting
 def dbconnect(dbf):
   try:
-    conn = sqlite3.connect(dbf)#,check_same_thread=False)
+    conn = sqlite3.connect(dbf, check_same_thread=False)
   except Error:
     print(Error)
   else:
