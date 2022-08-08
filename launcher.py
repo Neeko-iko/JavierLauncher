@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from Internals import jdb
 from sys import platform
 jdb.deploy()

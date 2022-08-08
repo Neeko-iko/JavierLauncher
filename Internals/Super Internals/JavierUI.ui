@@ -711,6 +711,16 @@ its purpose will be to assist you in making servers for you and your friends to 
      <attribute name="toolTip">
       <string>What do you expect this to mean?</string>
      </attribute>
+     <widget class="QTextEdit" name="textEdit">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>471</width>
+        <height>521</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QPlainTextEdit" name="miniSole">

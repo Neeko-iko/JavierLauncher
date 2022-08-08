@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/python3
 try:
     import os
     import threading
@@ -36,6 +36,10 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.themeRefresh.clicked.connect(lambda: self.refreshThemes())
         self.ui.saveSettings.clicked.connect(lambda : self.saveSettings())
         self.ui.defaultCheck.clicked.connect(lambda : self.forceful())
+
+    #Help Tab Code
+        readme = open("./Internals/help.html", "r",encoding="UTF-8")
+        self.ui.textEdit.setText(readme.read())
 
     def forceful(self): # hopefully temporary code lol
         if self.selectedServer == None: #phenominal code, really

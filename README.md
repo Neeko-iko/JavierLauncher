@@ -44,9 +44,9 @@ Tkinter, which is what the GUI build uses, is fine as a starter, but using it no
 
 Pessimism to the project causes me to not want to work on it, followed by burnout from working a software engineering job.
 
-> What are these .JSS files?
+> What are these .QSS files?
 
-The way Javier handles themes now is essentially through CSS, but the way I have them set to be handled is dumb.  so I made my own filetype!
+The way Javier handles themes now is through Qt's own personal QSS filetype.  Lightly Butchered for your pleasure.
 
 
 

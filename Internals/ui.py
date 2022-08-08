@@ -18,8 +18,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QCheckBox, QFrame,
     QGridLayout, QLabel, QLineEdit, QMainWindow,
     QPlainTextEdit, QPushButton, QScrollArea, QSizePolicy,
-    QSpinBox, QTabWidget, QTextBrowser, QVBoxLayout,
-    QWidget)
+    QSpinBox, QTabWidget, QTextBrowser, QTextEdit,
+    QVBoxLayout, QWidget)
 
 class Ui_Main(object):
     def setupUi(self, Main):
@@ -243,6 +243,9 @@ class Ui_Main(object):
         self.Tabs.addTab(self.creatorTab, "")
         self.helpTab = QWidget()
         self.helpTab.setObjectName(u"helpTab")
+        self.textEdit = QTextEdit(self.helpTab)
+        self.textEdit.setObjectName(u"textEdit")
+        self.textEdit.setGeometry(QRect(10, 10, 471, 521))
         self.Tabs.addTab(self.helpTab, "")
         self.miniSole = QPlainTextEdit(self.centralwidget)
         self.miniSole.setObjectName(u"miniSole")
