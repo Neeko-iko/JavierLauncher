@@ -1,7 +1,8 @@
-from Internals import updater, jdb
+from Internals import jdb
 from sys import platform
 jdb.deploy()
 currVersion = jdb.readSettingValue('LastVersion')
+from Internals import updater
 ucResult = updater.updateCheck(currVersion)
 if ucResult != False:
   if platform == 'win32':
