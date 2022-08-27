@@ -33,7 +33,8 @@ figured that should be said somehwere
 # FAQ
 > is Qter Javier available as a windows executable file?
 
-not at the moment. if you want to run it, you'll have to install Qt5 (PySide2 is the package im using) on your local machine and run Javier.py from your terminal (or by double clicking, how fancy)
+not at the moment. if you want to run it, you'll have to install the packages from requirements.txt on your local machine and run Javier.py from your terminal (or by double clicking, how fancy)
+this can be done easily using ` pip install -r requirements.txt` from inside the directory javier is located inside the console.
 i'll make a Windows~~, MacOS,~~ and Linux executable when it's capable of doing anything proper. 
 
 > Why not just continue the old (GUI) build?
