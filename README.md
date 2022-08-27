@@ -10,14 +10,14 @@ Thank you for your continued support.
 
 # Libraries/Modules and Tools Used
 Tools
- - Mainly developed with Python 3.10 on ~~Debian~~ Manjaro
+ - Mainly developed with Python 3.10
  - Using VSCode for Code editing
  - Using QTDesigner for designing the UI
 
 Libraries/Modules
  - SQLite3 for the db and subsequent settings
- - QT for the GUI (PySide6)
- - shiboken6 for some quirky code (PySide6)
+ - Qt5 for the GUI (PySide2)
+ - shiboken6 for some quirky code (PySide2)
  - requests for the auto-updater and server creator
  - OS for finding servers
  - subproccess for launching everything
@@ -33,7 +33,7 @@ figured that should be said somehwere
 # FAQ
 > is Qter Javier available as a windows executable file?
 
-not at the moment. if you want to run it, you'll have to install QT (PySide6 is the package im using) on your local machine and run Javier.py from your terminal (or by double clicking, how fancy)
+not at the moment. if you want to run it, you'll have to install Qt5 (PySide2 is the package im using) on your local machine and run Javier.py from your terminal (or by double clicking, how fancy)
 i'll make a Windows~~, MacOS,~~ and Linux executable when it's capable of doing anything proper. 
 
 > Why not just continue the old (GUI) build?

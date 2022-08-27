@@ -1,7 +1,6 @@
 """bunch of server related functions, from grabbing servercount to starting servers"""
 import os
 import subprocess
-import threading
 import zipfile
 from Internals import jdb
 jdb.deploy()

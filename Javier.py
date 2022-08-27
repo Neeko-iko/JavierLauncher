@@ -2,8 +2,8 @@
 try:
     import os
     import threading
-    import shiboken6
-    from PySide6 import QtCore, QtGui, QtWidgets
+    import shiboken2
+    from PySide2 import QtWidgets, QtGui, QtGui
     from Internals import ui, serverRelated, jdb
 except ModuleNotFoundError as e:
     print("imports failed, see error")
@@ -76,7 +76,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         else: # im sure there's probably a better way for this
             self.printl("Adding new directory was aborted.......")
 
-    @QtCore.Slot()  # ngl i have no idea what this does, is it necessary?????
+    #@QtCore.Slot()  # ngl i have no idea what this does, is it necessary?????
     def printl(self, string):
         self.ui.miniSole.appendPlainText(string)
 
@@ -129,14 +129,14 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             for i in range (0, len(self.normal["buttons"])):
                 self.SButtonFrames.removeWidget(self.normal["buttons"][i])
                 self.SButtonFrames.removeWidget(self.normal["checks"][i])
-                shiboken6.delete(self.normal["buttons"][i])
-                shiboken6.delete(self.normal["checks"][i])
+                shiboken2.delete(self.normal["buttons"][i])
+                shiboken2.delete(self.normal["checks"][i])
             for i in range (0, len(self.favorites["buttons"])):
                 self.SButtonFrames.removeWidget(self.favorites["buttons"][i])
                 self.SButtonFrames.removeWidget(self.favorites["checks"][i])
-                shiboken6.delete(self.favorites["buttons"][i])
-                shiboken6.delete(self.favorites["checks"][i])
-            shiboken6.delete(self.SButtonFrames)
+                shiboken2.delete(self.favorites["buttons"][i])
+                shiboken2.delete(self.favorites["checks"][i])
+            shiboken2.delete(self.SButtonFrames)
             del self.SButtonFrames
         
         self.SButtonFrames = QtWidgets.QGridLayout(self.ui.scrollAreaWidgetContents)
@@ -197,11 +197,11 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         if subs:
             for button in self.dirbuttlist:
                 self.DButtonframes.removeWidget(button)
-                shiboken6.delete(button)
+                shiboken2.delete(button)
             for delbutton in self.deldirlist:
                 self.DButtonframes.removeWidget(delbutton)
-                shiboken6.delete(delbutton)
-            shiboken6.delete(self.DButtonframes)
+                shiboken2.delete(delbutton)
+            shiboken2.delete(self.DButtonframes)
             del self.DButtonframes
         self.DButtonframes = QtWidgets.QGridLayout(self.ui.dirScrollerWidget)
         self.DButtonframes.setContentsMargins(0,0,0,0)
@@ -236,8 +236,8 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         if subs:
             for button in self.themebutts:
                 self.TButtonframes.removeWidget(button)
-                shiboken6.delete(button)
-            shiboken6.delete(self.TButtonframes)
+                shiboken2.delete(button)
+            shiboken2.delete(self.TButtonframes)
             del self.TButtonframes
         self.TButtonframes = QtWidgets.QVBoxLayout(self.ui.themeArea)
         self.TButtonframes.setContentsMargins(0,0,0,0)
@@ -285,4 +285,4 @@ if style != None:
 widget.setWindowIcon(QtGui.QIcon("./Internals/resources/icon.png"))
 
 widget.show()
-app.exec()
+app.exec_()
