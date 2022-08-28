@@ -1,9 +1,46 @@
 """bunch of server related functions, from grabbing servercount to starting servers"""
 import os
 import subprocess
+from zipfile import ZipFile
+import tarfile
 import zipfile
+import requests
 from Internals import jdb
 jdb.deploy()
+
+def dlJava(ver, bar, but):
+    operating = os.name
+    operating = "windows" if operating == "nt" else "linux"
+    ft = ".zip" if os.name == "nt" else ".tar.gz"
+    fp = "./Internals/javas/java"
+    header = {"User-Agent": "QterJavier"} # it can be anything! :)
+    java = requests.request(method="get",url=f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse",headers=header,stream=True)
+    print(f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse")
+    print(java.status_code) # their api site says 307 is good but 200 is fairly universal.
+    if java.status_code == 307 or java.status_code == 200:
+        with open(fp+ver+ft,"wb+") as e:
+            for bite in java.iter_content(chunk_size=2048):
+                if bite:
+                    e.write(bite)
+    ###TODO: unzip
+    #os.mkdir(fp+ver)
+    if operating == "windows":
+        file = ZipFile(fp+ver+ft, "r")
+        file.namelist()[0] #hopefully this works lmoaoooo
+        file.extractall(fp[:-4])
+    else:
+        file = tarfile.open(fp+ver+ft, "r")
+        ftr = file.getnames()[0] #gotta love that all linux distros + mac will eat a tar.gz just fine
+        file.extractall(fp[:-4])
+    os.remove(fp+ver+ft) #cleanup
+    os.rename(fp[:-4]+ftr, fp+ver) #so that it's an easier check.
+    bar.setMaximum(1) # probably better ways to do this lmaooo
+    bar.setEnabled(False)
+    but.setEnabled(True)
+        
+
+
+
 def folders(dir = os.getcwd()):
     """gets all folders that have a .jar file in it from passed in directory.\n if nothing is passed, will check CWD"""
     servers = []
@@ -37,7 +74,7 @@ def runServer(server, dire, RAM):
                 file.append(item)
         if len(file) > 1:
             for item in file:
-                check = zipfile.ZipFile(f"{dire}/{server}/{item}",'r')
+                check = ZipFile(f"{dire}/{server}/{item}",'r')
                 check = check.open('META-INF/MANIFEST.MF','r')
                 check = check.readlines()
                 for line in check:

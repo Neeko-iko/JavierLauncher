@@ -5,3 +5,4 @@ __pycache__
 testfolder
 *.db
 env
+/Internals/javas/*

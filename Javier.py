@@ -21,7 +21,6 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
     # Nontabbed buttosn/other code
         self.ui.logClearButton.clicked.connect(lambda : self.ui.miniSole.setPlainText(""))
         self.selectedServer = None
-        
     # Launcher Tab Code
         self.refreshingServers(False)
         self.ui.serverRefreshButton.clicked.connect(lambda : self.refreshingServers())
@@ -36,10 +35,25 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.themeRefresh.clicked.connect(lambda: self.refreshThemes())
         self.ui.saveSettings.clicked.connect(lambda : self.saveSettings())
         self.ui.defaultCheck.clicked.connect(lambda : self.forceful())
+        self.ui.downJavaButton.clicked.connect(lambda : self.funkyJava())
 
     #Help Tab Code
         readme = open("./Internals/help.html", "r",encoding="UTF-8")
         self.ui.textEdit.setText(readme.read())
+
+
+    def funkyJava(self):
+        ver = self.ui.javaIntBox.text()
+        if not os.path.exists("./Internals/javas/java"+ver):
+            self.ui.javaDownBar.setEnabled(True)
+            self.ui.javaDownBar.setMaximum(0)
+            self.ui.downJavaButton.setDisabled(True)
+            self.printl("attempting to download OpenJDK Java JRE "+ ver)
+            self.down = threading.Thread(target= serverRelated.dlJava, args=(ver, self.ui.javaDownBar, self.ui.downJavaButton))
+            self.down.start()
+        else:
+            self.printl("you already have Java "+ver+" installed!")
+        
 
     def forceful(self): # hopefully temporary code lol
         if self.selectedServer == None: #phenominal code, really
