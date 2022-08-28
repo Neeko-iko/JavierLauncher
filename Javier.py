@@ -258,7 +258,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.themebutts = []
 
         self.deftheme = QtWidgets.QToolButton(text= "System")
-        self.deftheme.setFixedSize(215,45)
+        self.deftheme.setFixedSize(155,45)
         self.deftheme.setStyleSheet("") # this makes it ignore the current theme
         self.deftheme.clicked.connect(lambda _=False : self.updateTheme(None))
         self.themebutts.append(self.deftheme)
@@ -274,7 +274,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             del th
 
             self.themebutton = QtWidgets.QToolButton(text=theme[:-4])
-            self.themebutton.setFixedSize(215,45)
+            self.themebutton.setFixedSize(155,45)
             self.themebutton.setStyleSheet(the)
             self.themebutton.clicked.connect(lambda _=False, d = theme: self.updateTheme("./Internals/themes/"+d))
             self.themebutts.append(self.themebutton)

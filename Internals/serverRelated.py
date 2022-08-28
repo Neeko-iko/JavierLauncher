@@ -28,10 +28,12 @@ def dlJava(ver, bar, but):
         file = ZipFile(fp+ver+ft, "r")
         file.namelist()[0] #hopefully this works lmoaoooo
         file.extractall(fp[:-4])
+        file.close()
     else:
         file = tarfile.open(fp+ver+ft, "r")
         ftr = file.getnames()[0] #gotta love that all linux distros + mac will eat a tar.gz just fine
         file.extractall(fp[:-4])
+        file.close()
     os.remove(fp+ver+ft) #cleanup
     os.rename(fp[:-4]+ftr, fp+ver) #so that it's an easier check.
     bar.setMaximum(1) # probably better ways to do this lmaooo
