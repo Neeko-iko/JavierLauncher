@@ -26,7 +26,7 @@ def dlJava(ver, bar, but):
     #os.mkdir(fp+ver)
     if operating == "windows":
         file = ZipFile(fp+ver+ft, "r")
-        file.namelist()[0] #hopefully this works lmoaoooo
+        ftr = file.namelist()[0] #hopefully this works lmoaoooo
         file.extractall(fp[:-4])
         file.close()
     else:
