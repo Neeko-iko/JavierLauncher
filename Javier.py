@@ -4,6 +4,7 @@ try:
     import threading
     import shiboken2
     from PySide2 import QtWidgets, QtGui, QtGui
+    from PySide2 import QtSql
     from Internals import ui, serverRelated, jdb
 except ModuleNotFoundError as e:
     print("imports failed, see error")
@@ -202,7 +203,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.printl("Servers Refreshed successfully!")
 
     def favoritism(self, server, button):
-        if jdb.readServer(server) == None:
+        if jdb.readServer(server) == False:
             jdb.addServer(server)
         jdb.updateServerValue(server, "IsFavorite", int(button.isChecked()))
 

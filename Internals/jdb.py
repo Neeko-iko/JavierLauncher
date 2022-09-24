@@ -1,33 +1,35 @@
-import sqlite3
-from sqlite3 import Error
+
+from PySide2 import QtSql
 
 ########UPDATE THIS STRING WITH EVERY UPDATE###########
 version='2.0.0'
 #Connecting
-def dbconnect(dbf):
-  try:
-    conn = sqlite3.connect(dbf, check_same_thread=False)
-  except Error:
-    print(Error)
-  else:
-    return conn
-db = dbconnect('./Internals/javier.db')
-cursor = db.cursor()
+def dbconnect():
+  conn = QtSql.QSqlDatabase.addDatabase("QSQLITE")
+  conn.setDatabaseName("./Internals/javier.db")
+  conn.open()
+  if conn.isOpen() != True:
+    print("An error has occured in the database connection process")
+dbconnect()
 pyColumnDict = {}
+
+#Aliases
+def execute(arg: str):
+  query = QtSql.QSqlQuery()
+  query.exec_(arg)
 
 #Builds tables
 def deploy():
   """
   Creates tables in the javier.db file if they do not already exist. Initializes the Settings table
   """
-  cursor.execute("create table if not exists ServerList(ID integer PRIMARY KEY AUTOINCREMENT, Name text, IsFavorite integer DEFAULT 0, RAM integer DEFAULT 1, LaunchFlags text DEFAULT '', JavaFilePath text DEFAULT '', JARName text, Port integer, Color text)")
-  cursor.execute("create table if not exists ServerPaths(ID integer PRIMARY KEY AUTOINCREMENT, Path text)")
-  cursor.execute("create table if not exists Settings(ID integer PRIMARY KEY AUTOINCREMENT, DefaultJava text, DefaultJRA text, DefaultRAM integer, LastVersion text DEFAULT '"+version+"', CurrentTheme text, DefaultPort integer)")
+  execute("create table if not exists ServerList(ID integer PRIMARY KEY AUTOINCREMENT, Name text, IsFavorite integer DEFAULT 0, RAM integer DEFAULT 1, LaunchFlags text DEFAULT '', JavaFilePath text DEFAULT '', JARName text, Port integer, Color text)")
+  execute("create table if not exists ServerPaths(ID integer PRIMARY KEY AUTOINCREMENT, Path text)")
+  execute("create table if not exists Settings(ID integer PRIMARY KEY AUTOINCREMENT, DefaultJava text, DefaultJRA text, DefaultRAM integer, LastVersion text DEFAULT '"+version+"', CurrentTheme text, DefaultPort integer)")
   #This is a hack solution that breaks the table if the value is > 1
   #however the only way for the table to be > 1 is if someone breaks it on purpose
   if readSettingValue('ID') != 1:
-    cursor.execute("INSERT INTO Settings DEFAULT VALUES")
-  db.commit()
+    execute("INSERT INTO Settings DEFAULT VALUES")
 
 #Function to check if DB structure needs to be updated after
 #Javier is updated. The DB structure is still being decided
@@ -42,7 +44,7 @@ def tableCheck(name: str, returnType=0):
   """
   dbColumnList = []
   pyColumnList = list(pyColumnDict.keys())
-  dbColumnObj = cursor.execute("SELECT * from "+name)
+  dbColumnObj = execute("SELECT * from "+name)
   for i in dbColumnObj.description:
     dbColumnList.append(i[0])
   if dbColumnList == pyColumnList:
@@ -60,15 +62,15 @@ def tableCheck(name: str, returnType=0):
 def repairTable(table, missingColumns):
   for i in missingColumns:
     typ = pyColumnDict[i]
-    cursor.execute("ALTER TABLE "+table+" ADD "+i+" "+typ)
+    execute("ALTER TABLE "+table+" ADD "+i+" "+typ)
 
 #Adds a new row of servers
 def addServer(name):
   """
   Adds a new row in the ServerList table.
   """
-  cursor.execute("INSERT INTO ServerList (name) values ('"+name+"')")
-  db.commit()
+  execute("INSERT INTO ServerList (name) values ('"+name+"')")
+  
 
 #Updates a cell of a given type from a server
 def updateServerValue(name, obj, val):
@@ -77,8 +79,8 @@ def updateServerValue(name, obj, val):
   
   "name" is the name of the server, "obj" is the name of the value being edited, and "val" is the new value. 
   """
-  cursor.execute("UPDATE ServerList SET "+str(obj)+" = '"+str(val)+"' WHERE Name = '"+str(name)+"'")
-  db.commit()
+  execute("UPDATE ServerList SET "+str(obj)+" = '"+str(val)+"' WHERE Name = '"+str(name)+"'")
+  
 
 #Updates a cell of a given type from a setting
 def updateSettingValue(obj, val):
@@ -88,70 +90,50 @@ def updateSettingValue(obj, val):
   "obj" is the name of the value being edited, and "val" is the new value. 
   """
   if val == None:
-    cursor.execute("UPDATE Settings SET "+str(obj)+" = NULL")
+    execute("UPDATE Settings SET "+str(obj)+" = NULL")
   else:
-    cursor.execute("UPDATE Settings SET "+str(obj)+" = '"+str(val)+"'")
-  db.commit()
+    execute("UPDATE Settings SET "+str(obj)+" = '"+str(val)+"'")
+  
 
 def addServerPath(path: str):
   """
   Adds a new path to the ServerPaths table.
   """
-  cursor.execute("INSERT INTO ServerPaths(Path) VALUES('"+path+"')")
-  db.commit()
+  execute("INSERT INTO ServerPaths(Path) VALUES('"+path+"')")
+  
 
 def delServerPath(path: str):
   """
   Removes a path from ServerPaths by name.
   """
-  cursor.execute("DELETE FROM ServerPaths WHERE Path='"+path+"'")
-  db.commit()
+  execute("DELETE FROM ServerPaths WHERE Path='"+path+"'")
+  
 
 #Reads all data on a given server
 def readServer(name):
   """
-  Reads a row from the ServerList table.
-
-  Returns a tuple with the data for a single server. The order of the data is determined by the "deploy" function.
+  Checks to see if a server exists
   """
-  cursor.execute("SELECT * FROM ServerList WHERE Name = '"+str(name)+"'")
-  return cursor.fetchone()
+  query = QtSql.QSqlQuery()
+  query.setForwardOnly(True)
+  return query.exec_("SELECT ID FROM ServerList WHERE Name = '"+str(name)+"'")
 
-#Reads all data
-def readServerAll():
-  """
-  Reads all rows in the ServerList table. 
-  
-  Returns a nested tuple with the data. The order of the data is determined by the "deploy" function.
-  """
-  cursor.execute("SELECT * FROM ServerList")
-  return cursor.fetchall()
-
-#Function to convert the returns into linear tuples
-#Removes primary key (ID)
-def flatten(tot):
-  r = []
-  for t in tot:
-    for i in t:
-      if type(i) == str:
-        r.append(i)
-  return tuple(r)
+#Here lies the flatten function, may it Rest in Peace
 
 #Selects and reads a cell by name
 def readServerValue(name, obj):
   """
   Reads a specific cell from the ServerList table. 
   
-  Returns a single variable or an empty tuple if the cell is empty. 
+  Returns a single variable. 
   
   "name" is the name of the server and "obj" is the value to read.
   """
-  cursor.execute("SELECT "+str(obj)+" FROM ServerList WHERE Name='"+str(name)+"'")
-  r = cursor.fetchone()
-  if r:
-    return r[0]
-  else:
-    return ()
+  query = QtSql.QSqlQuery()
+  query.setForwardOnly(True)
+  query.exec_("SELECT "+str(obj)+" FROM ServerList WHERE Name='"+str(name)+"'")
+  query.first()
+  return query.value(0)
 
 def readServerPaths():
   """
@@ -159,23 +141,26 @@ def readServerPaths():
   
   Returns a tuple with the data read. The order of the data is determined by the "deploy" function.
   """
-  cursor.execute("SELECT * FROM ServerPaths")
-  r = cursor.fetchall()
-  if r:
-    return flatten(r)
-  else:
-    return ()
+  rtn = []
+  query = QtSql.QSqlQuery()
+  query.setForwardOnly(True)
+  query.exec_("SELECT Path FROM ServerPaths")
+  while query.next():
+    rtn.append(query.value(0))
+  return tuple(rtn)
+
 
 #Selects and reads a cell by name
 def readSettingValue(obj):
   """
   Reads a specific cell from the Settings table. 
   
-  Returns a single variable or an empty tuple if the cell is empty. "obj" is the value to read.
+  Returns a single variable. 
+  
+  "obj" is the value to read.
   """
-  cursor.execute("SELECT "+str(obj)+" FROM Settings")
-  r = cursor.fetchone()
-  if r:
-    return r[0]
-  else:
-    return ()
+  query = QtSql.QSqlQuery()
+  query.setForwardOnly(True)
+  query.exec_("SELECT "+str(obj)+" FROM Settings")
+  query.first
+  return query.value(0)
