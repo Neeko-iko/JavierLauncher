@@ -1,5 +1,5 @@
 import threading
-from PySide2 import QtSql
+from PySide6 import QtSql
 
 ########UPDATE THIS STRING WITH EVERY UPDATE###########
 version='2.0.0'
