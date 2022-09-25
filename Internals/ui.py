@@ -296,11 +296,11 @@ class Ui_Main(object):
         self.logClearButton.setGeometry(QRect(380, 690, 101, 34))
         self.logClearButton.setFocusPolicy(Qt.NoFocus)
         self.logClearButton.setFlat(True)
-        self.updateCheckerButton = QPushButton(self.centralwidget)
-        self.updateCheckerButton.setObjectName(u"updateCheckerButton")
-        self.updateCheckerButton.setGeometry(QRect(370, 0, 131, 31))
-        self.updateCheckerButton.setFocusPolicy(Qt.NoFocus)
-        self.updateCheckerButton.setFlat(True)
+        #self.updateCheckerButton = QPushButton(self.centralwidget)
+        # self.updateCheckerButton.setObjectName(u"updateCheckerButton")
+        # self.updateCheckerButton.setGeometry(QRect(370, 0, 131, 31))
+        # self.updateCheckerButton.setFocusPolicy(Qt.NoFocus)
+        # self.updateCheckerButton.setFlat(True)
         #Main.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(Main)
@@ -413,6 +413,6 @@ class Ui_Main(object):
         self.Tabs.setTabToolTip(self.Tabs.indexOf(self.helpTab), QCoreApplication.translate("Main", u"What do you expect this to mean?", None))
 #endif // QT_CONFIG(tooltip)
         self.logClearButton.setText(QCoreApplication.translate("Main", u"Clear MiniSole", None))
-        self.updateCheckerButton.setText(QCoreApplication.translate("Main", u"No Updates Found!", None))
+        #self.updateCheckerButton.setText(QCoreApplication.translate("Main", u"No Updates Found!", None))
     # retranslateUi
 
