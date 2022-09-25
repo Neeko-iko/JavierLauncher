@@ -97,16 +97,16 @@ def runServer(server, dire, RAM):
         jdb.updateServerValue(server, "JARName", jar)
     else:
         jar = jdb.readServerValue(server, "JARName")
-    universe = f"{dire}/{server}"
+    universe = f"{dire}/{server}/"
     if jdb.readServerValue(server, "JavaFilePath") != None:
         java = jdb.readServerValue(server,"JavaFilePath")
-    elif jdb.readSettingValue("DefaultJava") != None:
+    elif jdb.readSettingValue("DefaultJava") != '':
         java = jdb.readSettingValue("DefaultJava")
     else:
         java = "java"
-    operating = os.name
-    if operating == "nt":
-        cmd = (f'start cmd /C {java} -Xmx{RAM}G -Xms256M -jar "{jar}" nogui')
+    #operating = 
+    if os.name == "nt":
+        cmd = (f"start cmd /k {java} -Xmx{RAM}G -Xms256M -jar {jar} nogui")
         subprocess.run((cmd), shell=True, cwd=universe)
             #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
             #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE
