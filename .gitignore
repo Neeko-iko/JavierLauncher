@@ -6,3 +6,8 @@ testfolder
 *.db
 env
 /Internals/javas/java*
+/javier.dist
+/javier.build
+/javier.exe
+/javier.onefile-build
+javier.zip

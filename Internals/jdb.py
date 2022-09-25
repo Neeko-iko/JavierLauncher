@@ -1,21 +1,34 @@
-
+import threading
+from urllib.request import build_opener
 from PySide2 import QtSql
 
 ########UPDATE THIS STRING WITH EVERY UPDATE###########
 version='2.0.0'
 #Connecting
-def dbconnect():
-  conn = QtSql.QSqlDatabase.addDatabase("QSQLITE")
-  conn.setDatabaseName("./Internals/javier.db")
-  conn.open()
-  if conn.isOpen() != True:
-    print("An error has occured in the database connection process")
-dbconnect()
+class Connection:
+  def __init__(self):
+    conn = QtSql.QSqlDatabase.addDatabase("QSQLITE", str(threading.current_thread().ident))
+    conn.setDatabaseName("./Internals/javier.db")
+    conn.open()
+    if conn.isOpen() == True:
+      print("Connected!")
+    else:
+      print("An error has occured in the database connection process")
+    self.conn = conn
+  def buildquery(self):
+    query = QtSql.QSqlQuery(self.conn)
+    return query
+  
 pyColumnDict = {}
+
+def buildquery():
+  cobj = Connection()
+  query = cobj.buildquery()
+  return query
 
 #Aliases
 def execute(arg: str):
-  query = QtSql.QSqlQuery()
+  query = buildquery()
   query.exec_(arg)
 
 #Builds tables
@@ -28,7 +41,11 @@ def deploy():
   execute("create table if not exists Settings(ID integer PRIMARY KEY AUTOINCREMENT, DefaultJava text, DefaultJRA text, DefaultRAM integer, LastVersion text DEFAULT '"+version+"', CurrentTheme text, DefaultPort integer)")
   #This is a hack solution that breaks the table if the value is > 1
   #however the only way for the table to be > 1 is if someone breaks it on purpose
-  if readSettingValue('ID') != 1:
+  count = QtSql.QSqlQuery()
+  count.exec_("SELECT COUNT(*) FROM Settings")
+  count.first()
+  print(count.value(0))
+  if count.value(0) != 1:
     execute("INSERT INTO Settings DEFAULT VALUES")
 
 #Function to check if DB structure needs to be updated after
@@ -114,7 +131,7 @@ def readServer(name):
   """
   Checks to see if a server exists
   """
-  query = QtSql.QSqlQuery()
+  query = buildquery()
   query.setForwardOnly(True)
   return query.exec_("SELECT ID FROM ServerList WHERE Name = '"+str(name)+"'")
 
@@ -129,7 +146,7 @@ def readServerValue(name, obj):
   
   "name" is the name of the server and "obj" is the value to read.
   """
-  query = QtSql.QSqlQuery()
+  query = buildquery()
   query.setForwardOnly(True)
   query.exec_("SELECT "+str(obj)+" FROM ServerList WHERE Name='"+str(name)+"'")
   query.first()
@@ -142,7 +159,7 @@ def readServerPaths():
   Returns a tuple with the data read. The order of the data is determined by the "deploy" function.
   """
   rtn = []
-  query = QtSql.QSqlQuery()
+  query = buildquery()
   query.setForwardOnly(True)
   query.exec_("SELECT Path FROM ServerPaths")
   while query.next():
@@ -159,7 +176,7 @@ def readSettingValue(obj):
   
   "obj" is the value to read.
   """
-  query = QtSql.QSqlQuery()
+  query = buildquery()
   query.setForwardOnly(True)
   query.exec_("SELECT "+str(obj)+" FROM Settings")
   query.first
