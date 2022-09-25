@@ -3,6 +3,7 @@ try:
     import os
     import threading
     import shiboken6
+    import requests
     from PySide6 import QtWidgets, QtGui, QtGui
     from Internals import ui, serverRelated, jdb
 except ModuleNotFoundError as e:
