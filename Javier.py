@@ -303,7 +303,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
 app = QtWidgets.QApplication()
 widget =MainJavier()
 style =jdb.readSettingValue("CurrentTheme")
-if style != '':
+if style != '' and style != None:
     sheet= open(style, "r")
     style = sheet.readlines()
     sheet.close()
@@ -314,7 +314,15 @@ if style != '':
         sheet = sheet + item
     widget.setStyleSheet(sheet)
     widget.printl("Loaded Theme succesfully!")
-widget.setWindowIcon(QtGui.QIcon("./Internals/resources/icon.png"))
-
+if os.path.exists("./Internals/resources/icon.png"):
+    widget.setWindowIcon(QtGui.QIcon("./Internals/resources/icon.png"))
+def filefinders():
+    if not os.path.exists("./Internals"):
+        os.mkdir("./Internals")
+    if not os.path.exists("./Internals/themes"):
+        os.mkdir("./Internals/themes") #will probably move this to launcher.py
+    if not os.path.exists("./Internals/javas"): #eventually
+        os.mkdir("./Internals/javas") # but since Javier.py is the current launcher
+filefinders() # it'll be here! until the auto updater comes to be
 widget.show()
 app.exec_()
