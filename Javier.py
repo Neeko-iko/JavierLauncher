@@ -47,10 +47,11 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         if not os.path.exists("./Internals/javas/java"+ver):
             self.ui.javaDownBar.setEnabled(True)
             self.ui.javaDownBar.setMaximum(0)
+            self.ui.javaDownBar.setValue(0)
             self.ui.downJavaButton.setDisabled(True)
             self.printl("attempting to download OpenJDK Java JRE "+ ver)
-            self.down = threading.Thread(target= serverRelated.dlJava, args=(ver, self.ui.javaDownBar, self.ui.downJavaButton))
-            self.down.start()
+            down = threading.Thread(target= serverRelated.dlJava, args=(ver, self.ui.javaDownBar, self.ui.downJavaButton))
+            down.start()
         else:
             self.printl("you already have Java "+ver+" installed!")
         
@@ -299,7 +300,14 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.TButtonframes.addWidget(self.themebutton)
         
 
-
+def filefinders():
+    if not os.path.exists("./Internals"):
+        os.mkdir("./Internals")
+    if not os.path.exists("./Internals/themes"):
+        os.mkdir("./Internals/themes") #will probably move this to launcher.py
+    if not os.path.exists("./Internals/javas"): #eventually
+        os.mkdir("./Internals/javas") # but since Javier.py is the current launcher
+filefinders() # it'll be here! until the auto updater comes to be
 app = QtWidgets.QApplication()
 widget =MainJavier()
 style =jdb.readSettingValue("CurrentTheme")
@@ -316,13 +324,6 @@ if style != '' and style != None:
     widget.printl("Loaded Theme succesfully!")
 if os.path.exists("./Internals/resources/icon.png"):
     widget.setWindowIcon(QtGui.QIcon("./Internals/resources/icon.png"))
-def filefinders():
-    if not os.path.exists("./Internals"):
-        os.mkdir("./Internals")
-    if not os.path.exists("./Internals/themes"):
-        os.mkdir("./Internals/themes") #will probably move this to launcher.py
-    if not os.path.exists("./Internals/javas"): #eventually
-        os.mkdir("./Internals/javas") # but since Javier.py is the current launcher
-filefinders() # it'll be here! until the auto updater comes to be
+
 widget.show()
 app.exec_()

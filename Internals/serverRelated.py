@@ -3,7 +3,6 @@ import os
 import subprocess
 from zipfile import ZipFile
 import tarfile
-import zipfile
 import requests
 from Internals import jdb
 jdb.deploy()
@@ -18,11 +17,19 @@ def dlJava(ver, bar, but):
     #print(f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse")
     #print(java.status_code) # their api site says 307 is good but 200 is fairly universal.
     if java.status_code == 307 or java.status_code == 200:
+        bar.setMaximum(int(java.headers.get('content-length', 0)))
+        progress = 0
         with open(fp+ver+ft,"wb+") as e:
-            for bite in java.iter_content(chunk_size=2048):
-                if bite:
-                    e.write(bite)
-
+            for bite in java.iter_content(chunk_size=4048):
+                progress = progress + len(bite)
+                bar.setValue(progress)
+                e.write(bite)
+    else:
+        bar.setMaximum(1)
+        bar.setValue(0)
+        bar.setEnabled(False)
+        but.setEnabled(True)
+        return "This java doesn't exist!"
     #os.mkdir(fp+ver)
     if operating == "windows":
         file = ZipFile(fp+ver+ft, "r")
@@ -37,8 +44,10 @@ def dlJava(ver, bar, but):
     os.remove(fp+ver+ft) #cleanup
     os.rename(fp[:-4]+ftr, fp+ver) #so that it's an easier check.
     bar.setMaximum(1) # probably better ways to do this lmaooo
+    bar.setValue(0)
     bar.setEnabled(False)
     but.setEnabled(True)
+    return "Downloaded successfully!"
         
 
 
