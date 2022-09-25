@@ -29,8 +29,10 @@ def dlJava(ver, bar, but):
         bar.setValue(0)
         bar.setEnabled(False)
         but.setEnabled(True)
-        return "This java doesn't exist!"
+        return
     #os.mkdir(fp+ver)
+    bar.setMaximum(0)
+    bar.setValue(0)
     if operating == "windows":
         file = ZipFile(fp+ver+ft, "r")
         ftr = file.namelist()[0] #hopefully this works lmoaoooo
@@ -44,10 +46,9 @@ def dlJava(ver, bar, but):
     os.remove(fp+ver+ft) #cleanup
     os.rename(fp[:-4]+ftr, fp+ver) #so that it's an easier check.
     bar.setMaximum(1) # probably better ways to do this lmaooo
-    bar.setValue(0)
     bar.setEnabled(False)
     but.setEnabled(True)
-    return "Downloaded successfully!"
+    return
         
 
 
