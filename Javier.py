@@ -4,7 +4,6 @@ try:
     import threading
     import shiboken2
     from PySide2 import QtWidgets, QtGui, QtGui
-    from PySide2 import QtSql
     from Internals import ui, serverRelated, jdb
 except ModuleNotFoundError as e:
     print("imports failed, see error")
@@ -57,9 +56,17 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         
 
     def forceful(self): # hopefully temporary code lol
+        #TODO: dynamic changes upon clicking
         if self.selectedServer == None: #phenominal code, really
             self.ui.defaultCheck.setChecked(True)
             self.printl("You haven't selected a server!")
+        else:
+            if self.ui.defaultCheck.isChecked():
+                self.ui.jraEntry.setText(jdb.readSettingValue("DefaultJRA"))
+                self.ui.sJavaOver.setText(jdb.readSettingValue("DefaultJava"))
+            else:
+                self.ui.jraEntry.setText(jdb.readServerValue(self.selectedServer, "LaunchFlags"))
+                self.ui.sJavaOver.setText(jdb.readServerValue(self.selectedServer, "JavaFilePath"))
 
     def saveSettings(self):
         if self.ui.defaultCheck.isChecked():
@@ -105,6 +112,17 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.selectedDir = dire
         self.ui.defaultCheck.setChecked(False)
         self.ui.serverSelectLabel.setText("Editing: " + name)
+        self.ui.jraEntry.setText(jdb.readServerValue(name, "LaunchFlags"))
+        self.ui.sJavaOver.setText(jdb.readServerValue(name, "JavaFilePath"))
+        self.ui.jarFileEntry.setText(jdb.readServerValue(name, "JARName"))
+        val = jdb.readServerValue(name, "RAM") 
+        if val != None and val != '':
+            self.ui.ramEnter.setValue(val)
+        else:
+            self.ui.ramEnter.setValue(1)
+
+        
+        
 
     def Startup(self):
         name = self.selectedServer
@@ -285,8 +303,8 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
 
 app = QtWidgets.QApplication()
 widget =MainJavier()
-style =jdb.readSettingValue("CurrentTheme") 
-if style != None:
+style =jdb.readSettingValue("CurrentTheme")
+if style != '':
     sheet= open(style, "r")
     style = sheet.readlines()
     sheet.close()

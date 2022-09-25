@@ -1,5 +1,4 @@
 import threading
-from urllib.request import build_opener
 from PySide2 import QtSql
 
 ########UPDATE THIS STRING WITH EVERY UPDATE###########
@@ -41,11 +40,11 @@ def deploy():
   execute("create table if not exists Settings(ID integer PRIMARY KEY AUTOINCREMENT, DefaultJava text, DefaultJRA text, DefaultRAM integer, LastVersion text DEFAULT '"+version+"', CurrentTheme text, DefaultPort integer)")
   #This is a hack solution that breaks the table if the value is > 1
   #however the only way for the table to be > 1 is if someone breaks it on purpose
-  count = QtSql.QSqlQuery()
-  count.exec_("SELECT COUNT(*) FROM Settings")
+  count = buildquery() #QtSql.QSqlQuery()
+  count.exec_("SELECT ID FROM Settings")
   count.first()
-  print(count.value(0))
-  if count.value(0) != 1:
+  if not count.isValid(): #practically stolen ! very cool.
+  #if count.value(0) != 1:
     execute("INSERT INTO Settings DEFAULT VALUES")
 
 #Function to check if DB structure needs to be updated after
@@ -184,5 +183,5 @@ def readSettingValue(obj):
   query = buildquery()
   query.setForwardOnly(True)
   query.exec_("SELECT "+str(obj)+" FROM Settings")
-  query.first
+  query.first()
   return query.value(0)

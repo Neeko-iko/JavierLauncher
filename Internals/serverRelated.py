@@ -22,7 +22,7 @@ def dlJava(ver, bar, but):
             for bite in java.iter_content(chunk_size=2048):
                 if bite:
                     e.write(bite)
-    ###TODO: unzip
+
     #os.mkdir(fp+ver)
     if operating == "windows":
         file = ZipFile(fp+ver+ft, "r")
@@ -68,8 +68,9 @@ def folders(dir = os.getcwd()):
     return servers
 
 def runServer(server, dire, RAM):
-    if jdb.readServerValue(server, "JARName") == None:
-        dire = dire.replace("\\", "/")
+    t =jdb.readServerValue(server, "JARName") 
+    if  t == '' or t == None:
+        dire = dire.replace("\\", "/") 
         file =[]
         for item in os.listdir(f"{dire}/{server}"):
             if item[-4:] == '.jar':
@@ -87,14 +88,16 @@ def runServer(server, dire, RAM):
     else:
         jar = jdb.readServerValue(server, "JARName")
     universe = f"{dire}/{server}"
-    if jdb.readServerValue(server, "JavaFilePath") != '':
+    if jdb.readServerValue(server, "JavaFilePath") != None:
         java = jdb.readServerValue(server,"JavaFilePath")
     elif jdb.readSettingValue("DefaultJava") != None:
         java = jdb.readSettingValue("DefaultJava")
     else:
         java = "java"
+    print(java)
+    print(RAM)
+    print(jar)
     operating = os.name
-    print(operating)
     if operating == "nt":
         cmd = (f'start cmd /C {java} -Xmx{RAM}G -Xms256M -jar "{jar}" nogui')
         subprocess.run((cmd), shell=True, cwd=universe)
