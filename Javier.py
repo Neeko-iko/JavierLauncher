@@ -39,8 +39,12 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.downJavaButton.clicked.connect(lambda : self.funkyJava())
 
     #Help Tab Code
-        readme = open("./Internals/help.html", "r",encoding="UTF-8")
-        self.ui.textEdit.setText(readme.read())
+        try:
+            readme = open("./Internals/help.html", "r",encoding="UTF-8")
+            self.ui.textEdit.setText(readme.read())
+        except:
+            self.printl("no help.html! this is ok...")
+            self.ui.textEdit.setText("Javier is a work in progress.\nyou can find some information at https://github.com/neeko-iko/javierlauncher\nif you need assistance please contact @Neeko_iko on Twitter, or Neeko#7373 on Discord")
 
 
     def funkyJava(self):
