@@ -243,7 +243,6 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.deldirlist = []
         for i in range (0, len(directs)):
             dire = str(directs[i])
-            print(dire)
             if dire.isdigit():
                 continue
             

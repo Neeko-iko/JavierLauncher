@@ -15,8 +15,8 @@ def dlJava(ver, bar, but):
     fp = "./Internals/javas/java"
     header = {"User-Agent": "QterJavier"} # it can be anything! :)
     java = requests.request(method="get",url=f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse",headers=header,stream=True)
-    print(f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse")
-    print(java.status_code) # their api site says 307 is good but 200 is fairly universal.
+    #print(f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse")
+    #print(java.status_code) # their api site says 307 is good but 200 is fairly universal.
     if java.status_code == 307 or java.status_code == 200:
         with open(fp+ver+ft,"wb+") as e:
             for bite in java.iter_content(chunk_size=2048):
@@ -94,9 +94,6 @@ def runServer(server, dire, RAM):
         java = jdb.readSettingValue("DefaultJava")
     else:
         java = "java"
-    print(java)
-    print(RAM)
-    print(jar)
     operating = os.name
     if operating == "nt":
         cmd = (f'start cmd /C {java} -Xmx{RAM}G -Xms256M -jar "{jar}" nogui')
