@@ -133,7 +133,12 @@ def readServer(name):
   """
   query = buildquery()
   query.setForwardOnly(True)
-  return query.exec_("SELECT ID FROM ServerList WHERE Name = '"+str(name)+"'")
+  query.exec_("SELECT ID FROM ServerList WHERE Name = '"+str(name)+"'")
+  query.first()
+  if query.isValid():
+    return True
+  else:
+    return False
 
 #Here lies the flatten function, may it Rest in Peace
 
