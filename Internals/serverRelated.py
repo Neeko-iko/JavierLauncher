@@ -104,9 +104,10 @@ def runServer(server, dire, RAM):
         java = jdb.readSettingValue("DefaultJava")
     else:
         java = "java"
-    #operating = 
+    if len(java.split(" ")) > 1:
+        java = f"'{java}'"
     if os.name == "nt":
-        cmd = (f"start cmd /k {java} -Xmx{RAM}G -Xms256M -jar {jar} nogui")
+        cmd = (f"start cmd /k {java} -Xmx{RAM}G -Xms256M -jar '{jar}' nogui")
         subprocess.run((cmd), shell=True, cwd=universe)
             #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
             #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE
