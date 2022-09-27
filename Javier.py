@@ -18,7 +18,9 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui = ui.Ui_Main()
         self.ui.setupUi(self)
         self.selectedDir = None
-
+        if os.name == "nt":
+            self.ui.jarGuiCheck.setChecked(True)
+            self.ui.jarGuiCheck.clicked.connect(lambda: self.windowsforce())
     # Nontabbed buttosn/other code
         self.ui.logClearButton.clicked.connect(lambda : self.ui.miniSole.setPlainText(""))
         self.selectedServer = None
@@ -45,7 +47,11 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         except:
             self.printl("no help.html! this is ok...")
             self.ui.textEdit.setText("Javier is a work in progress.\nyou can find some information at https://github.com/neeko-iko/javierlauncher\nif you need assistance please contact @Neeko_iko on Twitter, or Neeko#7373 on Discord")
-
+    
+    def windowsforce(self):
+        self.ui.jarGuiCheck.setChecked(True)
+        self.printl("Windows multiserver operability requires this to be on.\nif you'd rather have Javier open a command line, you can use Linux with xterm\
+\nor you can contribute to Javier development yourself at\nhttps://github.com/neeko-iko/javierlauncher")
 
     def funkyJava(self):
         if os.name != "nt":
@@ -67,17 +73,24 @@ if you'd like to contribute to Javier's development, you are free to go to\nand 
         
 
     def forceful(self): # hopefully temporary code lol
-        #TODO: dynamic changes upon clicking
         if self.selectedServer == None: #phenominal code, really
             self.ui.defaultCheck.setChecked(True)
             self.printl("You haven't selected a server!")
         else:
-            if self.ui.defaultCheck.isChecked():
+            self.refreshSettings()
+
+    def refreshSettings(self):
+        if self.ui.defaultCheck.isChecked():
                 self.ui.jraEntry.setText(jdb.readSettingValue("DefaultJRA"))
                 self.ui.sJavaOver.setText(jdb.readSettingValue("DefaultJava"))
+        else:
+            self.ui.jraEntry.setText(jdb.readServerValue(self.selectedServer, "LaunchFlags"))
+            self.ui.sJavaOver.setText(jdb.readServerValue(self.selectedServer, "JavaFilePath"))
+            val = jdb.readServerValue(self.selectedServer, "RAM") 
+            if val != None and val != '':
+                self.ui.ramEnter.setValue(val)
             else:
-                self.ui.jraEntry.setText(jdb.readServerValue(self.selectedServer, "LaunchFlags"))
-                self.ui.sJavaOver.setText(jdb.readServerValue(self.selectedServer, "JavaFilePath"))
+                self.ui.ramEnter.setValue(1)
 
     def saveSettings(self):
         if self.ui.defaultCheck.isChecked():
@@ -113,9 +126,6 @@ if you'd like to contribute to Javier's development, you are free to go to\nand 
     def printl(self, string):
         self.ui.miniSole.appendPlainText(string)
 
-    
-
-
     def setServer(self, name, dire):
         self.printl(f"Selected: {name}")
         self.ui.startButton.setText(f"Start\n{name}")
@@ -123,16 +133,8 @@ if you'd like to contribute to Javier's development, you are free to go to\nand 
         self.selectedDir = dire
         self.ui.defaultCheck.setChecked(False)
         self.ui.serverSelectLabel.setText("Editing: " + name)
-        self.ui.jraEntry.setText(jdb.readServerValue(name, "LaunchFlags"))
-        self.ui.sJavaOver.setText(jdb.readServerValue(name, "JavaFilePath"))
-        self.ui.jarFileEntry.setText(jdb.readServerValue(name, "JARName"))
-        val = jdb.readServerValue(name, "RAM") 
-        if val != None and val != '':
-            self.ui.ramEnter.setValue(val)
-        else:
-            self.ui.ramEnter.setValue(1)
+        self.refreshSettings()
 
-        
         
 
     def Startup(self):
@@ -151,8 +153,9 @@ if you'd like to contribute to Javier's development, you are free to go to\nand 
         self.ui.serverSelectLabel.setText("No Server Selected!")
         self.ui.startButton.setText("Select a\nServer!")
         self.selectedServer = None
-
-        a = threading.Thread(target= serverRelated.runServer, args=(name, self.selectedDir, ram))
+        self.refreshSettings()
+        gui = "" if self.ui.jarGuiCheck.isChecked() else "nogui" 
+        a = threading.Thread(target= serverRelated.runServer, args=(name, self.selectedDir, ram, gui))
         a.start()
     def delDirs(self, dire):
         jdb.delServerPath(dire)
