@@ -107,8 +107,8 @@ def runServer(server, dire, RAM, gui):
     if len(java.split(" ")) > 1:
         java = f"'{java}'"
     if os.name == "nt":
-        cmd = (f"start cmd /k {java} -Xmx{RAM}G -Xms256M -jar '{jar}' nogui") #not happy about this.
-        subprocess.run((java, "-Xms256M", f"-Xmx{RAM}G", '-jar', jar, gui), cwd=universe) # i wanted it to use the CMD. not the jar gui
+        os.chdir(universe)
+        os.system(f"{java} -Xms256M -Xmx{RAM}G -jar {jar} {gui}") # i wanted it to use the CMD. not the jar gui
             #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
             #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE
     else:      #xterm -e    # MacOS hates this.  will have to determine a workaround for Mac, eventually.
