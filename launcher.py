@@ -1,6 +1,9 @@
 #!/usr/bin/python3
-from Internals import jdb
 from sys import platform
+from os import system
+if platform == "linux":
+  system("git pull")
+from Internals import jdb
 jdb.deploy()
 currVersion = jdb.readSettingValue('LastVersion')
 from Internals import updater
