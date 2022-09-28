@@ -98,12 +98,23 @@ def runServer(server, dire, RAM, gui):
     else:
         jar = jdb.readServerValue(server, "JARName")
     universe = f"{dire}/{server}/"
-    if jdb.readServerValue(server, "JavaFilePath") != None:
-        java = jdb.readServerValue(server,"JavaFilePath")
-    elif jdb.readSettingValue("DefaultJava") != '':
-        java = jdb.readSettingValue("DefaultJava")
+
+    javaS = jdb.readServerValue(server, "JavaFilePath")
+    javaD = jdb.readSettingValue("DefaultJava") 
+    if javaS != None and javaS != '':
+        java = javaS
+    elif  javaD != '' and javaD != None:
+        java = javaD
     else:
         java = "java"
+    jraS = jdb.readServerValue(server, "LaunchFlags")
+    jraD = jdb.readSettingValue("DefaultJRA")
+    if jraS != None and jraS != '':
+        jra = jraS
+    elif jraD != None and jraD != '':
+        jra = jraD
+    else:
+        jra = ''
     if len(java.split(" ")) > 1:
         java = f"'{java}'"
     if os.name == "nt":
@@ -112,5 +123,5 @@ def runServer(server, dire, RAM, gui):
             #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
             #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE
     else:      #xterm -e    # MacOS hates this.  will have to determine a workaround for Mac, eventually.
-        cmd = (f"xterm -e '{java}' -Xmx{RAM}G -Xms256M -jar '{jar}' {gui}")
+        cmd = (f"xterm -e '{java}' -Xmx{RAM}G -Xms256M {jra} -jar '{jar}' {gui}")
         subprocess.run((cmd), shell=True, cwd=universe)
