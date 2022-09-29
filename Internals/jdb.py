@@ -185,3 +185,14 @@ def readSettingValue(obj):
   query.exec_("SELECT "+str(obj)+" FROM Settings")
   query.first()
   return query.value(0)
+
+
+
+#This is for the progress bar
+def progInit():
+  global jsize
+  jsize = 0
+  global jfin
+  jfin = 0
+  global jready
+  jready = 0
