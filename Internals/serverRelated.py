@@ -89,8 +89,11 @@ class ServerThread(QThread):
     self.RAM = 0
     self.gui = ''
   def run(self):
-    t = jdb.readServerValue(self.server, "JARName") 
+    t = str(jdb.readServerValue(self.server, "JARName"))
+    print(os.path.isfile(t))
     if os.path.isfile(t):
+        jar = jdb.readServerValue(self.server, "JARName")
+    else:
         self.dire = self.dire.replace("\\", "/") 
         file =[]
         for item in os.listdir(f"{self.dire}/{self.server}"):
@@ -106,11 +109,9 @@ class ServerThread(QThread):
                             file.remove(item)
         jar = f"\"{self.dire}/{self.server}/{file[0]}\""
         jdb.updateServerValue(self.server, "JARName", jar)
-    else:
-        jar = jdb.readServerValue(self.server, "JARName")
     universe = f"{self.dire}/{self.server}/"
-    javaS = jdb.readServerValue(self.server, "JavaFilePath")
-    javaD = jdb.readSettingValue("DefaultJava") 
+    javaS = str(jdb.readServerValue(self.server, "JavaFilePath"))
+    javaD = str(jdb.readSettingValue("DefaultJava"))
     if os.path.isfile(javaS) :
         java = javaS
     elif  os.path.isfile(javaD):
