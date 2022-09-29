@@ -4,35 +4,41 @@ import subprocess
 from zipfile import ZipFile
 import tarfile
 import requests
+import asyncio
+from PySide6.QtCore import Signal, QObject
 from Internals import jdb
 jdb.deploy()
 
-def dlJava(ver, bar, but):
+#Signal Emitters for the progress bar
+#They must be defined outside of a function
+class ProgEmitter(QObject):
+  progUpdate = Signal(int)
+progger = ProgEmitter()
+class FinishEmitter(QObject):
+  javaDownloadFinish = Signal(bool)
+jf = FinishEmitter()
+
+def dlJava(ver):
     operating = os.name
     operating = "windows" if operating == "nt" else "linux"
     ft = ".zip" if os.name == "nt" else ".tar.gz"
     fp = "./Internals/javas/java"
-    header = {"User-Agent": "QterJavier"} # it can be anything! :)
-    java = requests.request(method="get",url=f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse",headers=header,stream=True)
+    header = {"User-Agent": "QterJavier"}
     #print(f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse")
     #print(java.status_code) # their api site says 307 is good but 200 is fairly universal.
+    java = requests.request(method="get",url=f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse",headers=header,stream=True)
+    print("Status Code: ", java.status_code)
+    jdb.jsize = int(java.headers.get('content-length', 0))
+    print("Size: ", jdb.jsize)
+    jdb.jready = 1
     if java.status_code == 307 or java.status_code == 200:
-        bar.setMaximum(int(java.headers.get('content-length', 0)))
         progress = 0
         with open(fp+ver+ft,"wb+") as e:
             for bite in java.iter_content(chunk_size=4048):
                 progress = progress + len(bite)
-                bar.setValue(progress)
+                progger.progUpdate.emit(progress)
                 e.write(bite)
-    else:
-        bar.setMaximum(1)
-        bar.setValue(0)
-        bar.setEnabled(False)
-        but.setEnabled(True)
-        return
     #os.mkdir(fp+ver)
-    bar.setMaximum(0)
-    bar.setValue(0)
     if operating == "windows":
         file = ZipFile(fp+ver+ft, "r")
         ftr = file.namelist()[0] #hopefully this works lmoaoooo
@@ -45,9 +51,8 @@ def dlJava(ver, bar, but):
         file.close()
     os.remove(fp+ver+ft) #cleanup
     os.rename(fp[:-4]+ftr, fp+ver) #so that it's an easier check.
-    bar.setMaximum(1) # probably better ways to do this lmaooo
-    bar.setEnabled(False)
-    but.setEnabled(True)
+    jf.javaDownloadFinish.emit(1)
+    jdb.jfin = 1
     return
         
 

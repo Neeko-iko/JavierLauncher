@@ -1,10 +1,16 @@
 #!/usr/bin/python3
+from http import server
+
+
 try:
     import os
+    import sys
     import threading
     import shiboken6
     import requests
+    from time import sleep
     from PySide6 import QtWidgets, QtGui, QtGui
+    from PySide6.QtCore import QObject, Signal, Slot, QThread
     from Internals import ui, serverRelated, jdb
 except ModuleNotFoundError as e:
     print("imports failed, see error")
@@ -18,6 +24,15 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui = ui.Ui_Main()
         self.ui.setupUi(self)
         self.selectedDir = None
+        class JavaDLThread(QThread):
+          def __init__(self):
+            super().__init__()
+            self.ver = 8
+          def setVer(self, ver):
+            self.ver = ver
+          def run(self):
+            serverRelated.dlJava(self.ver)
+        self.jthread = JavaDLThread()
         if os.name == "nt":
             self.ui.jarGuiCheck.setChecked(True)
             self.ui.jarGuiCheck.clicked.connect(lambda: self.windowsforce())
@@ -53,23 +68,45 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.printl("Windows multiserver operability requires this to be on.\nif you'd rather have Javier open a command line, you can use Linux with xterm\
 \nor you can contribute to Javier development yourself at\nhttps://github.com/neeko-iko/javierlauncher")
 
+    @Slot(int)
+    def on_progUpdate(self, p):
+      #print("We proggin': ", p) #This is for debugging, p is equal to the number of bytes downloaded
+      self.ui.javaDownBar.setValue(p)
+
+    @Slot(bool)
+    def on_javaDownloadFinish(self, flag):
+        self.ui.javaDownBar.setMaximum(0)
+        self.ui.javaDownBar.setValue(0)
+        self.ui.javaDownBar.setMaximum(1)
+        self.ui.javaDownBar.setEnabled(False)
+        self.ui.downJavaButton.setEnabled(True)
+        self.printl("Download complete!")
+
+    #Not so funky anymore, Neeko
     def funkyJava(self):
-        if os.name != "nt":
-            ver = self.ui.javaIntBox.text()
-            if not os.path.exists("./Internals/javas/java"+ver):
-                self.ui.javaDownBar.setEnabled(True)
-                self.ui.javaDownBar.setMaximum(0)
-                self.ui.javaDownBar.setValue(0)
-                self.ui.downJavaButton.setDisabled(True)
-                self.printl("attempting to download OpenJDK Java JRE "+ ver)
-                down = threading.Thread(target= serverRelated.dlJava, args=(ver, self.ui.javaDownBar, self.ui.downJavaButton))
-                down.start()
-            else:
-                self.printl("you already have Java "+ver+" installed!")
-        else:
-            self.printl("For the sake of time crunch, this feature is disabled on windows\nthis is because it throws errors that nobody knows how to fix, nor wants to look into\n\
-if you'd like to contribute to Javier's development, you are free to go to\nand make your own contribution at:\nhttps://github.com/neeko-iko/javierlauncher")
-            #im gonna start dissing my partner.
+      ver = self.ui.javaIntBox.text()
+      self.jthread.setVer(ver)
+      if not os.path.exists("./Internals/javas/java"+ver):
+        jdb.progInit()
+        self.ui.javaDownBar.setEnabled(True)
+        self.ui.javaDownBar.setMaximum(0)
+        self.ui.javaDownBar.setValue(0)
+        self.ui.downJavaButton.setDisabled(True)
+        self.printl("Attempting to download OpenJDK Java JRE "+ ver)
+        #Java download
+        self.jthread.start()
+        while jdb.jfin == 0:
+          if jdb.jready == 1:
+            print("Size in Main Thread:", jdb.jsize)
+            self.ui.javaDownBar.setMaximum(int(jdb.jsize))
+            break
+      else:
+        self.printl("You already have Java "+ver+" installed!")
+        self.ui.javaDownBar.setMaximum(1)
+        self.ui.javaDownBar.setValue(0)
+        self.ui.javaDownBar.setEnabled(False)
+        self.ui.downJavaButton.setEnabled(True)
+        return
         
 
     def forceful(self): # hopefully temporary code lol
@@ -322,8 +359,8 @@ def filefinders():
         os.mkdir("./Internals/javas") # but since Javier.py is the current launcher
 filefinders() # it'll be here! until the auto updater comes to be
 app = QtWidgets.QApplication()
-widget =MainJavier()
-style =jdb.readSettingValue("CurrentTheme")
+widget = MainJavier()
+style = jdb.readSettingValue("CurrentTheme")
 if style != '' and style != None:
     sheet= open(style, "r")
     style = sheet.readlines()
@@ -337,6 +374,8 @@ if style != '' and style != None:
     widget.printl("Loaded Theme succesfully!")
 if os.path.exists("./Internals/resources/icon.png"):
     widget.setWindowIcon(QtGui.QIcon("./Internals/resources/icon.png"))
+serverRelated.progger.progUpdate.connect(widget.on_progUpdate)
+serverRelated.jf.javaDownloadFinish.connect(widget.on_javaDownloadFinish)
 
 widget.show()
 app.exec()
