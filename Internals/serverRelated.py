@@ -90,7 +90,7 @@ class ServerThread(QThread):
     self.gui = ''
   def run(self):
     t = jdb.readServerValue(self.server, "JARName") 
-    if  t == '' or t == None:
+    if os.path.isfile(t):
         self.dire = self.dire.replace("\\", "/") 
         file =[]
         for item in os.listdir(f"{self.dire}/{self.server}"):
@@ -111,14 +111,10 @@ class ServerThread(QThread):
     universe = f"{self.dire}/{self.server}/"
     javaS = jdb.readServerValue(self.server, "JavaFilePath")
     javaD = jdb.readSettingValue("DefaultJava") 
-    if javaS != None and javaS != '':
+    if os.path.isfile(javaS) :
         java = javaS
-    elif  javaD != '' and javaD != None:
+    elif  os.path.isfile(javaD):
         java = javaD
-    if jdb.readServerValue(self.server, "JavaFilePath") != None:
-        java = jdb.readServerValue(self.server,"JavaFilePath")
-    elif jdb.readSettingValue("DefaultJava") != '':
-        java = jdb.readSettingValue("DefaultJava")
     else:
         java = "java"
     jraS = jdb.readServerValue(self.server, "LaunchFlags")
