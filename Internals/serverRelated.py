@@ -89,7 +89,6 @@ class ServerThread(QThread):
     self.RAM = 0
     self.gui = ''
   def run(self):
-    print("This server is sexy")
     t = jdb.readServerValue(self.server, "JARName") 
     if  t == '' or t == None:
         self.dire = self.dire.replace("\\", "/") 
@@ -135,12 +134,12 @@ class ServerThread(QThread):
     if os.name == "nt":
         print("Jar Path: ", jar)
         print("Java Path: ", java)
-        cmd = (f"start cmd /k {java} -Xmx{self.RAM}G -Xms256M -jar {jar} {self.gui}") #not happy about this.
+        cmd = (f"start cmd /k {java} -Xmx{self.RAM}G -Xms256M {jra} -jar {jar} {self.gui}") #not happy about this.
         subprocess.run(cmd, shell=True, cwd=universe) # i wanted it to use the CMD. not the jar gui
             #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
             #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE
     else:      #xterm -e    # MacOS hates this.  will have to determine a workaround for Mac, eventually.
-        cmd = (f"xterm -e '{java}' -Xmx{RAM}G -Xms256M {jra} -jar '{jar}' {gui}")
+        cmd = (f"xterm -e '{java}' -Xmx{self.RAM}G -Xms256M {jra} -jar '{jar}' {gui}")
         subprocess.run((cmd), shell=True, cwd=universe)
   def setProp(self, server, dire, RAM, gui):
     self.server = server
