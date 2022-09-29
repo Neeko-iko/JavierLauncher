@@ -139,7 +139,7 @@ class ServerThread(QThread):
             #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
             #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE
     else:      #xterm -e    # MacOS hates this.  will have to determine a workaround for Mac, eventually.
-        cmd = (f"xterm -e '{java}' -Xmx{self.RAM}G -Xms256M {jra} -jar '{jar}' {gui}")
+        cmd = (f"xterm -e '{java}' -Xmx{self.RAM}G -Xms256M {jra} -jar '{jar}' {self.gui}")
         subprocess.run((cmd), shell=True, cwd=universe)
   def setProp(self, server, dire, RAM, gui):
     self.server = server
