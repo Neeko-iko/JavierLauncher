@@ -32,9 +32,6 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             serverRelated.dlJava(self.ver)
         self.jthread = JavaDLThread()
         self.serverManager = serverRelated.ServerThread()
-        if os.name == "nt":
-            self.ui.jarGuiCheck.setChecked(True)
-            self.ui.jarGuiCheck.clicked.connect(lambda: self.windowsforce())
     # Nontabbed buttosn/other code
         self.ui.logClearButton.clicked.connect(lambda : self.ui.miniSole.setPlainText(""))
         self.selectedServer = None
@@ -61,11 +58,6 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         except:
             self.printl("no help.html! this is ok...")
             self.ui.textEdit.setText("Javier is a work in progress.\nyou can find some information at https://github.com/neeko-iko/javierlauncher\nif you need assistance please contact @Neeko_iko on Twitter, or Neeko#7373 on Discord")
-    
-    def windowsforce(self):
-        self.ui.jarGuiCheck.setChecked(True)
-        self.printl("Windows multiserver operability requires this to be on.\nif you'd rather have Javier open a command line, you can use Linux with xterm\
-\nor you can contribute to Javier development yourself at\nhttps://github.com/neeko-iko/javierlauncher")
 
     @Slot(int)
     def on_progUpdate(self, p):
