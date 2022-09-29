@@ -134,12 +134,16 @@ class ServerThread(QThread):
     if os.name == "nt":
         print("Jar Path: ", jar)
         print("Java Path: ", java)
-        cmd = (f"start cmd /k {java} -Xmx{self.RAM}G -Xms256M {jra} -jar {jar} {self.gui}") #not happy about this.
+        cmd = (f"{java} -Xmx{self.RAM}G -Xms256M {jra} -jar {jar} {self.gui}")
+        if self.gui == "nogui":
+            cmd = "start cmd /k " + cmd
         subprocess.run(cmd, shell=True, cwd=universe) # i wanted it to use the CMD. not the jar gui
             #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
             #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE
     else:      #xterm -e    # MacOS hates this.  will have to determine a workaround for Mac, eventually.
-        cmd = (f"""xterm -T 'Minecraft server "{self.server}"' -e {java} -Xmx{self.RAM}G -Xms256M {jra} -jar {jar} {self.gui}""")
+        cmd = (f"{java} -Xmx{self.RAM}G -Xms256M {jra} -jar {jar} {self.gui}")
+        if self.gui == "nogui":
+            cmd = f"""xterm -T 'Minecraft server "{self.server}"' -e """ + cmd
         print(cmd)
         subprocess.run((cmd), shell=True, cwd=universe)
   def setProp(self, server, dire, RAM, gui):
