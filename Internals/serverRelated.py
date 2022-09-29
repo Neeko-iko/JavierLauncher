@@ -4,8 +4,7 @@ import subprocess
 from zipfile import ZipFile
 import tarfile
 import requests
-import asyncio
-from PySide6.QtCore import Signal, QObject
+from PySide6.QtCore import Signal, QObject, QThread
 from Internals import jdb
 jdb.deploy()
 
@@ -82,37 +81,48 @@ def folders(dir = os.getcwd()):
             servers.append(dir)
     return servers
 
-def runServer(server, dire, RAM, gui):
-    t =jdb.readServerValue(server, "JARName") 
+class ServerThread(QThread):
+  def __init__(self):
+    super().__init__()
+    self.server = ''
+    self.dire = ''
+    self.RAM = 0
+    self.gui = ''
+  def run(self):
+    print("This server is sexy")
+    t = jdb.readServerValue(self.server, "JARName") 
     if  t == '' or t == None:
-        dire = dire.replace("\\", "/") 
+        self.dire = self.dire.replace("\\", "/") 
         file =[]
-        for item in os.listdir(f"{dire}/{server}"):
+        for item in os.listdir(f"{self.dire}/{self.server}"):
             if item[-4:] == '.jar':
                 file.append(item)
         if len(file) > 1:
             for item in file:
-                check = ZipFile(f"{dire}/{server}/{item}",'r')
+                check = ZipFile(f"{self.dire}/{self.server}/{item}",'r')
                 check = check.open('META-INF/MANIFEST.MF','r')
                 check = check.readlines()
                 for line in check:
                     if 'net.minecraft.server.MinecraftServer' in str(line):
                             file.remove(item)
-        jar = f"{dire}/{server}/{file[0]}"
-        jdb.updateServerValue(server, "JARName", jar)
+        jar = f"\"{self.dire}/{self.server}/{file[0]}\""
+        jdb.updateServerValue(self.server, "JARName", jar)
     else:
-        jar = jdb.readServerValue(server, "JARName")
-    universe = f"{dire}/{server}/"
-
-    javaS = jdb.readServerValue(server, "JavaFilePath")
+        jar = jdb.readServerValue(self.server, "JARName")
+    universe = f"{self.dire}/{self.server}/"
+    javaS = jdb.readServerValue(self.server, "JavaFilePath")
     javaD = jdb.readSettingValue("DefaultJava") 
     if javaS != None and javaS != '':
         java = javaS
     elif  javaD != '' and javaD != None:
         java = javaD
+    if jdb.readServerValue(self.server, "JavaFilePath") != None:
+        java = jdb.readServerValue(self.server,"JavaFilePath")
+    elif jdb.readSettingValue("DefaultJava") != '':
+        java = jdb.readSettingValue("DefaultJava")
     else:
         java = "java"
-    jraS = jdb.readServerValue(server, "LaunchFlags")
+    jraS = jdb.readServerValue(self.server, "LaunchFlags")
     jraD = jdb.readSettingValue("DefaultJRA")
     if jraS != None and jraS != '':
         jra = jraS
@@ -121,12 +131,19 @@ def runServer(server, dire, RAM, gui):
     else:
         jra = ''
     if len(java.split(" ")) > 1:
-        java = f"'{java}'"
+        java = f"\"{java}\""
     if os.name == "nt":
-        os.chdir(universe)
-        os.system(f"{java} -Xms256M -Xmx{RAM}G -jar {jar} {gui}") # i wanted it to use the CMD. not the jar gui
+        print("Jar Path: ", jar)
+        print("Java Path: ", java)
+        cmd = (f"start cmd /k {java} -Xmx{self.RAM}G -Xms256M -jar {jar} {self.gui}") #not happy about this.
+        subprocess.run(cmd, shell=True, cwd=universe) # i wanted it to use the CMD. not the jar gui
             #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
             #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE
     else:      #xterm -e    # MacOS hates this.  will have to determine a workaround for Mac, eventually.
         cmd = (f"xterm -e '{java}' -Xmx{RAM}G -Xms256M {jra} -jar '{jar}' {gui}")
         subprocess.run((cmd), shell=True, cwd=universe)
+  def setProp(self, server, dire, RAM, gui):
+    self.server = server
+    self.dire = dire
+    self.RAM = RAM
+    self.gui = gui

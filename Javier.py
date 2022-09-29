@@ -1,10 +1,8 @@
 #!/usr/bin/python3
-from http import server
 
 
 try:
     import os
-    import sys
     import threading
     import shiboken6
     import requests
@@ -33,6 +31,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
           def run(self):
             serverRelated.dlJava(self.ver)
         self.jthread = JavaDLThread()
+        self.serverManager = serverRelated.ServerThread()
         if os.name == "nt":
             self.ui.jarGuiCheck.setChecked(True)
             self.ui.jarGuiCheck.clicked.connect(lambda: self.windowsforce())
@@ -191,9 +190,9 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.startButton.setText("Select a\nServer!")
         self.selectedServer = None
         self.refreshSettings()
-        gui = "" if self.ui.jarGuiCheck.isChecked() else "nogui" 
-        a = threading.Thread(target= serverRelated.runServer, args=(name, self.selectedDir, ram, gui))
-        a.start()
+        gui = "" if self.ui.jarGuiCheck.isChecked() else "nogui"
+        self.serverManager.setProp(name, self.selectedDir, ram, gui)
+        self.serverManager.start()
     def delDirs(self, dire):
         jdb.delServerPath(dire)
         self.refreshingDirs()
