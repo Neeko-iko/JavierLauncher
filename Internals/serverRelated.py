@@ -6,7 +6,14 @@ import tarfile
 import requests
 from PySide6.QtCore import Signal, QObject, QThread
 from Internals import jdb
+import threading
 jdb.deploy()
+
+
+
+def start(cmd, universe): # used for linux launch but maybe will be useful later :)
+    subprocess.run((cmd), shell=True, cwd=universe)
+
 
 #Signal Emitters for the progress bar
 #They must be defined outside of a function
@@ -141,8 +148,9 @@ class ServerThread(QThread):
         cmd = (f"{java} -Xmx{self.RAM}G -Xms256M {jra} -jar {jar} {self.gui}")
         if self.gui == "nogui":
             cmd = f"""xterm -T 'Minecraft server "{self.server}"' -e """ + cmd
-        print(cmd)
-        subprocess.run((cmd), shell=True, cwd=universe)
+        a = threading.Thread(target = start, args = (cmd,universe))
+        a.start()
+        #subprocess.run((cmd), shell=True, cwd=universe)
   def setProp(self, server, dire, RAM, gui):
     self.server = server
     self.dire = dire
