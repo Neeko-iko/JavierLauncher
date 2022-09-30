@@ -226,7 +226,8 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             if dire.isdigit():
                 continue
 
-            servers = serverRelated.folders(dire) 
+            servers = serverRelated.folders(dire)
+            
             for i in range(0, len(servers)):
                 server = servers[i]
                 if self.ui.searchBar.text() != '':
@@ -235,9 +236,9 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
                 
                 self.favorButton = QtWidgets.QCheckBox(text='')
                 self.favorButton.setFixedSize(20,20)
-
+                #490 is the max height
                 self.serverButton = QtWidgets.QPushButton(str(server))
-                self.serverButton.setFixedSize(500,45)
+                #self.serverButton.setFixedSize(500,45)
                 self.serverButton.setContentsMargins(0,0,0,0)
                 self.serverButton.clicked.connect(lambda _=False, e =server, d = dire: self.setServer(e, d))
                 self.favorButton.clicked.connect(lambda _=False, e = server, d = self.favorButton : self.favoritism(e, d))
@@ -251,10 +252,18 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
                     self.normal["checks"].append(self.favorButton)
                 if len(self.normal["buttons"]) + len(self.favorites["buttons"]) > 10:
                     self.ui.scrollAreaWidgetContents.setFixedHeight(self.ui.scrollAreaWidgetContents.height() +45)
+            listsize =len(self.favorites["buttons"]) + len(self.normal["buttons"]) 
+            if listsize < 10:
+                height = 490/int(listsize) - 10
+            else:
+                height = 45
+
             for i in range (0, len(self.favorites["buttons"])):
+                self.favorites["buttons"][i].setFixedSize(500, height)
                 self.SButtonFrames.addWidget(self.favorites["buttons"][i], i+1,1,1,1)
                 self.SButtonFrames.addWidget(self.favorites["checks"][i],i+1,0,1,1)
             for i in range (0, len(self.normal["buttons"])): #this disgusts you as much as it does me
+                self.normal["buttons"][i].setFixedSize(500, height)
                 self.SButtonFrames.addWidget(self.normal["buttons"][i], i+len(self.favorites["buttons"])+1,1,1,1)
                 self.SButtonFrames.addWidget(self.normal["checks"][i],i+len(self.favorites["buttons"])+1,0,1,1)
             
@@ -283,19 +292,26 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         directs = jdb.readServerPaths()
         self.dirbuttlist = []
         self.deldirlist = []
+        
+        if len(directs) < 4:
+            height = 130/len(directs) - 5
+        else:
+            height = 30
         for i in range (0, len(directs)):
             dire = str(directs[i])
             if dire.isdigit():
                 continue
             
             self.deldirbutton = QtWidgets.QToolButton(text='DEL')
-            self.deldirbutton.setFixedSize(30,30)
+            self.deldirbutton.setFixedSize(30,height)
             self.deldirbutton.clicked.connect(lambda _=False, d = dire: self.delDirs(d))
             self.deldirlist.append(self.deldirbutton)
+            self.deldirbutton.setContentsMargins(0,0,0,0)
 
+            #132 is max height
 
             self.directButton = QtWidgets.QPushButton(str(dire))
-            self.directButton.setFixedSize(500,30)
+            self.directButton.setFixedSize(500,height)
             self.directButton.setContentsMargins(0,0,0,0)
             self.directButton.clicked.connect(lambda _=False, e = dire: self.printl(e))
             self.dirbuttlist.append(self.directButton)
@@ -306,6 +322,9 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.DButtonframes.addWidget(self.dirbuttlist[i], i,1,1,1)
             self.DButtonframes.addWidget(self.deldirlist[i],i,0,1,1)
         self.subsequentdirs = True
+
+
+    
     def refreshThemes(self, subs = True): # i absolutely love reusing HUGE chunks of code 3 times because im incompetent!!! it *will* happen again.
         if subs:
             for button in self.themebutts:
@@ -318,7 +337,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.themebutts = []
 
         self.deftheme = QtWidgets.QToolButton(text= "System")
-        self.deftheme.setFixedSize(155,45)
+        #self.deftheme.setFixedSize(155,45)
         self.deftheme.setStyleSheet("") # this makes it ignore the current theme
         self.deftheme.clicked.connect(lambda _=False : self.updateTheme(None))
         self.themebutts.append(self.deftheme)
@@ -334,11 +353,19 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             del th
 
             self.themebutton = QtWidgets.QToolButton(text=theme[:-4])
-            self.themebutton.setFixedSize(155,45)
+            #self.themebutton.setFixedSize(155,45)
             self.themebutton.setStyleSheet(the)
             self.themebutton.clicked.connect(lambda _=False, d = theme: self.updateTheme("./Internals/themes/"+d))
             self.themebutts.append(self.themebutton)
             self.TButtonframes.addWidget(self.themebutton)
+        if len(self.themebutts) < 6: # max height is 291
+            height = 290/len(self.themebutts) - 10
+        else:
+            height = 45
+        height = 100 if height > 100 else height
+        for i in range (0, len(self.themebutts)):
+            self.themebutts[i].setFixedSize(155, height)
+        self.printl("Successfully refreshed themes!")
         
 
 def filefinders():
