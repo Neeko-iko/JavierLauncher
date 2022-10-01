@@ -254,7 +254,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
                     self.ui.scrollAreaWidgetContents.setFixedHeight(self.ui.scrollAreaWidgetContents.height() +45)
             listsize =len(self.favorites["buttons"]) + len(self.normal["buttons"]) 
             if listsize < 10:
-                height = 490/int(listsize) - 10
+                height = int(490/(listsize+.1) - 10)
             else:
                 height = 45
 
@@ -294,7 +294,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.deldirlist = []
         
         if len(directs) < 4:
-            height = 130/len(directs) - 5
+            height = int(130/(len(directs)+.1) - 5)
         else:
             height = 30
         for i in range (0, len(directs)):
@@ -359,7 +359,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.themebutts.append(self.themebutton)
             self.TButtonframes.addWidget(self.themebutton)
         if len(self.themebutts) < 6: # max height is 291
-            height = 290/len(self.themebutts) - 10
+            height = int(290/(len(self.themebutts)+.1) - 10)
         else:
             height = 45
         height = 100 if height > 100 else height
