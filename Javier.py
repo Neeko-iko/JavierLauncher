@@ -114,6 +114,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         else:
             self.ui.jraEntry.setText(jdb.readServerValue(self.selectedServer, "LaunchFlags"))
             self.ui.sJavaOver.setText(jdb.readServerValue(self.selectedServer, "JavaFilePath"))
+            self.ui.jarFileEntry.setText(jdb.readServerValue(self.selectedServer, "JARName"))
             val = jdb.readServerValue(self.selectedServer, "RAM") 
             if val != None and val != '':
                 self.ui.ramEnter.setValue(val)
@@ -122,19 +123,14 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
 
     def saveSettings(self):
         if self.ui.defaultCheck.isChecked():
-            if self.ui.sJavaOver.text() != "":
-                jdb.updateSettingValue("DefaultJava", self.ui.sJavaOver.text())
-            if self.ui.jraEntry.text() != "":
-                jdb.updateSettingValue("DefaultJRA", self.ui.jraEntry.text())
+            jdb.updateSettingValue("DefaultJava", self.ui.sJavaOver.text())
+            jdb.updateSettingValue("DefaultJRA", self.ui.jraEntry.text())
             self.printl("Saved settings as default!")
         else: #prm,graming at 2:30 AM like that's agood idea :) ) :)
             name = self.selectedServer
-            if self.ui.sJavaOver.text() != "":
-                jdb.updateServerValue(name,"JavaFilePath", self.ui.sJavaOver.text())
-            if self.ui.jraEntry.text() != "":
-                jdb.updateServerValue(name,"LaunchFlags", self.ui.jraEntry.text())
-            if self.ui.jarFileEntry.text() != "":
-                jdb.updateServerValue(name, "JARName",self.ui.jarFileEntry.text())
+            jdb.updateServerValue(name,"JavaFilePath", self.ui.sJavaOver.text())
+            jdb.updateServerValue(name,"LaunchFlags", self.ui.jraEntry.text())
+            jdb.updateServerValue(name, "JARName",self.ui.jarFileEntry.text())
             self.printl("Saved settings to "+name)
 
     def addDir(self):

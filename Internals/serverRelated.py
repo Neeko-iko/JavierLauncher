@@ -96,6 +96,8 @@ class ServerThread(QThread):
     self.RAM = 0
     self.gui = ''
   def run(self):
+    if self.dire == ".":
+        self.dire = os.getcwd()
     t = str(jdb.readServerValue(self.server, "JARName"))
     print(os.path.isfile(t))
     if os.path.isfile(t):
@@ -116,7 +118,9 @@ class ServerThread(QThread):
                             file.remove(item)
         jar = f"\"{self.dire}/{self.server}/{file[0]}\""
         jdb.updateServerValue(self.server, "JARName", jar)
+    
     universe = f"{self.dire}/{self.server}/"
+    print(universe)
     javaS = str(jdb.readServerValue(self.server, "JavaFilePath"))
     javaD = str(jdb.readSettingValue("DefaultJava"))
     if os.path.isfile(javaS) :
@@ -148,6 +152,7 @@ class ServerThread(QThread):
         cmd = (f"{java} -Xmx{self.RAM}G -Xms256M {jra} -jar {jar} {self.gui}")
         if self.gui == "nogui":
             cmd = f"""xterm -T 'Minecraft server "{self.server}"' -e """ + cmd
+        print(cmd)
         a = threading.Thread(target = start, args = (cmd,universe))
         a.start()
         #subprocess.run((cmd), shell=True, cwd=universe)
