@@ -3,12 +3,9 @@
 
 try:
     import os
-    import threading
     import shiboken6
-    import requests
-    from time import sleep
     from PySide6 import QtWidgets, QtGui, QtGui
-    from PySide6.QtCore import QObject, Signal, Slot, QThread
+    from PySide6.QtCore import Slot, QThread
     from Internals import ui, serverRelated, jdb
 except ModuleNotFoundError as e:
     print("imports failed, see error")
