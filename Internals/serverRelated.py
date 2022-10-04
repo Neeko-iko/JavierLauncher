@@ -45,16 +45,21 @@ def dlJava(ver):
                 progger.progUpdate.emit(progress)
                 e.write(bite)
     #os.mkdir(fp+ver)
-    if operating == "windows":
-        file = ZipFile(fp+ver+ft, "r")
-        ftr = file.namelist()[0] #hopefully this works lmoaoooo
-        file.extractall(fp[:-4])
-        file.close()
-    else:
-        file = tarfile.open(fp+ver+ft, "r")
-        ftr = file.getnames()[0] #gotta love that all linux distros + mac will eat a tar.gz just fine
-        file.extractall(fp[:-4])
-        file.close()
+    try:
+        if operating == "windows":
+            file = ZipFile(fp+ver+ft, "r")
+            ftr = file.namelist()[0] #hopefully this works lmoaoooo
+            file.extractall(fp[:-4])
+            file.close()
+        else:
+            file = tarfile.open(fp+ver+ft, "r")
+            ftr = file.getnames()[0] #gotta love that all linux distros + mac will eat a tar.gz just fine
+            file.extractall(fp[:-4])
+            file.close()
+    except FileNotFoundError:
+        jf.javaDownloadFinish.emit(1)
+        jdb.jfin = 1
+        return
     os.remove(fp+ver+ft) #cleanup
     os.rename(fp[:-4]+ftr, fp+ver) #so that it's an easier check.
     jf.javaDownloadFinish.emit(1)

@@ -45,7 +45,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.addDirButton.clicked.connect(self.addDir)
         self.ui.themeRefresh.clicked.connect(lambda: self.refreshThemes())
         self.ui.saveSettings.clicked.connect(lambda : self.saveSettings())
-        self.ui.saveSettings_2.clicked.connect(lambda : self.saveSettings())
+        #self.ui.saveSettings_2.clicked.connect(lambda : self.saveSettings())
         self.ui.defaultCheck.clicked.connect(lambda : self.forceful())
         self.ui.downJavaButton.clicked.connect(lambda : self.funkyJava())
 
@@ -254,7 +254,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
                     self.ui.scrollAreaWidgetContents.setFixedHeight(self.ui.scrollAreaWidgetContents.height() +45)
             listsize =len(self.favorites["buttons"]) + len(self.normal["buttons"]) 
             if listsize < 10:
-                height = int(490/(listsize+.1) - 10)
+                height = int(500/(listsize+.1) - 10)
             else:
                 height = 45
 
@@ -294,7 +294,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.deldirlist = []
         
         if len(directs) < 4:
-            height = int(130/(len(directs)+.1) - 5)
+            height = int(150/(len(directs)+.1) - 5)
         else:
             height = 30
         for i in range (0, len(directs)):
@@ -359,10 +359,10 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.themebutts.append(self.themebutton)
             self.TButtonframes.addWidget(self.themebutton)
         if len(self.themebutts) < 6: # max height is 291
-            height = int(290/(len(self.themebutts)+.1) - 10)
+            height = int(300/(len(self.themebutts)+.1) - 10)
         else:
             height = 45
-        height = 100 if height > 100 else height
+        height = 120 if height > 120 else height
         for i in range (0, len(self.themebutts)):
             self.themebutts[i].setFixedSize(155, height)
         self.printl("Successfully refreshed themes!")
