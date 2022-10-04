@@ -245,7 +245,7 @@
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
          <property name="widgetResizable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <widget class="QWidget" name="scrollAreaWidgetContents">
           <property name="geometry">
@@ -413,8 +413,8 @@ Server!</string>
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>470</width>
-              <height>143</height>
+              <width>244</width>
+              <height>26</height>
              </rect>
             </property>
            </widget>

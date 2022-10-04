@@ -101,7 +101,7 @@ class Ui_Main(object):
         self.buttonScroller.setMaximumSize(QSize(16777215, 16777215))
         self.buttonScroller.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.buttonScroller.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.buttonScroller.setWidgetResizable(True)
+        self.buttonScroller.setWidgetResizable(False)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
         self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 472, 469))
@@ -157,7 +157,7 @@ class Ui_Main(object):
         self.DirScoller.setWidgetResizable(True)
         self.dirScrollerWidget = QWidget()
         self.dirScrollerWidget.setObjectName(u"dirScrollerWidget")
-        self.dirScrollerWidget.setGeometry(QRect(0, 0, 470, 143))
+        self.dirScrollerWidget.setGeometry(QRect(0, 0, 244, 26))
         self.DirScoller.setWidget(self.dirScrollerWidget)
 
         self.verticalLayout.addWidget(self.DirScoller)

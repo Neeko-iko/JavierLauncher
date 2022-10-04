@@ -45,7 +45,6 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.addDirButton.clicked.connect(self.addDir)
         self.ui.themeRefresh.clicked.connect(lambda: self.refreshThemes())
         self.ui.saveSettings.clicked.connect(lambda : self.saveSettings())
-        #self.ui.saveSettings_2.clicked.connect(lambda : self.saveSettings())
         self.ui.defaultCheck.clicked.connect(lambda : self.forceful())
         self.ui.downJavaButton.clicked.connect(lambda : self.funkyJava())
 
@@ -55,7 +54,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.ui.textEdit.setText(readme.read())
         except:
             self.printl("no help.html! this is ok...")
-            self.ui.textEdit.setText("Javier is a work in progress.\nyou can find some information at https://github.com/neeko-iko/javierlauncher\nif you need assistance please contact @Neeko_iko on Twitter, or Neeko#7373 on Discord")
+            self.ui.textEdit.setText("Javier is a work in progress.\nyou can find some information at https://github.com/neeko-iko/javierlauncher \nif you need assistance please contact @Neeko_iko on Twitter, or Neeko#7373 on Discord")
 
     @Slot(int)
     def on_progUpdate(self, p):
@@ -133,6 +132,11 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             jdb.updateServerValue(name,"LaunchFlags", self.ui.jraEntry.text())
             jdb.updateServerValue(name, "JARName",self.ui.jarFileEntry.text())
             self.printl("Saved settings to "+name)
+    def openDir(self, dire):
+        if os.name == "nt":
+            os.system("explorer " + dire)
+        else:
+            os.system("xdg-open " + dire)
 
     def addDir(self):
         direc = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select New Directory"))
@@ -313,7 +317,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.directButton = QtWidgets.QPushButton(str(dire))
             self.directButton.setFixedSize(500,height)
             self.directButton.setContentsMargins(0,0,0,0)
-            self.directButton.clicked.connect(lambda _=False, e = dire: self.printl(e))
+            self.directButton.clicked.connect(lambda _=False, e = dire: self.openDir(e))
             self.dirbuttlist.append(self.directButton)
             if len(self.dirbuttlist) > 10:
                     self.ui.dirScrollerWidget.setFixedHeight(self.ui.dirScrollerWidget.height() +45)
