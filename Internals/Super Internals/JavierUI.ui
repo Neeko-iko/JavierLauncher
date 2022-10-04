@@ -317,7 +317,7 @@ Server!</string>
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>true</bool>
@@ -386,8 +386,8 @@ Server!</string>
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>464</width>
-              <height>128</height>
+              <width>75</width>
+              <height>26</height>
              </rect>
             </property>
            </widget>
@@ -766,6 +766,19 @@ Server!</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="saveSettings_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>330</y>
+          <width>181</width>
+          <height>38</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Save Settings</string>
         </property>
        </widget>
       </widget>

@@ -45,6 +45,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.addDirButton.clicked.connect(self.addDir)
         self.ui.themeRefresh.clicked.connect(lambda: self.refreshThemes())
         self.ui.saveSettings.clicked.connect(lambda : self.saveSettings())
+        self.ui.saveSettings_2.clicked.connect(lambda : self.saveSettings())
         self.ui.defaultCheck.clicked.connect(lambda : self.forceful())
         self.ui.downJavaButton.clicked.connect(lambda : self.funkyJava())
 
@@ -108,11 +109,12 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         if self.ui.defaultCheck.isChecked():
                 self.ui.jraEntry.setText(jdb.readSettingValue("DefaultJRA"))
                 self.ui.sJavaOver.setText(jdb.readSettingValue("DefaultJava"))
+                self.ui.jarFileEntry.setText("")
         else:
             self.ui.jraEntry.setText(jdb.readServerValue(self.selectedServer, "LaunchFlags"))
             self.ui.sJavaOver.setText(jdb.readServerValue(self.selectedServer, "JavaFilePath"))
             self.ui.jarFileEntry.setText(jdb.readServerValue(self.selectedServer, "JARName"))
-            val = jdb.readServerValue(self.selectedServer, "RAM") 
+            val = jdb.readServerValue(self.selectedServer, "RAM")
             if val != None and val != '':
                 self.ui.ramEnter.setValue(val)
             else:
@@ -124,7 +126,9 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             jdb.updateSettingValue("DefaultJRA", self.ui.jraEntry.text())
             self.printl("Saved settings as default!")
         else: #prm,graming at 2:30 AM like that's agood idea :) ) :)
-            name = self.selectedServer
+            name = self.selectedServer 
+            if jdb.readServer(name) == False:
+                jdb.addServer(name)#it wasn't how could i forget these lines!!!????
             jdb.updateServerValue(name,"JavaFilePath", self.ui.sJavaOver.text())
             jdb.updateServerValue(name,"LaunchFlags", self.ui.jraEntry.text())
             jdb.updateServerValue(name, "JARName",self.ui.jarFileEntry.text())
@@ -164,11 +168,14 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         if name == None:  ## i'll figure out a better way of doing this later
             self.printl("You need to select a server! You can't just start nothing!")
             return
+        self.saveSettings() 
+        print(jdb.readServerValue(name, "RAM"))
+        print(ram != jdb.readServerValue(name, "RAM"))
         if ram != jdb.readServerValue(name, "RAM"):
             self.printl("updating " + name + " RAM to " + ram + "GB")
             jdb.updateServerValue(name, "RAM", ram)
         self.ui.defaultCheck.setChecked(False)
-        self.saveSettings() # need to uncheck it because my function is QUIRKY !
+        # need to uncheck it because my function is QUIRKY !
         self.printl(f"Starting {name}")
         self.ui.defaultCheck.setChecked(True)
         self.ui.serverSelectLabel.setText("No Server Selected!")

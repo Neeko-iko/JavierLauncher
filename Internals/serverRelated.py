@@ -120,7 +120,6 @@ class ServerThread(QThread):
         jdb.updateServerValue(self.server, "JARName", jar)
     
     universe = f"{self.dire}/{self.server}/"
-    print(universe)
     javaS = str(jdb.readServerValue(self.server, "JavaFilePath"))
     javaD = str(jdb.readSettingValue("DefaultJava"))
     if os.path.isfile(javaS) :
@@ -139,6 +138,7 @@ class ServerThread(QThread):
         jra = ''
     if len(java.split(" ")) > 1:
         java = f"\"{java}\""
+    print(jar)
     if os.name == "nt":
         print("Jar Path: ", jar)
         print("Java Path: ", java)

@@ -160,7 +160,7 @@ class Ui_Main(object):
         self.DirScoller.setWidgetResizable(True)
         self.dirScrollerWidget = QWidget()
         self.dirScrollerWidget.setObjectName(u"dirScrollerWidget")
-        self.dirScrollerWidget.setGeometry(QRect(0, 0, 464, 128))
+        self.dirScrollerWidget.setGeometry(QRect(0, 0, 75, 26))
         self.DirScoller.setWidget(self.dirScrollerWidget)
 
         self.verticalLayout.addWidget(self.DirScoller)
@@ -267,6 +267,9 @@ class Ui_Main(object):
         self.serverSelectLabel.setLayoutDirection(Qt.LeftToRight)
         self.serverSelectLabel.setTextFormat(Qt.PlainText)
         self.serverSelectLabel.setAlignment(Qt.AlignCenter)
+        self.saveSettings_2 = QPushButton(self.advancedSettings)
+        self.saveSettings_2.setObjectName(u"saveSettings_2")
+        self.saveSettings_2.setGeometry(QRect(0, 330, 181, 38))
         self.tabWidget.addTab(self.advancedSettings, "")
         self.Tabs.addTab(self.settingsTab, "")
         self.creatorTab = QWidget()
@@ -316,7 +319,7 @@ class Ui_Main(object):
         self.Tabs.setCurrentIndex(0)
         self.startButton.setDefault(False)
         self.serverRefreshButton.setDefault(False)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.logClearButton.setDefault(False)
 
 
@@ -400,6 +403,7 @@ class Ui_Main(object):
         self.serverSelectLabel.setToolTip(QCoreApplication.translate("Main", u"The server Selected", None))
 #endif // QT_CONFIG(tooltip)
         self.serverSelectLabel.setText(QCoreApplication.translate("Main", u"No Server Selected!", None))
+        self.saveSettings_2.setText(QCoreApplication.translate("Main", u"Save Settings", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.advancedSettings), QCoreApplication.translate("Main", u"Advanced Settings", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.settingsTab), QCoreApplication.translate("Main", u"Settings", None))
 #if QT_CONFIG(tooltip)
