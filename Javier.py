@@ -416,7 +416,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             if not os.path.isfile("./Internals/javas/" + java + "/bin/" + expected):
                 continue
             else:
-                jpath = "./Internals/javas/" + java + "/bin/" + expected
+                jpath =os.path.abspath("./Internals/javas/" + java + "/bin/" + expected) 
             self.javabutton = QtWidgets.QToolButton(text=java)
             self.javabutton.clicked.connect(lambda _=False, d = java: self.updateJavas(jpath))
             self.javabutts.append(self.javabutton)

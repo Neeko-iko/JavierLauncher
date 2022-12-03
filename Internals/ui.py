@@ -375,10 +375,10 @@ class Ui_Main(object):
 
         self.retranslateUi(Main)
 
-        self.Tabs.setCurrentIndex(1)
+        self.Tabs.setCurrentIndex(0)
         self.serverRefreshButton.setDefault(False)
         self.startButton.setDefault(False)
-        self.settingtabs.setCurrentIndex(1)
+        self.settingtabs.setCurrentIndex(0)
         self.createtabs.setCurrentIndex(0)
         self.logClearButton.setDefault(False)
 
