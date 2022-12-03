@@ -32,6 +32,8 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
     # Nontabbed buttosn/other code
         self.ui.logClearButton.clicked.connect(lambda : self.ui.miniSole.setPlainText(""))
         self.selectedServer = None
+        self.ui.updateCheckerButton.setText("v"+jdb.version)
+        self.ui.updateCheckerButton.clicked.connect(self.update)
     # Launcher Tab Code
         self.refreshingServers(False)
         self.ui.serverRefreshButton.clicked.connect(lambda : self.refreshingServers())
@@ -73,6 +75,10 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.downJavaButton.setEnabled(True)
         self.printl("Download complete!")
 
+
+    def update(self):
+        ### one day this will do something 
+        self.ui.updateCheckerButton.setText("v"+jdb.version)
     #Not so funky anymore, Neeko
     def funkyJava(self):
       ver = self.ui.javaIntBox.text()
@@ -385,18 +391,18 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.themebutts[i].setFixedSize(155, height)
         self.printl("Successfully refreshed themes!")
     
-    def themeCreation(self, subs = True): # A FOURTH TIME? WILL THERE BE A FIFTH? (yes! there will be!)
-        if subs:
-            for button in self.javabutts:
-                self.JButtonframes.removeWidget(button)
-                shiboken6.delete(button)
-            shiboken6.delete(self.JButtonframes)
-            del self.JButtonframes
-        self.JButtonframes = QtWidgets.QVBoxLayout(self.ui.javaArea)
-        self.JButtonframes.setContentsMargins(0,0,0,0)
-        self.javabutts = []
-    def serverCreation(self):
-        return
+    #def themeCreation(self, subs = True): # A FOURTH TIME? WILL THERE BE A FIFTH? (yes! there will be!)
+    #    if subs:
+    #        for button in self.javabutts:
+    #            self.JButtonframes.removeWidget(button)
+    #            shiboken6.delete(button)
+    #        shiboken6.delete(self.JButtonframes)
+    #        del self.JButtonframes
+    #    self.JButtonframes = QtWidgets.QVBoxLayout(self.ui.javaArea)
+    #    self.JButtonframes.setContentsMargins(0,0,0,0)
+    #    self.javabutts = []
+    #def serverCreation(self):
+    #    return
 
     def javasRefresh(self, subs = False):
         if subs:
