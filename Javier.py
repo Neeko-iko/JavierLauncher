@@ -44,11 +44,11 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
 
     #Settings Tab Code
         self.refreshingDirs(False)
-        self.refreshThemes(False)
-        self.javasRefresh(False)
+        self.refreshingThemes(False)
+        self.refreshingJavas(False)
         self.ui.addDirButton.clicked.connect(self.addDir)
-        self.ui.javaRefresh.clicked.connect(lambda: self.refreshJavas())
-        self.ui.themeRefresh.clicked.connect(lambda: self.refreshThemes())
+        self.ui.javaRefresh.clicked.connect(lambda: self.refreshingJavas())
+        self.ui.themeRefresh.clicked.connect(lambda: self.refreshingThemes())
         self.ui.saveSettings.clicked.connect(lambda : self.saveSettings())
         self.ui.defaultCheck.clicked.connect(lambda : self.forceful())
         self.ui.downJavaButton.clicked.connect(lambda : self.funkyJava())
@@ -349,7 +349,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.DButtonframes.addWidget(self.deldirlist[i],i,0,1,1)
         self.subsequentdirs = True
 
-    def refreshThemes(self, subs = True): # i absolutely love reusing HUGE chunks of code 3 times because im incompetent!!! it *will* happen again.
+    def refreshingThemes(self, subs = True): # i absolutely love reusing HUGE chunks of code 3 times because im incompetent!!! it *will* happen again.
         if subs:
             for button in self.themebutts:
                 self.TButtonframes.removeWidget(button)
@@ -404,7 +404,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
     #def serverCreation(self):
     #    return
 
-    def javasRefresh(self, subs = False):
+    def refreshingJavas(self, subs = True):
         if subs:
             for button in self.javabutts:
                 self.JButtonframes.removeWidget(button)
