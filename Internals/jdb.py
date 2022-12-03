@@ -2,7 +2,7 @@ import threading
 from PySide6 import QtSql
 
 ########UPDATE THIS STRING WITH EVERY UPDATE###########
-version='2.0.0'
+version='2.1.1'
 #Connecting
 class Connection:
   def __init__(self):

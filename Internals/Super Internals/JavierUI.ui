@@ -9,20 +9,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>498</width>
-    <height>716</height>
+    <width>500</width>
+    <height>720</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>498</width>
-    <height>615</height>
+    <width>500</width>
+    <height>720</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>16777215</width>
-    <height>16777215</height>
+    <width>500</width>
+    <height>720</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -32,6 +38,9 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="minimumSize">
     <size>
      <width>500</width>
@@ -63,7 +72,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="documentMode">
      <bool>true</bool>
@@ -86,7 +95,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>501</width>
+        <width>502</width>
         <height>551</height>
        </rect>
       </property>
@@ -228,7 +237,7 @@
         <widget class="QScrollArea" name="buttonScroller">
          <property name="minimumSize">
           <size>
-           <width>495</width>
+           <width>500</width>
            <height>0</height>
           </size>
          </property>
@@ -237,6 +246,9 @@
            <width>16777215</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
          </property>
          <property name="verticalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOn</enum>
@@ -298,7 +310,7 @@ Server!</string>
      <attribute name="toolTip">
       <string>The Settings Page</string>
      </attribute>
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="settingtabs">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -320,7 +332,7 @@ Server!</string>
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="documentMode">
        <bool>true</bool>
@@ -413,8 +425,8 @@ Server!</string>
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>244</width>
-              <height>26</height>
+              <width>470</width>
+              <height>143</height>
              </rect>
             </property>
            </widget>
@@ -565,35 +577,10 @@ Server!</string>
        <attribute name="title">
         <string>Server Related</string>
        </attribute>
-       <widget class="QPushButton" name="pushButton">
-        <property name="geometry">
-         <rect>
-          <x>110</x>
-          <y>230</y>
-          <width>221</width>
-          <height>34</height>
-         </rect>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>169</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>the spooky secret button ooooooo</string>
-        </property>
-        <property name="text">
-         <string>quirky button lol but this time extra</string>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
-       </widget>
        <widget class="QLineEdit" name="jarFileEntry">
         <property name="geometry">
          <rect>
-          <x>280</x>
+          <x>0</x>
           <y>430</y>
           <width>201</width>
           <height>32</height>
@@ -637,7 +624,7 @@ Server!</string>
        <widget class="QLineEdit" name="sJavaOver">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>290</x>
           <y>430</y>
           <width>191</width>
           <height>32</height>
@@ -769,6 +756,54 @@ Server!</string>
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QScrollArea" name="javaScroller">
+        <property name="geometry">
+         <rect>
+          <x>310</x>
+          <y>100</y>
+          <width>171</width>
+          <height>291</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOn</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="javaArea">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>146</width>
+           <height>287</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QPushButton" name="javaRefresh">
+        <property name="geometry">
+         <rect>
+          <x>310</x>
+          <y>70</y>
+          <width>171</width>
+          <height>34</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Can't find a java version?&lt;br/&gt;make sure it's downloaded!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Refresh Java Selector</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </widget>
@@ -779,27 +814,229 @@ Server!</string>
      <attribute name="toolTip">
       <string>The Server Creator, where you make your servers</string>
      </attribute>
-     <widget class="QPlainTextEdit" name="plainTextEdit">
+     <widget class="QTabWidget" name="createtabs">
       <property name="geometry">
        <rect>
-        <x>70</x>
-        <y>100</y>
-        <width>361</width>
-        <height>291</height>
+        <x>0</x>
+        <y>0</y>
+        <width>501</width>
+        <height>551</height>
        </rect>
       </property>
-      <property name="readOnly">
+      <property name="tabPosition">
+       <enum>QTabWidget::South</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="usesScrollButtons">
+       <bool>false</bool>
+      </property>
+      <property name="documentMode">
        <bool>true</bool>
       </property>
-      <property name="plainText">
-       <string>Hi Javier is unfinished 
-
-this is the &quot;Creator&quot; Page!
-it will be up and running or culled soon
-
-its purpose will be to assist you in making servers for you and your friends to enjoy! all from the comfort from Javiers admittedly mediocre design
-</string>
-      </property>
+      <widget class="QWidget" name="creator">
+       <attribute name="title">
+        <string>Server Creation</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="themer">
+       <attribute name="title">
+        <string>Theme Creation</string>
+       </attribute>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>70</y>
+          <width>81</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>text color</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="widget" native="true">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>50</y>
+          <width>251</width>
+          <height>381</height>
+         </rect>
+        </property>
+        <widget class="QPlainTextEdit" name="plainTextEdit">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>300</y>
+           <width>241</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
+         <property name="plainText">
+          <string>server!!!
+themes succes!
+yay!   Richard!</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="richardSave">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>20</y>
+           <width>71</width>
+           <height>61</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Save
+Nothing!</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="richardTitle">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>241</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="text">
+          <string>[  ]  Richard | Javier Theme Helper     [X]</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="spinBox">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>50</y>
+           <width>51</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="suffix">
+          <string>kb</string>
+         </property>
+         <property name="maximum">
+          <number>9</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="richardLabel1">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>30</y>
+           <width>51</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>SETTER</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="richardName">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>50</y>
+           <width>121</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="placeholderText">
+          <string>Enter Name</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="richardRefresh">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>20</y>
+           <width>121</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Refresh Theme</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton">
+         <property name="geometry">
+          <rect>
+           <x>128</x>
+           <y>350</y>
+           <width>91</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>the spooky secret button ooooooo</string>
+         </property>
+         <property name="text">
+          <string>Quirky Button!</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QScrollArea" name="scrollArea">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>80</y>
+           <width>241</width>
+           <height>221</height>
+          </rect>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>216</width>
+            <height>217</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="helpTab">
@@ -836,10 +1073,16 @@ its purpose will be to assist you in making servers for you and your friends to 
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
+    <property name="minimumSize">
+     <size>
+      <width>500</width>
+      <height>0</height>
+     </size>
+    </property>
     <property name="maximumSize">
      <size>
       <width>16777215</width>
-      <height>192</height>
+      <height>200</height>
      </size>
     </property>
     <property name="mouseTracking">

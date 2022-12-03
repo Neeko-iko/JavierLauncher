@@ -1,4 +1,5 @@
 """bunch of server related functions, from grabbing servercount to starting servers"""
+from genericpath import isfile
 import os
 import subprocess
 from zipfile import ZipFile
@@ -10,11 +11,10 @@ import threading
 jdb.deploy()
 
 
-
 def start(cmd, universe): # used for linux launch but maybe will be useful later :)
     subprocess.run((cmd), shell=True, cwd=universe)
 
-
+        
 #Signal Emitters for the progress bar
 #They must be defined outside of a function
 class ProgEmitter(QObject):
@@ -103,6 +103,10 @@ class ServerThread(QThread):
   def run(self):
     if self.dire == ".":
         self.dire = os.getcwd()
+    print(self.dire +"/"+ self.server + "/eula.txt")
+    if not os.path.isfile(self.dire + self.server + "/eula.txt"):
+        print("EULA not accepted :(")
+
     t = str(jdb.readServerValue(self.server, "JARName"))
     print(os.path.isfile(t))
     if os.path.isfile(t):

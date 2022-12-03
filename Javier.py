@@ -37,12 +37,15 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.serverRefreshButton.clicked.connect(lambda : self.refreshingServers())
         self.ui.searchBar.returnPressed.connect(lambda : self.refreshingServers())
         self.ui.startButton.clicked.connect(lambda : self.Startup())
+        
 
 
     #Settings Tab Code
         self.refreshingDirs(False)
         self.refreshThemes(False)
+        self.javasRefresh(False)
         self.ui.addDirButton.clicked.connect(self.addDir)
+        self.ui.javaRefresh.clicked.connect(self.refreshingDirs())
         self.ui.themeRefresh.clicked.connect(lambda: self.refreshThemes())
         self.ui.saveSettings.clicked.connect(lambda : self.saveSettings())
         self.ui.defaultCheck.clicked.connect(lambda : self.forceful())
@@ -151,7 +154,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         else: # im sure there's probably a better way for this
             self.printl("Adding new directory was aborted.......")
 
-    #@QtCore.Slot()  # ngl i have no idea what this does, is it necessary?????
+    #@QtCore.Slot()  # ngl i have no idea what this does, is it necessary????? answer: yes! very necessary! it's useful to read up on what you're using before just slamming into it at full force.
     def printl(self, string):
         self.ui.miniSole.appendPlainText(string)
 
@@ -164,7 +167,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.serverSelectLabel.setText("Editing: " + name)
         self.refreshSettings()
 
-        
+    
 
     def Startup(self):
         name = self.selectedServer
@@ -179,12 +182,21 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.printl("updating " + name + " RAM to " + ram + "GB")
             jdb.updateServerValue(name, "RAM", ram)
         self.ui.defaultCheck.setChecked(False)
+        dire = self.selectedDir if self.selectedDir != "." else os.getcwd()
+        pathers = dire + "/"+name 
+        if not os.path.isfile(pathers+"/eula.txt"):
+            self.printl("By starting this server using Javier you accept Minecraft's EULA defined at \nhttps://www.minecraft.net/en-us/eula\n")
+            eula = open(pathers+"/eula.txt", "w")
+            eula.writelines("eula=true\n##READ UP ON THE EULA HERE: https://www.minecraft.net/en-us/eula\n\n#this was automagically signed by Qter Javier")
+            eula.close
+            del eula #TRASH!
         # need to uncheck it because my function is QUIRKY !
         self.printl(f"Starting {name}")
         self.ui.defaultCheck.setChecked(True)
         self.ui.serverSelectLabel.setText("No Server Selected!")
         self.ui.startButton.setText("Select a\nServer!")
         self.selectedServer = None
+
         self.refreshSettings()
         gui = "" if self.ui.jarGuiCheck.isChecked() else "nogui"
         self.serverManager.setProp(name, self.selectedDir, ram, gui)
@@ -198,7 +210,14 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         jdb.updateSettingValue("CurrentTheme", theme)
         self.printl("Javier will apply this theme upon reboot!")
         
-    
+    def updateJavas(self, java):
+        if self.ui.defaultCheck.isChecked():
+            jdb.updateSettingValue("DefaultJava",java)
+            self.printl("set the default java as " + java)
+        else: #prm,graming at 2:30 AM like that's agood idea :) ) :)
+            name = self.selectedServer 
+            jdb.updateServerValue(name,"JavaFilePath", java)
+            self.printl("set " + name +"'s java as " + java)
     
 
 
@@ -239,7 +258,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
                         continue
                 
                 self.favorButton = QtWidgets.QCheckBox(text='')
-                self.favorButton.setFixedSize(20,20)
+                self.favorButton.setFixedSize(15,15)
                 #490 is the max height
                 self.serverButton = QtWidgets.QPushButton(str(server))
                 #self.serverButton.setFixedSize(500,45)
@@ -257,10 +276,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
                 if len(self.normal["buttons"]) + len(self.favorites["buttons"]) > 10:
                     self.ui.scrollAreaWidgetContents.setFixedHeight(self.ui.scrollAreaWidgetContents.height() +45)
             listsize =len(self.favorites["buttons"]) + len(self.normal["buttons"]) 
-            if listsize < 10:
-                height = int(500/(listsize+.1) - 10)
-            else:
-                height = 45
+            height = int(500/(listsize+.1) - 10) if listsize < 10 else 45
 
             for i in range (0, len(self.favorites["buttons"])):
                 self.favorites["buttons"][i].setFixedSize(500, height)
@@ -327,8 +343,6 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.DButtonframes.addWidget(self.deldirlist[i],i,0,1,1)
         self.subsequentdirs = True
 
-
-    
     def refreshThemes(self, subs = True): # i absolutely love reusing HUGE chunks of code 3 times because im incompetent!!! it *will* happen again.
         if subs:
             for button in self.themebutts:
@@ -342,7 +356,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
 
         self.deftheme = QtWidgets.QToolButton(text= "System")
         #self.deftheme.setFixedSize(155,45)
-        self.deftheme.setStyleSheet("") # this makes it ignore the current theme
+        self.deftheme.setStyleSheet("") # this makes it ignore the current theme (it doesn't and i don't know how.)
         self.deftheme.clicked.connect(lambda _=False : self.updateTheme(None))
         self.themebutts.append(self.deftheme)
         self.TButtonframes.addWidget(self.deftheme)
@@ -359,7 +373,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.themebutton = QtWidgets.QToolButton(text=theme[:-4])
             #self.themebutton.setFixedSize(155,45)
             self.themebutton.setStyleSheet(the)
-            self.themebutton.clicked.connect(lambda _=False, d = theme: self.updateTheme("./Internals/themes/"+d))
+            self.themebutton.clicked.connect(lambda _=False, d = theme: '')
             self.themebutts.append(self.themebutton)
             self.TButtonframes.addWidget(self.themebutton)
         if len(self.themebutts) < 6: # max height is 291
@@ -370,6 +384,51 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         for i in range (0, len(self.themebutts)):
             self.themebutts[i].setFixedSize(155, height)
         self.printl("Successfully refreshed themes!")
+    
+    def themeCreation(self, subs = True): # A FOURTH TIME? WILL THERE BE A FIFTH? (yes! there will be!)
+        if subs:
+            for button in self.javabutts:
+                self.JButtonframes.removeWidget(button)
+                shiboken6.delete(button)
+            shiboken6.delete(self.JButtonframes)
+            del self.JButtonframes
+        self.JButtonframes = QtWidgets.QVBoxLayout(self.ui.javaArea)
+        self.JButtonframes.setContentsMargins(0,0,0,0)
+        self.javabutts = []
+    def serverCreation(self):
+        return
+
+    def javasRefresh(self, subs = False):
+        if subs:
+            for button in self.javabutts:
+                self.JButtonframes.removeWidget(button)
+                shiboken6.delete(button)
+            shiboken6.delete(self.JButtonframes)
+            del self.JButtonframes
+        self.JButtonframes = QtWidgets.QVBoxLayout(self.ui.javaArea)
+        self.JButtonframes.setContentsMargins(0,0,0,0)
+        self.javabutts = []
+        #self.deftheme.setFixedSize(155,45)
+
+        javalist = os.listdir("./Internals/javas")
+        expected = "java.exe" if os.name == "nt" else "java"
+        for java in javalist:
+            if not os.path.isfile("./Internals/javas/" + java + "/bin/" + expected):
+                continue
+            else:
+                jpath = "./Internals/javas/" + java + "/bin/" + expected
+            self.javabutton = QtWidgets.QToolButton(text=java)
+            self.javabutton.clicked.connect(lambda _=False, d = java: self.updateJavas(jpath))
+            self.javabutts.append(self.javabutton)
+            self.JButtonframes.addWidget(self.javabutton)
+        if len(self.javabutts) < 6: # max height is 291
+            height = int(300/(len(self.javabutts)+.1) - 10)
+        else:
+            height = 45
+        height = 120 if height > 120 else height
+        for i in range (0, len(self.javabutts)):
+            self.javabutts[i].setFixedSize(155, height)
+        self.printl("Successfully refreshed Javas!")
         
 
 def filefinders():

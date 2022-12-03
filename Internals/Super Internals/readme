@@ -1,6 +1,6 @@
 these files don't assist with the program itself, but are used to create other important internals. 
 
-the JavierUI.ui was made in QT Designer 5.15.2
+the JavierUI.ui was made in QT Designer 5.15.6
 updateUI.sh is because im lazy and forgetful of what command is needed
 
 im not good at this stuff lol!
