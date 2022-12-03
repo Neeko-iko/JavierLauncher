@@ -45,7 +45,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.refreshThemes(False)
         self.javasRefresh(False)
         self.ui.addDirButton.clicked.connect(self.addDir)
-        self.ui.javaRefresh.clicked.connect(self.refreshingDirs())
+        self.ui.javaRefresh.clicked.connect(lambda: self.refreshJavas())
         self.ui.themeRefresh.clicked.connect(lambda: self.refreshThemes())
         self.ui.saveSettings.clicked.connect(lambda : self.saveSettings())
         self.ui.defaultCheck.clicked.connect(lambda : self.forceful())
