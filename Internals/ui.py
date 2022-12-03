@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'JavierUI.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.3.2
+## Created by: Qt User Interface Compiler version 6.4.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -129,7 +129,7 @@ class Ui_Main(object):
         self.settingsTab.setObjectName(u"settingsTab")
         self.settingtabs = QTabWidget(self.settingsTab)
         self.settingtabs.setObjectName(u"settingtabs")
-        self.settingtabs.setGeometry(QRect(0, 0, 495, 545))
+        self.settingtabs.setGeometry(QRect(0, 0, 501, 551))
         self.settingtabs.setFocusPolicy(Qt.NoFocus)
         self.settingtabs.setLayoutDirection(Qt.LeftToRight)
         self.settingtabs.setAutoFillBackground(False)
@@ -276,16 +276,19 @@ class Ui_Main(object):
         self.creatorTab.setObjectName(u"creatorTab")
         self.createtabs = QTabWidget(self.creatorTab)
         self.createtabs.setObjectName(u"createtabs")
+        self.createtabs.setEnabled(True)
         self.createtabs.setGeometry(QRect(0, 0, 501, 551))
         self.createtabs.setTabPosition(QTabWidget.South)
         self.createtabs.setTabShape(QTabWidget.Rounded)
         self.createtabs.setUsesScrollButtons(False)
         self.createtabs.setDocumentMode(True)
+        self.createtabs.setTabsClosable(False)
         self.creator = QWidget()
         self.creator.setObjectName(u"creator")
         self.createtabs.addTab(self.creator, "")
         self.themer = QWidget()
         self.themer.setObjectName(u"themer")
+        self.themer.setEnabled(False)
         self.label = QLabel(self.themer)
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(0, 70, 81, 18))
@@ -334,6 +337,9 @@ class Ui_Main(object):
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
         self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 216, 217))
         self.scrollArea.setWidget(self.scrollAreaWidgetContents_2)
+        self.label_2 = QLabel(self.themer)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setGeometry(QRect(-10, -10, 521, 511))
         self.createtabs.addTab(self.themer, "")
         self.Tabs.addTab(self.creatorTab, "")
         self.helpTab = QWidget()
@@ -483,6 +489,7 @@ class Ui_Main(object):
         self.pushButton.setToolTip(QCoreApplication.translate("Main", u"the spooky secret button ooooooo", None))
 #endif // QT_CONFIG(tooltip)
         self.pushButton.setText(QCoreApplication.translate("Main", u"Quirky Button!", None))
+        self.label_2.setText(QCoreApplication.translate("Main", u"<html><head/><body><p><span style=\" font-size:72pt;\">TO BE ADDED</span></p><p><span style=\" font-size:72pt;\">TO BE ADDED</span></p><p><span style=\" font-size:72pt;\">TO BE ADDED</span></p><p><span style=\" font-size:72pt;\">TO BE ADDED</span></p></body></html>", None))
         self.createtabs.setTabText(self.createtabs.indexOf(self.themer), QCoreApplication.translate("Main", u"Theme Creation", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.creatorTab), QCoreApplication.translate("Main", u"Creator", None))
 #if QT_CONFIG(tooltip)

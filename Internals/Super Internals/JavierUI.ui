@@ -315,8 +315,8 @@ Server!</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>495</width>
-        <height>545</height>
+        <width>501</width>
+        <height>551</height>
        </rect>
       </property>
       <property name="focusPolicy">
@@ -815,6 +815,9 @@ Server!</string>
       <string>The Server Creator, where you make your servers</string>
      </attribute>
      <widget class="QTabWidget" name="createtabs">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -838,12 +841,18 @@ Server!</string>
       <property name="documentMode">
        <bool>true</bool>
       </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
+      </property>
       <widget class="QWidget" name="creator">
        <attribute name="title">
         <string>Server Creation</string>
        </attribute>
       </widget>
       <widget class="QWidget" name="themer">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <attribute name="title">
         <string>Theme Creation</string>
        </attribute>
@@ -1035,6 +1044,19 @@ Nothing!</string>
           </property>
          </widget>
         </widget>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>-10</x>
+          <y>-10</y>
+          <width>521</width>
+          <height>511</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:72pt;&quot;&gt;TO BE ADDED&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:72pt;&quot;&gt;TO BE ADDED&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:72pt;&quot;&gt;TO BE ADDED&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:72pt;&quot;&gt;TO BE ADDED&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
        </widget>
       </widget>
      </widget>
