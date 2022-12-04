@@ -5,6 +5,15 @@ If you only have 1 server, and need a quick and easy server launcher that applie
 if you want a build of Javier that has some features still missing in this rewrite, check out the [GUI](https://github.com/Neeko-iko/JavierLauncher/tree/GUI) branch!
 
 
+Javier lists all your servers out in a list layout 
+
+click the one you'd like, and start! or edit settings, really its up to you
+![image](https://user-images.githubusercontent.com/45524401/205516304-95e6a701-fd2c-4bdc-9663-15bc6eaa5e28.png)
+
+
+dunno what else to write to try and advertise the software.  i hope you enjoy it lol
+
+
 Thank you for your continued support.
 
 
