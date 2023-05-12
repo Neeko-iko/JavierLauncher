@@ -9,8 +9,7 @@ try:
     from Internals import ui, serverRelated, jdb
 except ModuleNotFoundError as e:
     print("imports failed, see error")
-    print(e)
-    exit()
+    quit(e)
 # honestly this is all way over my head- i don't work with classes generally haha
 class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
     def __init__(self): # my bad guys i promise my code is ususally better than this
@@ -418,11 +417,12 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
 
         javalist = os.listdir("./Internals/javas")
         expected = "java.exe" if os.name == "nt" else "java"
+        midway = "/Contents/Home/bin/" if os.name == "posix" else "/bin/" 
         for java in javalist:
-            if not os.path.isfile("./Internals/javas/" + java + "/bin/" + expected):
+            if not os.path.isfile("./Internals/javas/" + java + midway + expected):
                 continue
             else:
-                jpath =os.path.abspath("./Internals/javas/" + java + "/bin/" + expected) 
+                jpath =os.path.abspath("./Internals/javas/" + java + midway + expected) 
             self.javabutton = QtWidgets.QToolButton(text=java)
             self.javabutton.clicked.connect(lambda _=False, d = java: self.updateJavas(jpath))
             self.javabutts.append(self.javabutton)

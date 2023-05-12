@@ -25,14 +25,23 @@ class FinishEmitter(QObject):
 jf = FinishEmitter()
 
 def dlJava(ver):
-    operating = os.name
-    operating = "windows" if operating == "nt" else "linux"
+    operate = os.name
+    if operate == "nt":
+        operate = "windows"
+    elif operate == "posix":
+        operate = "mac"
+    else: # i would've used a case statement but that would force a newer python version
+        operate = "linux" #and im a bit lazy.
+        #rip alpine-linux lol better luck next time.
+    
     ft = ".zip" if os.name == "nt" else ".tar.gz"
     fp = "./Internals/javas/java"
     header = {"User-Agent": "QterJavier"}
+    print(os.uname().machine[0:3])
+    arch = "aarch64" if os.uname().machine[0:3] == "arm" else "x64"
     #print(f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse")
     #print(java.status_code) # their api site says 307 is good but 200 is fairly universal.
-    java = requests.request(method="get",url=f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse",headers=header,stream=True)
+    java = requests.get(url=f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operate}/{arch}/jre/hotspot/normal/eclipse",headers=header,stream=True)
     print("Status Code: ", java.status_code)
     jdb.jsize = int(java.headers.get('content-length', 0))
     print("Size: ", jdb.jsize)
@@ -46,16 +55,22 @@ def dlJava(ver):
                 e.write(bite)
     #os.mkdir(fp+ver)
     try:
-        if operating == "windows":
+        if operate == "windows":
             file = ZipFile(fp+ver+ft, "r")
             ftr = file.namelist()[0] #hopefully this works lmoaoooo
             file.extractall(fp[:-4])
             file.close()
         else:
+            
             file = tarfile.open(fp+ver+ft, "r")
             ftr = file.getnames()[0] #gotta love that all linux distros + mac will eat a tar.gz just fine
+            
             file.extractall(fp[:-4])
             file.close()
+        if operate == "mac":
+            
+            print(fp, ftr, ver)
+            ''
     except FileNotFoundError:
         jf.javaDownloadFinish.emit(1)
         jdb.jfin = 1
@@ -149,14 +164,21 @@ class ServerThread(QThread):
         java = f"\"{java}\""
     print(jar)
     if os.name == "nt":
-        print("Jar Path: ", jar)
-        print("Java Path: ", java)
         cmd = (f"{java} -Xmx{self.RAM}G -Xms256M {jra} -jar {jar} {self.gui}")
         if self.gui == "nogui":
             cmd = "start cmd /k " + cmd
         subprocess.run(cmd, shell=True, cwd=universe) # i wanted it to use the CMD. not the jar gui
             #cmd = (f"{java}", f"-Xmx{RAM}G", "-Xms256M", "-jar", jar, "nogui")  # why doesn't it work!!
             #subprocess.Popen((cmd), shell=True, cwd=universe, creationflags=subprocess.CREATE_NEW_CONSOLE
+    
+    elif os.name == "posix":
+        cmd = (f"{java} -Xmx{self.RAM}G -Xms256M {jra} -jar {jar} {self.gui}")
+        if self.gui == "nogui":
+            cmd = f'echo "cd {universe} ; '+cmd+f'" > /tmp/{self.server}.sh ; chmod +x /tmp/{self.server}.sh ; \
+                open -F -n -a terminal.app --args /tmp/{self.server}.sh ; rm tmp/{self.server}.sh'
+        a = threading.Thread(target = start, args = (cmd,universe))
+        a.start()
+    
     else:      #xterm -e    # MacOS hates this.  will have to determine a workaround for Mac, eventually.
         cmd = (f"{java} -Xmx{self.RAM}G -Xms256M {jra} -jar {jar} {self.gui}")
         if self.gui == "nogui":
