@@ -30,7 +30,7 @@ Libraries/Modules
  - OS for finding servers
  - subproccess for launching everything
  - threading for help with the DB
- - tarfile for unpacking certain things on Linux ~~and Mac~~
+ - tarfile for unpacking certain things on Linux and MacOS
  - zipfile for finding the right file
 
 not really a lib or mod but Xterm is used for launching the servers consoles' on Linux
@@ -42,7 +42,7 @@ figured that should be said somehwere
 
 not at the moment. if you want to run it, you'll have to install the packages from requirements.txt on your local machine and run Javier.py from your terminal (or by double clicking, how fancy)
 this can be done easily using ` pip install -r requirements.txt` from inside the directory javier is located inside the console.
-i'll make a Windows ~~MacOS~~ and Linux executable when it's capable of doing anything proper. 
+i'll make a Windows, MacOS and Linux executable when it's capable of doing anything proper. 
 
 > Why not just continue the old (GUI) build?
 
