@@ -18,8 +18,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QCheckBox, QFrame,
     QGridLayout, QLabel, QLineEdit, QMainWindow,
     QPlainTextEdit, QProgressBar, QPushButton, QScrollArea,
-    QSizePolicy, QSpinBox, QTabWidget, QTextEdit,
-    QVBoxLayout, QWidget)
+    QSizePolicy, QSpinBox, QTabWidget, QTextBrowser,
+    QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_Main(object):
     def setupUi(self, Main):
@@ -270,7 +270,34 @@ class Ui_Main(object):
         self.javaRefresh = QPushButton(self.advancedSettings)
         self.javaRefresh.setObjectName(u"javaRefresh")
         self.javaRefresh.setGeometry(QRect(310, 70, 171, 34))
+        self.proplabel = QLabel(self.advancedSettings)
+        self.proplabel.setObjectName(u"proplabel")
+        self.proplabel.setGeometry(QRect(0, 30, 101, 18))
+        self.propBrowser = QTextBrowser(self.advancedSettings)
+        self.propBrowser.setObjectName(u"propBrowser")
+        self.propBrowser.setGeometry(QRect(0, 50, 256, 281))
+        font = QFont()
+        font.setPointSize(13)
+        self.propBrowser.setFont(font)
+        self.propBrowser.setUndoRedoEnabled(True)
+        self.propBrowser.setLineWrapMode(QTextEdit.NoWrap)
+        self.propBrowser.setReadOnly(False)
+        self.propBrowser.setOverwriteMode(False)
+        self.propBrowser.setAcceptRichText(False)
+        self.propBrowser.setOpenLinks(False)
         self.settingtabs.addTab(self.advancedSettings, "")
+        self.propBrowser.raise_()
+        self.jarFileEntry.raise_()
+        self.defaultCheck.raise_()
+        self.sJavaOver.raise_()
+        self.jraEntry.raise_()
+        self.serverSelectLabel.raise_()
+        self.saveSettings.raise_()
+        self.jarGuiCheck.raise_()
+        self.safemodeCheck.raise_()
+        self.javaScroller.raise_()
+        self.javaRefresh.raise_()
+        self.proplabel.raise_()
         self.Tabs.addTab(self.settingsTab, "")
         self.creatorTab = QWidget()
         self.creatorTab.setObjectName(u"creatorTab")
@@ -288,7 +315,7 @@ class Ui_Main(object):
         self.createtabs.addTab(self.creator, "")
         self.themer = QWidget()
         self.themer.setObjectName(u"themer")
-        self.themer.setEnabled(False)
+        self.themer.setEnabled(True)
         self.label = QLabel(self.themer)
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(0, 70, 81, 18))
@@ -337,9 +364,6 @@ class Ui_Main(object):
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
         self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 216, 217))
         self.scrollArea.setWidget(self.scrollAreaWidgetContents_2)
-        self.label_2 = QLabel(self.themer)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QRect(-10, -10, 521, 511))
         self.createtabs.addTab(self.themer, "")
         self.Tabs.addTab(self.creatorTab, "")
         self.helpTab = QWidget()
@@ -468,6 +492,14 @@ class Ui_Main(object):
         self.javaRefresh.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>Can't find a java version?<br/>make sure it's downloaded!</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.javaRefresh.setText(QCoreApplication.translate("Main", u"Refresh Java Selector", None))
+        self.proplabel.setText(QCoreApplication.translate("Main", u"Server Properties", None))
+        self.propBrowser.setDocumentTitle(QCoreApplication.translate("Main", u"server properties", None))
+        self.propBrowser.setHtml(QCoreApplication.translate("Main", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><title>server properties</title><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Noto Sans'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+        self.propBrowser.setPlaceholderText(QCoreApplication.translate("Main", u"Whoops! you haven't selected a server, the server doesn't have a server.properties yet,  or somehow someway Javier messed something up.  you tell me.", None))
         self.settingtabs.setTabText(self.settingtabs.indexOf(self.advancedSettings), QCoreApplication.translate("Main", u"Server Related", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.settingsTab), QCoreApplication.translate("Main", u"Settings", None))
 #if QT_CONFIG(tooltip)
@@ -489,7 +521,6 @@ class Ui_Main(object):
         self.pushButton.setToolTip(QCoreApplication.translate("Main", u"the spooky secret button ooooooo", None))
 #endif // QT_CONFIG(tooltip)
         self.pushButton.setText(QCoreApplication.translate("Main", u"Quirky Button!", None))
-        self.label_2.setText(QCoreApplication.translate("Main", u"<html><head/><body><p><span style=\" font-size:72pt;\">TO BE ADDED</span></p><p><span style=\" font-size:72pt;\">TO BE ADDED</span></p><p><span style=\" font-size:72pt;\">TO BE ADDED</span></p><p><span style=\" font-size:72pt;\">TO BE ADDED</span></p></body></html>", None))
         self.createtabs.setTabText(self.createtabs.indexOf(self.themer), QCoreApplication.translate("Main", u"Theme Creation", None))
         self.Tabs.setTabText(self.Tabs.indexOf(self.creatorTab), QCoreApplication.translate("Main", u"Creator", None))
 #if QT_CONFIG(tooltip)

@@ -134,12 +134,18 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.printl("Saved settings as default!")
         else: #prm,graming at 2:30 AM like that's agood idea :) ) :)
             name = self.selectedServer 
+            dire = self.selectedDir
             if jdb.readServer(name) == False:
                 jdb.addServer(name)#it wasn't how could i forget these lines!!!????
             jdb.updateServerValue(name,"JavaFilePath", self.ui.sJavaOver.text())
             jdb.updateServerValue(name,"LaunchFlags", self.ui.jraEntry.text())
             jdb.updateServerValue(name, "JARName",self.ui.jarFileEntry.text())
-            self.printl("Saved settings to "+name)
+            prop = open(dire+"/"+name+"/server.properties", "w")
+            prop.write(self.ui.propBrowser.toPlainText())
+            prop.close
+            del prop #supa dupa die!!!
+
+            self.printl("Saved settings and properties for "+name)
     def openDir(self, dire):
         if os.name == "nt":
             os.system("explorer " + dire)
@@ -168,6 +174,13 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui.startButton.setText(f"Start\n{name}")
         self.selectedServer = name
         self.selectedDir = dire
+        try:
+            prop = open(dire +"/"+ name +"/server.properties", "r")
+            self.ui.propBrowser.setText(prop.read())
+            prop.close
+            del prop #lmao die.
+        except:
+            print("i would've put filenotfound here since that's the main reason why this should fail but that threw ANOTHER error.\n")
         self.ui.defaultCheck.setChecked(False)
         self.ui.serverSelectLabel.setText("Editing: " + name)
         self.refreshSettings()
@@ -390,18 +403,18 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.themebutts[i].setFixedSize(155, height)
         self.printl("Successfully refreshed themes!")
     
-    #def themeCreation(self, subs = True): # A FOURTH TIME? WILL THERE BE A FIFTH? (yes! there will be!)
-    #    if subs:
-    #        for button in self.javabutts:
-    #            self.JButtonframes.removeWidget(button)
-    #            shiboken6.delete(button)
-    #        shiboken6.delete(self.JButtonframes)
-    #        del self.JButtonframes
-    #    self.JButtonframes = QtWidgets.QVBoxLayout(self.ui.javaArea)
-    #    self.JButtonframes.setContentsMargins(0,0,0,0)
-    #    self.javabutts = []
-    #def serverCreation(self):
-    #    return
+    def themeCreation(self, subs = True): # A FOURTH TIME? WILL THERE BE A FIFTH? (yes! there will be!)
+        if subs:
+            for button in self.javabutts:
+                self.JButtonframes.removeWidget(button)
+                shiboken6.delete(button)
+            shiboken6.delete(self.JButtonframes)
+            del self.JButtonframes
+        self.JButtonframes = QtWidgets.QVBoxLayout(self.ui.javaArea)
+        self.JButtonframes.setContentsMargins(0,0,0,0)
+        self.javabutts = []
+    def serverCreation(self):
+        return
 
     def refreshingJavas(self, subs = True):
         if subs:
@@ -413,7 +426,6 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.JButtonframes = QtWidgets.QVBoxLayout(self.ui.javaArea)
         self.JButtonframes.setContentsMargins(0,0,0,0)
         self.javabutts = []
-        #self.deftheme.setFixedSize(155,45)
 
         javalist = os.listdir("./Internals/javas")
         expected = "java.exe" if os.name == "nt" else "java"

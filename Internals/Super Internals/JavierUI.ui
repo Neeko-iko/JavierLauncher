@@ -694,8 +694,8 @@ Server!</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>330</y>
-          <width>181</width>
+          <y>350</y>
+          <width>251</width>
           <height>38</height>
          </rect>
         </property>
@@ -707,7 +707,7 @@ Server!</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>370</y>
+          <y>390</y>
           <width>71</width>
           <height>22</height>
          </rect>
@@ -737,9 +737,9 @@ Server!</string>
        <widget class="QCheckBox" name="safemodeCheck">
         <property name="geometry">
          <rect>
-          <x>90</x>
-          <y>370</y>
-          <width>88</width>
+          <x>170</x>
+          <y>390</y>
+          <width>81</width>
           <height>22</height>
          </rect>
         </property>
@@ -804,6 +804,77 @@ Server!</string>
          <string>Refresh Java Selector</string>
         </property>
        </widget>
+       <widget class="QLabel" name="proplabel">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>30</y>
+          <width>101</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Server Properties</string>
+        </property>
+       </widget>
+       <widget class="QTextBrowser" name="propBrowser">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>50</y>
+          <width>251</width>
+          <height>301</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>13</pointsize>
+         </font>
+        </property>
+        <property name="documentTitle">
+         <string>server properties</string>
+        </property>
+        <property name="undoRedoEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="lineWrapMode">
+         <enum>QTextEdit::NoWrap</enum>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;title&gt;server properties&lt;/title&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="overwriteMode">
+         <bool>false</bool>
+        </property>
+        <property name="acceptRichText">
+         <bool>false</bool>
+        </property>
+        <property name="placeholderText">
+         <string>Whoops! you haven't selected a server, the server doesn't have a server.properties yet,  or somehow someway Javier messed something up.  you tell me.</string>
+        </property>
+        <property name="openLinks">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <zorder>propBrowser</zorder>
+       <zorder>jarFileEntry</zorder>
+       <zorder>defaultCheck</zorder>
+       <zorder>sJavaOver</zorder>
+       <zorder>jraEntry</zorder>
+       <zorder>serverSelectLabel</zorder>
+       <zorder>saveSettings</zorder>
+       <zorder>jarGuiCheck</zorder>
+       <zorder>safemodeCheck</zorder>
+       <zorder>javaScroller</zorder>
+       <zorder>javaRefresh</zorder>
+       <zorder>proplabel</zorder>
       </widget>
      </widget>
     </widget>
@@ -851,7 +922,7 @@ Server!</string>
       </widget>
       <widget class="QWidget" name="themer">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <attribute name="title">
         <string>Theme Creation</string>
@@ -1044,19 +1115,6 @@ Nothing!</string>
           </property>
          </widget>
         </widget>
-       </widget>
-       <widget class="QLabel" name="label_2">
-        <property name="geometry">
-         <rect>
-          <x>-10</x>
-          <y>-10</y>
-          <width>521</width>
-          <height>511</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:72pt;&quot;&gt;TO BE ADDED&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:72pt;&quot;&gt;TO BE ADDED&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:72pt;&quot;&gt;TO BE ADDED&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:72pt;&quot;&gt;TO BE ADDED&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
        </widget>
       </widget>
      </widget>

@@ -2,7 +2,7 @@ import threading
 from PySide6 import QtSql
 
 ########UPDATE THIS STRING WITH EVERY UPDATE###########
-version='2.1.1' #MacOS Support
+version='2.2.0b' #Themes + server.properties support
 #Connecting
 class Connection:
   def __init__(self):
