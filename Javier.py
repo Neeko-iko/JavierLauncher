@@ -58,7 +58,9 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.ui.textEdit.setText(readme.read())
         except:
             self.printl("no help.html! this is ok...")
-            self.ui.textEdit.setText("Javier is a work in progress.\nyou can find some information at https://github.com/neeko-iko/javierlauncher \nif you need assistance please contact @Neeko_iko on Twitter, or Neeko#7373 on Discord")
+            self.ui.textEdit.setText("Javier is a work in progress.\n\
+            you can find some information at https://github.com/neeko-iko/javierlauncher \n\
+            if you need assistance please contact @Neeko_iko on Twitter, or Neeko#7373 on Discord")
 
     @Slot(int)
     def on_progUpdate(self, p):
@@ -149,6 +151,8 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
     def openDir(self, dire):
         if os.name == "nt":
             os.system("explorer " + dire)
+        elif os.name == "posix":
+            os.system("open " + dire)
         else:
             os.system("xdg-open " + dire)
 
@@ -165,8 +169,8 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         else: # im sure there's probably a better way for this
             self.printl("Adding new directory was aborted.......")
 
-    #@QtCore.Slot()  # ngl i have no idea what this does, is it necessary????? answer: yes! very necessary! it's useful to read up on what you're using before just slamming into it at full force.
-    def printl(self, string):
+    #@QtCore.Slot()  # ngl i have no idea what this does, is it necessary????? 
+    def printl(self, string): # answer: yes! very necessary! it's useful to read up on what you're using before just slamming into it at full force.
         self.ui.miniSole.appendPlainText(string)
 
     def setServer(self, name, dire):
@@ -374,7 +378,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
 
         self.deftheme = QtWidgets.QToolButton(text= "System")
         #self.deftheme.setFixedSize(155,45)
-        self.deftheme.setStyleSheet("") # this makes it ignore the current theme (it doesn't and i don't know how.)
+        self.deftheme.setStyleSheet('') # this makes it ignore the current theme (it doesn't and i don't know how.)
         self.deftheme.clicked.connect(lambda _=False : self.updateTheme(None))
         self.themebutts.append(self.deftheme)
         self.TButtonframes.addWidget(self.deftheme)
@@ -391,7 +395,7 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
             self.themebutton = QtWidgets.QToolButton(text=theme[:-4])
             #self.themebutton.setFixedSize(155,45)
             self.themebutton.setStyleSheet(the)
-            self.themebutton.clicked.connect(lambda _=False, d = theme: '')
+            self.themebutton.clicked.connect(lambda _=False, d = theme : self.updateTheme(d))
             self.themebutts.append(self.themebutton)
             self.TButtonframes.addWidget(self.themebutton)
         if len(self.themebutts) < 6: # max height is 291
@@ -461,7 +465,10 @@ app = QtWidgets.QApplication()
 widget = MainJavier()
 style = jdb.readSettingValue("CurrentTheme")
 if style != '' and style != None:
-    sheet= open(style, "r")
+    try:
+        sheet= open(style, "r")
+    except FileNotFoundError:
+        sheet = open(f"./Internals/themes/{style}")
     style = sheet.readlines()
     sheet.close()
     sheet = "" # don't act like im unaware of the malpractice done here.
