@@ -72,7 +72,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <property name="documentMode">
      <bool>true</bool>
@@ -904,7 +904,7 @@ p, li { white-space: pre-wrap; }
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="usesScrollButtons">
        <bool>false</bool>
@@ -927,7 +927,7 @@ p, li { white-space: pre-wrap; }
        <attribute name="title">
         <string>Theme Creation</string>
        </attribute>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="textcolorLabel">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -1115,6 +1115,121 @@ Nothing!</string>
           </property>
          </widget>
         </widget>
+       </widget>
+       <widget class="QLineEdit" name="textColorEnter">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>90</y>
+          <width>113</width>
+          <height>32</height>
+         </rect>
+        </property>
+        <property name="inputMask">
+         <string/>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="maxLength">
+         <number>32767</number>
+        </property>
+        <property name="placeholderText">
+         <string>#Hexcode</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="bgColorLabel">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>160</y>
+          <width>131</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>background color</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="bgColorEnter">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>180</y>
+          <width>113</width>
+          <height>32</height>
+         </rect>
+        </property>
+        <property name="inputMask">
+         <string/>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="maxLength">
+         <number>32767</number>
+        </property>
+        <property name="placeholderText">
+         <string>#Hexcode</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="buttonColorLabel">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>260</y>
+          <width>111</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>button color</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="buttonColorEnter">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>280</y>
+          <width>113</width>
+          <height>32</height>
+         </rect>
+        </property>
+        <property name="inputMask">
+         <string/>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="maxLength">
+         <number>32767</number>
+        </property>
+        <property name="placeholderText">
+         <string>#Hexcode</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>350</y>
+          <width>141</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>See it in action
+using Richard</string>
+        </property>
        </widget>
       </widget>
      </widget>

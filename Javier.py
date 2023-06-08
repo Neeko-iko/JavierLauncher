@@ -18,6 +18,8 @@ class MainJavier(QtWidgets.QWidget): # whoops sorry for the bad code down below!
         self.ui = ui.Ui_Main()
         self.ui.setupUi(self)
         self.selectedDir = None
+        if os.name == "nt":
+            self.ui.Tabs.setStyle("{color : #DDDDDD;}")
         class JavaDLThread(QThread):
           def __init__(self):
             super().__init__()

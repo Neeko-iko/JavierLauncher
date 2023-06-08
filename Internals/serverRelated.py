@@ -80,9 +80,6 @@ def dlJava(ver):
     jf.javaDownloadFinish.emit(1)
     jdb.jfin = 1
     return
-        
-
-
 
 def folders(dir = os.getcwd()):
     """gets all folders that have a .jar file in it from passed in directory.\n if nothing is passed, will check CWD"""
