@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'JavierUI.ui'
+# Form generated from reading UI file 'JavierUI.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.4.1
+# Created by: Qt User Interface Compiler version 6.4.1
 ##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
+# WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
+                            QMetaObject, QObject, QPoint, QRect,
+                            QSize, QTime, QUrl, Qt)
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
+                           QFont, QFontDatabase, QGradient, QIcon,
+                           QImage, QKeySequence, QLinearGradient, QPainter,
+                           QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractSpinBox, QApplication, QCheckBox, QFrame,
-    QGridLayout, QLabel, QLineEdit, QMainWindow,
-    QPlainTextEdit, QProgressBar, QPushButton, QScrollArea,
-    QSizePolicy, QSpinBox, QTabWidget, QTextBrowser,
-    QTextEdit, QVBoxLayout, QWidget)
+                               QGridLayout, QLabel, QLineEdit, QMainWindow,
+                               QPlainTextEdit, QProgressBar, QPushButton, QScrollArea,
+                               QSizePolicy, QSpinBox, QTabWidget, QTextBrowser,
+                               QTextEdit, QVBoxLayout, QWidget)
+
 
 class Ui_Main(object):
     def setupUi(self, Main):
@@ -69,7 +70,7 @@ class Ui_Main(object):
         self.setRamLabel = QLabel(self.gridLayoutWidget)
         self.setRamLabel.setObjectName(u"setRamLabel")
         self.setRamLabel.setScaledContents(False)
-        self.setRamLabel.setAlignment(Qt.AlignBottom|Qt.AlignHCenter)
+        self.setRamLabel.setAlignment(Qt.AlignBottom | Qt.AlignHCenter)
         self.setRamLabel.setOpenExternalLinks(False)
 
         self.gridLayout.addWidget(self.setRamLabel, 0, 1, 1, 1)
@@ -110,7 +111,8 @@ class Ui_Main(object):
         self.buttonScroller.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.buttonScroller.setWidgetResizable(False)
         self.scrollAreaWidgetContents = QWidget()
-        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setObjectName(
+            u"scrollAreaWidgetContents")
         self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 472, 469))
         self.buttonScroller.setWidget(self.scrollAreaWidgetContents)
 
@@ -361,7 +363,8 @@ class Ui_Main(object):
         self.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
-        self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
+        self.scrollAreaWidgetContents_2.setObjectName(
+            u"scrollAreaWidgetContents_2")
         self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 216, 217))
         self.scrollArea.setWidget(self.scrollAreaWidgetContents_2)
         self.textColorEnter = QLineEdit(self.themer)
@@ -402,7 +405,8 @@ class Ui_Main(object):
         sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.miniSole.sizePolicy().hasHeightForWidth())
+        sizePolicy1.setHeightForWidth(
+            self.miniSole.sizePolicy().hasHeightForWidth())
         self.miniSole.setSizePolicy(sizePolicy1)
         self.miniSole.setMinimumSize(QSize(500, 0))
         self.miniSole.setMaximumSize(QSize(16777215, 200))
@@ -426,7 +430,7 @@ class Ui_Main(object):
         self.updateCheckerButton.setGeometry(QRect(370, 0, 131, 31))
         self.updateCheckerButton.setFocusPolicy(Qt.NoFocus)
         self.updateCheckerButton.setFlat(True)
-        #Main.setCentralWidget(self.centralwidget)
+        # Main.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(Main)
 
@@ -437,138 +441,198 @@ class Ui_Main(object):
         self.createtabs.setCurrentIndex(1)
         self.logClearButton.setDefault(False)
 
-
         QMetaObject.connectSlotsByName(Main)
     # setupUi
 
     def retranslateUi(self, Main):
-        Main.setWindowTitle(QCoreApplication.translate("Main", u"Javier | MC Server Launcher", None))
-#if QT_CONFIG(tooltip)
-        self.searchBar.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>Search/Filter through your servers so that you can find the perfect server even faster!</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
+        Main.setWindowTitle(QCoreApplication.translate(
+            "Main", u"Javier | MC Server Launcher", None))
+# if QT_CONFIG(tooltip)
+        self.searchBar.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>Search/Filter through your servers so that you can find the perfect server even faster!</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
         self.searchBar.setInputMask("")
         self.searchBar.setText("")
-        self.searchBar.setPlaceholderText(QCoreApplication.translate("Main", u"Query", None))
-        self.setRamLabel.setText(QCoreApplication.translate("Main", u"Set RAM", None))
-#if QT_CONFIG(tooltip)
-        self.ramEnter.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>RAM to use for the server, in gigabytes.</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.ramEnter.setSuffix(QCoreApplication.translate("Main", u" GB", None))
-#if QT_CONFIG(tooltip)
-        self.serverRefreshButton.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>Refreshes the serverlist<br/>maybe Javier forgot something?</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.serverRefreshButton.setText(QCoreApplication.translate("Main", u"Refresh Server List / Search", None))
-#if QT_CONFIG(tooltip)
-        self.startButton.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>What it says on the tin.</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
+        self.searchBar.setPlaceholderText(
+            QCoreApplication.translate("Main", u"Query", None))
+        self.setRamLabel.setText(
+            QCoreApplication.translate("Main", u"Set RAM", None))
+# if QT_CONFIG(tooltip)
+        self.ramEnter.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>RAM to use for the server, in gigabytes.</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+        self.ramEnter.setSuffix(
+            QCoreApplication.translate("Main", u" GB", None))
+# if QT_CONFIG(tooltip)
+        self.serverRefreshButton.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>Refreshes the serverlist<br/>maybe Javier forgot something?</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+        self.serverRefreshButton.setText(QCoreApplication.translate(
+            "Main", u"Refresh Server List / Search", None))
+# if QT_CONFIG(tooltip)
+        self.startButton.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>What it says on the tin.</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
         self.startButton.setText(QCoreApplication.translate("Main", u"Select a\n"
-"Server!", None))
-        self.Tabs.setTabText(self.Tabs.indexOf(self.launcherTab), QCoreApplication.translate("Main", u"Launcher", None))
-#if QT_CONFIG(tooltip)
-        self.Tabs.setTabToolTip(self.Tabs.indexOf(self.launcherTab), QCoreApplication.translate("Main", u"Where you launch your minecraft servers!", None))
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
-        self.addDirButton.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>Adds a new directory for Javier to look through when searching for your servers to display in the Launch tab!</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.addDirButton.setText(QCoreApplication.translate("Main", u"Add New Directory", None))
-#if QT_CONFIG(tooltip)
-        self.themeRefresh.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>Can't find your current theme?<br/>Themes are stored in Internals/themes</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.themeRefresh.setText(QCoreApplication.translate("Main", u"Refresh Theme Selector", None))
-#if QT_CONFIG(tooltip)
-        self.javaIntBox.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>this is the major java version number</p><p>generally 8 and 16 are used, but maybe you need something esle!<br/>8 is mainly for forge/older versions of MC<br/>and 16+ is for anything above 1.15</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
-        self.downJavaButton.setToolTip(QCoreApplication.translate("Main", u"download the java major version selected!", None))
-#endif // QT_CONFIG(tooltip)
-        self.downJavaButton.setText(QCoreApplication.translate("Main", u"Download Java        ", None))
-        self.settingtabs.setTabText(self.settingtabs.indexOf(self.normSettings), QCoreApplication.translate("Main", u"Javier Related", None))
-#if QT_CONFIG(tooltip)
-        self.jarFileEntry.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>DEFAULT: EMPTY (JAVIER WILL FIND IT)</p><p>.jar file override should really only be used incase Javier manages to get the wrong server jar file for your server.</p><p>if you don't know what this means, don't worry about it!</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
+                                                            "Server!", None))
+        self.Tabs.setTabText(self.Tabs.indexOf(
+            self.launcherTab), QCoreApplication.translate("Main", u"Launcher", None))
+# if QT_CONFIG(tooltip)
+        self.Tabs.setTabToolTip(self.Tabs.indexOf(self.launcherTab), QCoreApplication.translate(
+            "Main", u"Where you launch your minecraft servers!", None))
+# endif // QT_CONFIG(tooltip)
+# if QT_CONFIG(tooltip)
+        self.addDirButton.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>Adds a new directory for Javier to look through when searching for your servers to display in the Launch tab!</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+        self.addDirButton.setText(QCoreApplication.translate(
+            "Main", u"Add New Directory", None))
+# if QT_CONFIG(tooltip)
+        self.themeRefresh.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>Can't find your current theme?<br/>Themes are stored in Internals/themes</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+        self.themeRefresh.setText(QCoreApplication.translate(
+            "Main", u"Refresh Theme Selector", None))
+# if QT_CONFIG(tooltip)
+        self.javaIntBox.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>this is the major java version number</p><p>generally 8 and 16 are used, but maybe you need something esle!<br/>8 is mainly for forge/older versions of MC<br/>and 16+ is for anything above 1.15</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+# if QT_CONFIG(tooltip)
+        self.downJavaButton.setToolTip(QCoreApplication.translate(
+            "Main", u"download the java major version selected!", None))
+# endif // QT_CONFIG(tooltip)
+        self.downJavaButton.setText(QCoreApplication.translate(
+            "Main", u"Download Java        ", None))
+        self.settingtabs.setTabText(self.settingtabs.indexOf(
+            self.normSettings), QCoreApplication.translate("Main", u"Javier Related", None))
+# if QT_CONFIG(tooltip)
+        self.jarFileEntry.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>DEFAULT: EMPTY (JAVIER WILL FIND IT)</p><p>.jar file override should really only be used incase Javier manages to get the wrong server jar file for your server.</p><p>if you don't know what this means, don't worry about it!</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
         self.jarFileEntry.setText("")
-        self.jarFileEntry.setPlaceholderText(QCoreApplication.translate("Main", u".jar file override", None))
-#if QT_CONFIG(tooltip)
-        self.defaultCheck.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>TEMPORARY</p><p>used for if you want your settings to be saved as the default, or if they're for the specific server</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.defaultCheck.setText(QCoreApplication.translate("Main", u"Default", None))
-#if QT_CONFIG(tooltip)
-        self.sJavaOver.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>DEFAULT: EMPTY (java)<br/>Java Runtime Binary is the filepath at which your java goes, this one is server specific- the Forge modloader on any MC version likes to use Java 8.</p><p>besides that you should be good with java 18 for all versions</p><p>if you don't know what any of this means, don't worry about it!</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.sJavaOver.setPlaceholderText(QCoreApplication.translate("Main", u"java binary runtime override", None))
-#if QT_CONFIG(tooltip)
-        self.jraEntry.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>DEFAULT: NONE<br/>Java Runtime Arguments, these can help your server run more efficiently </p><p>if you don't know what this means, don't worry about it!</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.jraEntry.setPlaceholderText(QCoreApplication.translate("Main", u"Java Runtime Arguments", None))
-#if QT_CONFIG(tooltip)
-        self.serverSelectLabel.setToolTip(QCoreApplication.translate("Main", u"The server Selected", None))
-#endif // QT_CONFIG(tooltip)
-        self.serverSelectLabel.setText(QCoreApplication.translate("Main", u"No Server Selected!", None))
-        self.saveSettings.setText(QCoreApplication.translate("Main", u"Save Settings", None))
-#if QT_CONFIG(tooltip)
-        self.jarGuiCheck.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>DEFAULT: OFF</p><p>Toggles the server .jar GUI</p><p>if you don't know what this means, leave it off</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.jarGuiCheck.setText(QCoreApplication.translate("Main", u"Jar GUI", None))
-#if QT_CONFIG(tooltip)
-        self.safemodeCheck.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>DEFAULT: OFF</p><p>Safemode will only run the vanilla jar without any datapacks if there are any.</p><p>mainly used for troubleshooting issues</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.safemodeCheck.setText(QCoreApplication.translate("Main", u"Safemode", None))
-#if QT_CONFIG(tooltip)
-        self.javaRefresh.setToolTip(QCoreApplication.translate("Main", u"<html><head/><body><p>Can't find a java version?<br/>make sure it's downloaded!</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.javaRefresh.setText(QCoreApplication.translate("Main", u"Refresh Java Selector", None))
-        self.proplabel.setText(QCoreApplication.translate("Main", u"Server Properties", None))
-        self.propBrowser.setDocumentTitle(QCoreApplication.translate("Main", u"server properties", None))
+        self.jarFileEntry.setPlaceholderText(
+            QCoreApplication.translate("Main", u".jar file override", None))
+# if QT_CONFIG(tooltip)
+        self.defaultCheck.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>TEMPORARY</p><p>used for if you want your settings to be saved as the default, or if they're for the specific server</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+        self.defaultCheck.setText(
+            QCoreApplication.translate("Main", u"Default", None))
+# if QT_CONFIG(tooltip)
+        self.sJavaOver.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>DEFAULT: EMPTY (java)<br/>Java Runtime Binary is the filepath at which your java goes, this one is server specific- the Forge modloader on any MC version likes to use Java 8.</p><p>besides that you should be good with java 18 for all versions</p><p>if you don't know what any of this means, don't worry about it!</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+        self.sJavaOver.setPlaceholderText(QCoreApplication.translate(
+            "Main", u"java binary runtime override", None))
+# if QT_CONFIG(tooltip)
+        self.jraEntry.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>DEFAULT: NONE<br/>Java Runtime Arguments, these can help your server run more efficiently </p><p>if you don't know what this means, don't worry about it!</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+        self.jraEntry.setPlaceholderText(QCoreApplication.translate(
+            "Main", u"Java Runtime Arguments", None))
+# if QT_CONFIG(tooltip)
+        self.serverSelectLabel.setToolTip(
+            QCoreApplication.translate("Main", u"The server Selected", None))
+# endif // QT_CONFIG(tooltip)
+        self.serverSelectLabel.setText(QCoreApplication.translate(
+            "Main", u"No Server Selected!", None))
+        self.saveSettings.setText(
+            QCoreApplication.translate("Main", u"Save Settings", None))
+# if QT_CONFIG(tooltip)
+        self.jarGuiCheck.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>DEFAULT: OFF</p><p>Toggles the server .jar GUI</p><p>if you don't know what this means, leave it off</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+        self.jarGuiCheck.setText(
+            QCoreApplication.translate("Main", u"Jar GUI", None))
+# if QT_CONFIG(tooltip)
+        self.safemodeCheck.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>DEFAULT: OFF</p><p>Safemode will only run the vanilla jar without any datapacks if there are any.</p><p>mainly used for troubleshooting issues</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+        self.safemodeCheck.setText(
+            QCoreApplication.translate("Main", u"Safemode", None))
+# if QT_CONFIG(tooltip)
+        self.javaRefresh.setToolTip(QCoreApplication.translate(
+            "Main", u"<html><head/><body><p>Can't find a java version?<br/>make sure it's downloaded!</p></body></html>", None))
+# endif // QT_CONFIG(tooltip)
+        self.javaRefresh.setText(QCoreApplication.translate(
+            "Main", u"Refresh Java Selector", None))
+        self.proplabel.setText(QCoreApplication.translate(
+            "Main", u"Server Properties", None))
+        self.propBrowser.setDocumentTitle(
+            QCoreApplication.translate("Main", u"server properties", None))
         self.propBrowser.setHtml(QCoreApplication.translate("Main", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><title>server properties</title><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Noto Sans'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
-        self.propBrowser.setPlaceholderText(QCoreApplication.translate("Main", u"Whoops! you haven't selected a server, the server doesn't have a server.properties yet,  or somehow someway Javier messed something up.  you tell me.", None))
-        self.settingtabs.setTabText(self.settingtabs.indexOf(self.advancedSettings), QCoreApplication.translate("Main", u"Server Related", None))
-        self.Tabs.setTabText(self.Tabs.indexOf(self.settingsTab), QCoreApplication.translate("Main", u"Settings", None))
-#if QT_CONFIG(tooltip)
-        self.Tabs.setTabToolTip(self.Tabs.indexOf(self.settingsTab), QCoreApplication.translate("Main", u"The Settings Page", None))
-#endif // QT_CONFIG(tooltip)
-        self.createtabs.setTabText(self.createtabs.indexOf(self.creator), QCoreApplication.translate("Main", u"Server Creation", None))
-        self.textcolorLabel.setText(QCoreApplication.translate("Main", u"text color", None))
+                                                            "<html><head><meta name=\"qrichtext\" content=\"1\" /><title>server properties</title><style type=\"text/css\">\n"
+                                                            "p, li { white-space: pre-wrap; }\n"
+                                                            "</style></head><body style=\" font-family:'Noto Sans'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+                                                            "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+        self.propBrowser.setPlaceholderText(QCoreApplication.translate(
+            "Main", u"Whoops! you haven't selected a server, the server doesn't have a server.properties yet,  or somehow someway Javier messed something up.  you tell me.", None))
+        self.settingtabs.setTabText(self.settingtabs.indexOf(
+            self.advancedSettings), QCoreApplication.translate("Main", u"Server Related", None))
+        self.Tabs.setTabText(self.Tabs.indexOf(
+            self.settingsTab), QCoreApplication.translate("Main", u"Settings", None))
+# if QT_CONFIG(tooltip)
+        self.Tabs.setTabToolTip(self.Tabs.indexOf(
+            self.settingsTab), QCoreApplication.translate("Main", u"The Settings Page", None))
+# endif // QT_CONFIG(tooltip)
+        self.createtabs.setTabText(self.createtabs.indexOf(
+            self.creator), QCoreApplication.translate("Main", u"Server Creation", None))
+        self.textcolorLabel.setText(
+            QCoreApplication.translate("Main", u"text color", None))
         self.plainTextEdit.setPlainText(QCoreApplication.translate("Main", u"server!!!\n"
-"themes succes!\n"
-"yay!   Richard!", None))
+                                                                   "themes succes!\n"
+                                                                   "yay!   Richard!", None))
         self.richardSave.setText(QCoreApplication.translate("Main", u"Save\n"
-"Nothing!", None))
-        self.richardTitle.setText(QCoreApplication.translate("Main", u"[  ]  Richard | Javier Theme Helper     [X]", None))
+                                                            "Nothing!", None))
+        self.richardTitle.setText(QCoreApplication.translate(
+            "Main", u"[  ]  Richard | Javier Theme Helper     [X]", None))
         self.spinBox.setSuffix(QCoreApplication.translate("Main", u"kb", None))
-        self.richardLabel1.setText(QCoreApplication.translate("Main", u"SETTER", None))
-        self.richardName.setPlaceholderText(QCoreApplication.translate("Main", u"Enter Name", None))
-        self.richardRefresh.setText(QCoreApplication.translate("Main", u"Refresh Theme", None))
-#if QT_CONFIG(tooltip)
-        self.pushButton.setToolTip(QCoreApplication.translate("Main", u"the spooky secret button ooooooo", None))
-#endif // QT_CONFIG(tooltip)
-        self.pushButton.setText(QCoreApplication.translate("Main", u"Quirky Button!", None))
+        self.richardLabel1.setText(
+            QCoreApplication.translate("Main", u"SETTER", None))
+        self.richardName.setPlaceholderText(
+            QCoreApplication.translate("Main", u"Enter Name", None))
+        self.richardRefresh.setText(
+            QCoreApplication.translate("Main", u"Refresh Theme", None))
+# if QT_CONFIG(tooltip)
+        self.pushButton.setToolTip(QCoreApplication.translate(
+            "Main", u"the spooky secret button ooooooo", None))
+# endif // QT_CONFIG(tooltip)
+        self.pushButton.setText(QCoreApplication.translate(
+            "Main", u"Quirky Button!", None))
         self.textColorEnter.setInputMask("")
         self.textColorEnter.setText("")
-        self.textColorEnter.setPlaceholderText(QCoreApplication.translate("Main", u"#Hexcode", None))
-        self.bgColorLabel.setText(QCoreApplication.translate("Main", u"background color", None))
+        self.textColorEnter.setPlaceholderText(
+            QCoreApplication.translate("Main", u"#Hexcode", None))
+        self.bgColorLabel.setText(QCoreApplication.translate(
+            "Main", u"background color", None))
         self.bgColorEnter.setInputMask("")
         self.bgColorEnter.setText("")
-        self.bgColorEnter.setPlaceholderText(QCoreApplication.translate("Main", u"#Hexcode", None))
-        self.buttonColorLabel.setText(QCoreApplication.translate("Main", u"button color", None))
+        self.bgColorEnter.setPlaceholderText(
+            QCoreApplication.translate("Main", u"#Hexcode", None))
+        self.buttonColorLabel.setText(
+            QCoreApplication.translate("Main", u"button color", None))
         self.buttonColorEnter.setInputMask("")
         self.buttonColorEnter.setText("")
-        self.buttonColorEnter.setPlaceholderText(QCoreApplication.translate("Main", u"#Hexcode", None))
+        self.buttonColorEnter.setPlaceholderText(
+            QCoreApplication.translate("Main", u"#Hexcode", None))
         self.pushButton_2.setText(QCoreApplication.translate("Main", u"See it in action\n"
-"using Richard", None))
-        self.createtabs.setTabText(self.createtabs.indexOf(self.themer), QCoreApplication.translate("Main", u"Theme Creation", None))
-        self.Tabs.setTabText(self.Tabs.indexOf(self.creatorTab), QCoreApplication.translate("Main", u"Creator", None))
-#if QT_CONFIG(tooltip)
-        self.Tabs.setTabToolTip(self.Tabs.indexOf(self.creatorTab), QCoreApplication.translate("Main", u"The Server Creator, where you make your servers", None))
-#endif // QT_CONFIG(tooltip)
-        self.Tabs.setTabText(self.Tabs.indexOf(self.helpTab), QCoreApplication.translate("Main", u"Help", None))
-#if QT_CONFIG(tooltip)
-        self.Tabs.setTabToolTip(self.Tabs.indexOf(self.helpTab), QCoreApplication.translate("Main", u"What do you expect this to mean?", None))
-#endif // QT_CONFIG(tooltip)
-        self.logClearButton.setText(QCoreApplication.translate("Main", u"Clear MiniSole", None))
-        self.updateCheckerButton.setText(QCoreApplication.translate("Main", u"No Updates Found!", None))
+                                                             "using Richard", None))
+        self.createtabs.setTabText(self.createtabs.indexOf(
+            self.themer), QCoreApplication.translate("Main", u"Theme Creation", None))
+        self.Tabs.setTabText(self.Tabs.indexOf(
+            self.creatorTab), QCoreApplication.translate("Main", u"Creator", None))
+# if QT_CONFIG(tooltip)
+        self.Tabs.setTabToolTip(self.Tabs.indexOf(self.creatorTab), QCoreApplication.translate(
+            "Main", u"The Server Creator, where you make your servers", None))
+# endif // QT_CONFIG(tooltip)
+        self.Tabs.setTabText(self.Tabs.indexOf(
+            self.helpTab), QCoreApplication.translate("Main", u"Help", None))
+# if QT_CONFIG(tooltip)
+        self.Tabs.setTabToolTip(self.Tabs.indexOf(self.helpTab), QCoreApplication.translate(
+            "Main", u"What do you expect this to mean?", None))
+# endif // QT_CONFIG(tooltip)
+        self.logClearButton.setText(
+            QCoreApplication.translate("Main", u"Clear MiniSole", None))
+        self.updateCheckerButton.setText(
+            QCoreApplication.translate("Main", u"No Updates Found!", None))
     # retranslateUi
-

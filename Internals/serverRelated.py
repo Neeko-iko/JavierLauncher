@@ -1,6 +1,7 @@
 """bunch of server related functions, from grabbing servercount to starting servers"""
 from genericpath import isfile
 import os
+import platform
 import subprocess
 from zipfile import ZipFile
 import tarfile
@@ -37,8 +38,8 @@ def dlJava(ver):
     ft = ".zip" if os.name == "nt" else ".tar.gz"
     fp = "./Internals/javas/java"
     header = {"User-Agent": "QterJavier"}
-    print(os.uname().machine[0:3])
-    arch = "aarch64" if os.uname().machine[0:3] == "arm" else "x64"
+    
+    arch = "aarch64" if platform.machine() == "arm" else "x64"
     #print(f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operating}/x64/jre/hotspot/normal/eclipse")
     #print(java.status_code) # their api site says 307 is good but 200 is fairly universal.
     java = requests.get(url=f"https://api.adoptium.net/v3/binary/latest/{ver}/ga/{operate}/{arch}/jre/hotspot/normal/eclipse",headers=header,stream=True)
