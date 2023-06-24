@@ -3,6 +3,7 @@
 
 try:
     import os
+    import platform
     import shiboken6
     from PySide6 import QtWidgets, QtGui, QtGui
     from PySide6.QtCore import Slot, QThread
@@ -464,7 +465,7 @@ class MainJavier(QtWidgets.QWidget):  # whoops sorry for the bad code down below
 
         javalist = os.listdir("./Internals/javas")
         expected = "java.exe" if os.name == "nt" else "java"
-        midway = "/Contents/Home/bin/" if os.name == "posix" else "/bin/"
+        midway = "/Contents/Home/bin/" if platform.system() == "Darwin" else "/bin/"
         for java in javalist:
             if not os.path.isfile("./Internals/javas/" + java + midway + expected):
                 continue
