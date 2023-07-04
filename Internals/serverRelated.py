@@ -139,8 +139,9 @@ class ServerThread(QThread):
                 for item in file:
                     check = ZipFile(f"{self.dire}/{self.server}/{item}", 'r')
                     check = check.open('META-INF/MANIFEST.MF', 'r')
-                    check = check.readlines()
-                    for line in check:
+                    check.close()
+                    chk = check.readlines() # honestly if i made this now things would be different
+                    for line in chk:
                         if 'net.minecraft.server.MinecraftServer' in str(line):
                             file.remove(item)
             jar = f"\"{self.dire}/{self.server}/{file[0]}\""
